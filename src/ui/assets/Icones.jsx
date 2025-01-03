@@ -159,3 +159,18 @@ export const CancleButton = createSvgIcon(
     </defs>
   </svg>
 );
+
+export const Visbility = createSvgIcon(
+  <svg
+    width={30}
+    height={20}
+    viewBox="0 0 30 20"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M15 6a4 4 0 100 8 4 4 0 000-8zm0 10.667a6.666 6.666 0 110-13.333 6.666 6.666 0 010 13.333zM15 0C8.333 0 2.64 4.147.333 10c2.307 5.853 8 10 14.667 10s12.36-4.147 14.667-10C27.36 4.147 21.667 0 15 0z"
+      fill="#fff"
+    />
+  </svg>
+);

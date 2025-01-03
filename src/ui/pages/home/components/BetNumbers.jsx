@@ -166,22 +166,28 @@ function BetNumbers({ betNumList, betButtonClick, chipSound }) {
                   alignItems: "center",
                   p: 1,
                   width: "100%",
+                  height: "38px",
                 }}
               >
-                <img
-                  src={token}
-                  alt=""
-                  style={{ height: "21px", width: "21px" }}
-                />
-                <Typography
-                  sx={{
-                    fontSize: "17.56px",
-                    fontWeight: "700",
-                    color: "#042655",
-                  }}
-                >
-                  {e.token}
-                </Typography>
+                {e.token && (
+                  <>
+                    {" "}
+                    <img
+                      src={token}
+                      alt=""
+                      style={{ height: "21px", width: "21px" }}
+                    />
+                    <Typography
+                      sx={{
+                        fontSize: "17.56px",
+                        fontWeight: "700",
+                        color: "#042655",
+                      }}
+                    >
+                      {e.token}
+                    </Typography>
+                  </>
+                )}
               </Box>
             </Button>
           </Grid>

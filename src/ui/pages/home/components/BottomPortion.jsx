@@ -16,6 +16,7 @@ import Chip500 from "../../../public/icons/Chip500.png";
 import ButtonIcon from "../../../public/icons/Button.png";
 import SmallButton from "../../../public/icons/SmallButton.png";
 import { GameButton } from "../../../components/Utils/StyledComponents";
+// import { ipcRenderer } from "electron";
 
 const chipList = [
   { num: 10, img: Chip10 },
@@ -32,24 +33,55 @@ function BottomPortion({
   setChipNum,
   betFunction,
   chipSound,
+  setIsmessageModal,
+  remainingTime, 
+  isDisabled,
+  betFunc,
+  play
 }) {
   // const [chipNum, setChipNum] = useState(null);
   const progressRef = useRef(null);
   const [time, setTime] = useState(moment().format("h:mm A"));
-  const initialTime = moment.duration(3, "minutes"); // 3 minutes
-  const [remainingTime, setRemainingTime] = useState(initialTime);
+  // const initialTime = moment.duration(3, "minutes"); // 3 minutes
+  // const [remainingTime, setRemainingTime] = useState(initialTime);
   const [isCounting, setIsCounting] = useState(false);
 
   const handleShrink = () => {
-    if (!isCounting) {
-      setIsCounting(true); // Start countdown
-      gsap.to(progressRef.current, {
-        width: 0, // Shrink to 0 width
-        duration: 180, // Total duration in seconds (180 seconds)
-        ease: "linear", // Linear easing for consistent speed
-      });
-    }
+    betFunc()
+    // if (!isCounting) {
+    //   // handlePrint()
+    //   setIsCounting(true); // Start countdown
+    //   gsap.to(progressRef.current, {
+    //     width: 0, // Shrink to 0 width
+    //     duration: 180, // Total duration in seconds (180 seconds)
+    //     ease: "linear", // Linear easing for consistent speed
+    //   });
+    // }
   };
+
+  const handlePrint = () => {
+    const billHTML = `
+      <html>
+        <head>
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            .bill { border: 1px solid #000; padding: 10px; }
+          </style>
+        </head>
+        <body>
+          <div class="bill">
+            <h1>Invoice</h1>
+            <p>Customer: John Doe</p>
+            <p>Total: $100.00</p>
+          </div>
+        </body>
+      </html>
+    `;
+
+    // ipcRenderer.send('print-bill', billHTML);
+    window.electron.send("print-bill", billHTML)
+  };
+
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -59,17 +91,17 @@ function BottomPortion({
     return () => clearInterval(interval); // Cleanup on unmount
   }, []);
 
-  useEffect(() => {
-    if (remainingTime.asSeconds() > 0 && isCounting === true) {
-      const timer = setInterval(() => {
-        setRemainingTime((prevTime) =>
-          moment.duration(prevTime.asSeconds() - 1, "seconds")
-        );
-      }, 1000);
+  // useEffect(() => {
+  //   if (remainingTime.asSeconds() > 0 && isCounting === true) {
+  //     const timer = setInterval(() => {
+  //       setRemainingTime((prevTime) =>
+  //         moment.duration(prevTime.asSeconds() - 1, "seconds")
+  //       );
+  //     }, 1000);
 
-      return () => clearInterval(timer); // Cleanup timer
-    }
-  }, [remainingTime, isCounting]);
+  //     return () => clearInterval(timer); // Cleanup timer
+  //   }
+  // }, [remainingTime, isCounting]);
 
   return (
     <Box sx={{ position: "relative", height: "182px" }}>
@@ -151,11 +183,11 @@ function BottomPortion({
                 borderRadius: "8.61px",
               }}
             >
-              500
+              {play+".00"}
             </Typography>
           </Box>
           <Box>
-            <Button sx={{ p: 0, mb: 1 }}>
+            <Button sx={{ p: 0, mb: 1 }} onClick={() => setIsmessageModal(true) }>
               <img src={winButton} alt="Win" />
             </Button>
             <Typography
@@ -198,42 +230,20 @@ function BottomPortion({
             }}
           >
             <GameButton
+            disabled={isDisabled}
               variant="contained"
               sx={{
                 width: "220px",
-                // color: "white",
-                // fontSize: "24px",
-                // fontWeight: "600",
-                // textTransform: "uppercase",
-                // background: "rgb(237,33,33)",
-                // backgroundImage:
-                //   "linear-gradient(180deg, rgba(237,33,33,1) 0%, rgba(255,183,183,1) 13%, rgba(227,42,42,1) 23%)",
-                // borderRadius: "8px",
-                // boxShadow: 4,
-                // ":hover": {
-                //   backgroundImage: "linear-gradient(180deg, rgba(122,3,3,1) 0%, rgba(255,183,183,1) 13%, rgba(122,3,3,1) 23%)"
-                // }
-                // backgroundImage: `url('${ButtonIcon}')`,
-                // backgroundPosition: "center",
-                // backgroundRepeat: "no-repeat",
-                // backgroundSize: "cover",
               }}
               onClick={() => betFunction("upperLine")}
             >
               UPPER LINE
             </GameButton>
             <GameButton
+            disabled={isDisabled}
               variant="contained"
               sx={{
                 width: "220px",
-                // color: "white",
-                // fontSize: "24px",
-                // fontWeight: "600",
-                // textTransform: "uppercase",
-                // backgroundImage: `url('${ButtonIcon}')`,
-                // backgroundPosition: "center",
-                // backgroundRepeat: "no-repeat",
-                // backgroundSize: "cover",
               }}
               onClick={() => betFunction("lowerLine")}
             >
@@ -251,55 +261,32 @@ function BottomPortion({
             }}
           >
             <GameButton
-              disabled
-              // isActive={true}
+              disabled={isDisabled}
               variant="contained"
               sx={{
                 width: "140px",
-                // color: "white",
-                // fontSize: "24px",
-                // fontWeight: "600",
-                // textTransform: "uppercase",
-                // backgroundImage: `url('${SmallButton}')`,
-                // backgroundPosition: "center",
-                // backgroundRepeat: "no-repeat",
-                // backgroundSize: "cover",
               }}
               onClick={() => betFunction("odd")}
             >
               ODDS
             </GameButton>
-            <Button
-              sx={{
+            <GameButton
+            disabled={isDisabled}
+            sx={{
                 width: "140px",
-                color: "white",
-                fontSize: "24px",
-                fontWeight: "600",
-                textTransform: "uppercase",
-                backgroundImage: `url('${SmallButton}')`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
               }}
               onClick={() => betFunction("even")}
             >
               EVENS
-            </Button>
-            <Button
-              sx={{
+            </GameButton>
+            <GameButton
+            disabled={isDisabled}
+            sx={{
                 width: "140px",
-                color: "white",
-                fontSize: "24px",
-                fontWeight: "600",
-                textTransform: "uppercase",
-                backgroundImage: `url('${SmallButton}')`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
               }}
             >
               DOUBLE
-            </Button>
+            </GameButton>
           </Box>
 
           <Box
@@ -310,53 +297,32 @@ function BottomPortion({
               gap: 2,
             }}
           >
-            <Button
-              sx={{
+            <GameButton
+            disabled={isDisabled}
+            sx={{
                 width: "140px",
-                color: "white",
-                fontSize: "24px",
-                fontWeight: "600",
-                textTransform: "uppercase",
-                backgroundImage: `url('${SmallButton}')`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
               }}
             >
               REPEAT
-            </Button>
-            <Button
-              sx={{
+            </GameButton>
+            <GameButton
+            disabled={isDisabled}
+            sx={{
                 width: "140px",
-                color: "white",
-                fontSize: "24px",
-                fontWeight: "600",
-                textTransform: "uppercase",
-                backgroundImage: `url('${SmallButton}')`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
               }}
               onClick={() => betFunction("clear")}
             >
               CLEAR
-            </Button>
-            <Button
+            </GameButton>
+            <GameButton
+            disabled={isDisabled}
               sx={{
                 width: "140px",
-                color: "white",
-                fontSize: "24px",
-                fontWeight: "600",
-                textTransform: "uppercase",
-                backgroundImage: `url('${SmallButton}')`,
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
               }}
               onClick={handleShrink}
             >
               BET
-            </Button>
+            </GameButton>
           </Box>
         </Box>
         <Box>

@@ -18,7 +18,7 @@ import {
   SoundOnIcon,
 } from "../assets/Icones";
 
-function Header() {
+function Header({balance}) {
   return (
     <Box
       sx={{
@@ -122,6 +122,7 @@ function Header() {
             justifyContent: "space-between",
             alignItems: "center",
             gap: 2,
+            width: 160
           }}
         >
           <Typography
@@ -141,7 +142,7 @@ function Header() {
               fontSize: "16px",
             }}
           >
-            10000.00
+            {balance+".00"}
           </Typography>
         </Paper>
 

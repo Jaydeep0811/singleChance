@@ -3,8 +3,8 @@
 import gsap from "gsap";
 import Header from "../../components/Header";
 import Spinner from "../../components/Spinner/Spinner";
-import { useRef, useState } from "react";
-import { Box } from "@mui/material";
+import { useEffect, useRef, useState } from "react";
+import { Box, Button, Popover, Typography } from "@mui/material";
 import Historyinfo from "./components/Historyinfo";
 import BetNumbers from "./components/BetNumbers";
 import BottomPortion from "./components/BottomPortion";
@@ -15,6 +15,9 @@ import { useGSAP } from "@gsap/react";
 import { Howl, Howler } from "howler";
 import ChipSound from "../../public/GAME SOUNDS/Chip Sound.mp3";
 import SpinnerSound from "../../public/GAME SOUNDS/Spinning Wheel.mp3";
+import MessageModal from "../../components/CustomComponent/MessageModal";
+import { get_balance } from "../../api/gameData";
+import moment from "moment";
 
 // Setup the new Howl.
 const chipSound = new Howl({
@@ -24,6 +27,9 @@ const chipSound = new Howl({
 const spinnerSound = new Howl({
   src: [SpinnerSound],
 });
+
+//Mute the voice
+Howler.mute(true);
 
 function Home() {
   const [betNumList, setBetNumList] = useState([
@@ -81,67 +87,16 @@ function Home() {
   ]);
 
   const [chipNum, setChipNum] = useState(null);
+  const [ismessModal, setIsmessageModal] = useState(false);
+  const [play, setPlay] = useState(0);
+  const [win, setWin] = useState(0);
+  const [isDisabled, setIsDisabled] = useState(false);
   const [infoModal, setinfoModal] = useState(false);
+  const [balance, setBalance] = useState(0);
   const wheelRef1 = useRef(null);
   const wheelRef2 = useRef(null);
   const currentRef = useRef(null);
-
-  // const spinner1 = (i) => {
-  //   const rotationCurrent = gsap.getProperty(wheelRef.current, "rotation") || 0;
-  //   const rotationNext = rotationCurrent + gsap.utils.random(1800, 3600);
-  //   let rotationLast = rotationCurrent;
-  //   let tolerance = 0;
-  //   const selectedIndex =
-  //     pieces.length -
-  //     1 -
-  //     Math.floor(((rotationNext + angleOffset) % 360) / (360 / pieces.length));
-
-  //   const indicatorTimeline = gsap.timeline();
-  //   indicatorTimeline
-  //     .to(currentRef.current, {
-  //       duration: 0.13,
-  //       rotation: -10,
-  //       transformOrigin: "65% 36%",
-  //     })
-  //     .to(currentRef.current, {
-  //       duration: 0.13,
-  //       rotation: 3,
-  //       ease: "power4",
-  //     });
-
-  //   const luckywheelTimeline = gsap.timeline({
-  //     onComplete: () => {
-  //       console.log("selected", pieces[selectedIndex]);
-  //       setIteration((prev) => prev + 1);
-  //     },
-  //     onUpdate: () => {
-  //       const rotationCurrentUpdated = Math.round(
-  //         gsap.getProperty(wheelRef.current, "rotation")
-  //       );
-  //       tolerance = rotationCurrentUpdated - rotationLast;
-  //       rotationLast = rotationCurrentUpdated;
-
-  //       if (
-  //         Math.round(rotationCurrentUpdated) % (360 / pieces.length) <=
-  //         tolerance
-  //       ) {
-  //         if (
-  //           indicatorTimeline.progress() > 0.2 ||
-  //           indicatorTimeline.progress() === 0
-  //         ) {
-  //           indicatorTimeline.play(0);
-  //         }
-  //       }
-  //     },
-  //   });
-
-  //   luckywheelTimeline.to(wheelRef.current, {
-  //     duration: 5,
-  //     rotation: rotationNext,
-  //     transformOrigin: "50% 50%",
-  //     ease: "power4",
-  //   });
-  // };
+  const boxRef = useRef(null);
 
   const spinner = (targetNumber) => {
     const sections = 10; // Number of sections
@@ -201,9 +156,36 @@ function Home() {
   // Handle Spin Button
   const handlePlay = () => {
     spinnerSound.play();
+    // spinner(Math.floor(Math.random() * 10) + 1); // Spin and land on "1"
     spinner(1); // Spin and land on "1"
   };
 
+  const betFunc = function () {
+    // const totalTokens = betNumList.reduce((sum, item) => {
+    //   const tokenValue = parseInt(item.token, 10) || 0; // Convert to integer, fallback to 0 if blank
+    //   return sum + tokenValue;
+    // }, 0);
+    // console.log(totalTokens);
+    betFunction("clear");
+    setPlay(0);
+    const payload = {
+      ticket_id: "TICKET12345",
+      game_id: "GAME9876",
+      date: moment().format("YYYY-MM-DD"),
+      draw_time: "14:30:00",
+      ticket_time: moment().format("HH:mm:ss"),
+      data: [
+        {
+          bet: 8,
+          played: 120,
+        },
+        {
+          bet: 5,
+          played: 10,
+        },
+      ],
+    };
+  };
 
   const betButtonClick = function (index) {
     let newList = betNumList.map((e, i) => {
@@ -215,6 +197,12 @@ function Home() {
       }
       return e;
     });
+    const totalTokens = newList.reduce((sum, item) => {
+      const tokenValue = parseInt(item.token, 10) || 0; // Convert to integer, fallback to 0 if blank
+      return sum + tokenValue;
+    }, 0);
+    console.log(totalTokens);
+    setPlay(totalTokens);
     setBetNumList(newList);
   };
 
@@ -274,8 +262,125 @@ function Home() {
       default:
         break;
     }
+    const totalTokens = newList.reduce((sum, item) => {
+      const tokenValue = parseInt(item.token, 10) || 0; // Convert to integer, fallback to 0 if blank
+      return sum + tokenValue;
+    }, 0);
+    setPlay(totalTokens);
     setBetNumList(newList);
   };
+
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClick = (event) => {
+    // console.log("clikd");
+    console.log(boxRef);
+
+    setAnchorEl(boxRef.current);
+    // setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const [remainingTime, setRemainingTime] = useState(
+    moment.duration(0, "seconds")
+  );
+  const [isCounting, setIsCounting] = useState(false);
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+  const time = 3;
+  const intervalMs = time * 60 * 1000;
+
+  const fetchBalance = async function () {
+    await get_balance().then((e) => {
+      if (e.statusCode === 200) {
+        setBalance(e.response.balance);
+      }
+      // console.log(e.response.balance);
+    });
+  };
+
+  useEffect(() => {
+    fetchBalance();
+  }, []);
+
+  useEffect(() => {
+    const startTask = () => {
+      const now = new Date();
+      const midnight = new Date();
+      midnight.setHours(0, 0, 0, 0); // Set to 12:00 AM
+
+      const elapsedTime = now.getTime() - midnight.getTime();
+      const timeUntilNextInterval = intervalMs - (elapsedTime % intervalMs); // Time until next interval
+
+      // Initialize remainingTime
+      setRemainingTime(moment.duration(timeUntilNextInterval, "milliseconds"));
+
+      const disableTimer = () => {
+        setIsDisabled(true); // Disable buttons
+        console.log("Buttons disabled.");
+      };
+
+      const enableTimer = () => {
+        setIsDisabled(false); // Enable buttons
+        console.log("Buttons enabled.");
+      };
+
+      // Disable buttons 15 seconds before the interval ends
+      const disableTimeout = setTimeout(
+        disableTimer,
+        timeUntilNextInterval - 15000
+      );
+
+      // Run the task on the next interval
+      const timeout = setTimeout(() => {
+        handlePlay(); // Execute the task
+        enableTimer(); // Enable buttons
+        setRemainingTime(moment.duration(intervalMs, "milliseconds")); // Reset remaining time
+
+        // Schedule recurring intervals for handlePlay and disableTimer
+        const interval = setInterval(() => {
+          handlePlay();
+          enableTimer();
+          setRemainingTime(moment.duration(intervalMs, "milliseconds")); // Reset remaining time
+        }, intervalMs);
+
+        const disableInterval = setInterval(disableTimer, intervalMs - 15000);
+
+        // Cleanup intervals on unmount
+        return () => {
+          clearInterval(interval);
+          clearInterval(disableInterval);
+        };
+      }, timeUntilNextInterval);
+
+      return () => {
+        clearTimeout(timeout);
+        clearTimeout(disableTimeout);
+      };
+    };
+
+    startTask();
+  }, []);
+
+  useEffect(() => {
+    // Countdown timer for `remainingTime`
+    const countdown = setInterval(() => {
+      setRemainingTime((prevTime) => {
+        const updatedTime = moment.duration(
+          prevTime.asSeconds() - 1,
+          "seconds"
+        );
+        return updatedTime.asSeconds() <= 0
+          ? moment.duration(0, "seconds")
+          : updatedTime;
+      });
+    }, 1000);
+
+    return () => clearInterval(countdown); // Cleanup countdown on unmount
+  }, []);
 
   return (
     <>
@@ -286,7 +391,7 @@ function Home() {
         }}
       >
         {/* <Button onClick={handlePlay}>Play is here</Button> */}
-        <Header />
+        <Header balance={balance} />
         <Historyinfo setinfoModal={setinfoModal} />
         <Box
           sx={{
@@ -300,14 +405,23 @@ function Home() {
           }}
         >
           {/* <Spinner wheelRef={wheelRef} currentRef={currentRef} /> */}
-          <Box sx={{ position: "absolute", left: "-20px", top: 63, width: "729px" }}>
+          <Box
+            aria-describedby={id}
+            sx={{
+              position: "absolute",
+              left: "-20px",
+              top: 63,
+              width: "729px",
+            }}
+            ref={boxRef}
+          >
             <Spinner2
               wheelRef1={wheelRef1}
               wheelRef2={wheelRef2}
               currentRef={currentRef}
             />
           </Box>
-          <Box sx={{ position: "absolute", right: "1.5rem", }}>
+          <Box sx={{ position: "absolute", right: "1.5rem" }}>
             <BetNumbers
               betNumList={betNumList}
               betButtonClick={betButtonClick}
@@ -321,8 +435,19 @@ function Home() {
           setChipNum={setChipNum}
           betFunction={betFunction}
           chipSound={chipSound}
+          setIsmessageModal={handleClick}
+          remainingTime={remainingTime}
+          isDisabled={isDisabled}
+          betFunc={betFunc}
+          play={play}
         />
       </Box>
+      <MessageModal
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        handleClose={() => handleClose()}
+      />
       <InfoModal open={infoModal} handleClose={() => setinfoModal(false)} />
     </>
   );
