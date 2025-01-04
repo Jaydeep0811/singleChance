@@ -1,5 +1,5 @@
 // import React from 'react'
-
+import { Howler } from "howler";
 import {
   Box,
   Button,
@@ -9,16 +9,34 @@ import {
   IconButton,
   InputBase,
   Paper,
+  Stack,
   Typography,
 } from "@mui/material";
 import {
   CheckedInIcon,
   CheckIcon,
+  CloseIcon,
   HomeIcon,
+  MinimizeIcon,
   SoundOnIcon,
 } from "../assets/Icones";
+import { useState } from "react";
 
-function Header({balance}) {
+function Header({ balance }) {
+  const [toggle, setToggle] = useState(false)
+
+  const muteFun = function() {
+    Howler.mute(!toggle);
+    setToggle(!toggle);
+  }
+  const handleMinimize = () => {
+    window.electronAPI.minimize();
+  };
+
+  const handleClose = () => {
+    window.electronAPI.close();
+  };
+
   return (
     <Box
       sx={{
@@ -36,7 +54,7 @@ function Header({balance}) {
           height: "84px",
           width: "100px",
           borderRadius: "0px",
-          backgroundColor: "rgba(225, 225, 225, 8%)"
+          backgroundColor: "rgba(225, 225, 225, 8%)",
         }}
         startIcon={<HomeIcon />}
       >
@@ -122,7 +140,7 @@ function Header({balance}) {
             justifyContent: "space-between",
             alignItems: "center",
             gap: 2,
-            width: 160
+            width: 160,
           }}
         >
           <Typography
@@ -142,13 +160,21 @@ function Header({balance}) {
               fontSize: "16px",
             }}
           >
-            {balance+".00"}
+            {balance + ".00"}
           </Typography>
         </Paper>
 
-        <IconButton size="small">
-          <SoundOnIcon sx={{ fontSize: "36px" }} />
-        </IconButton>
+        <Stack direction={"row"}>
+          <IconButton size="small" onClick={() => muteFun() }>
+            <SoundOnIcon sx={{ fontSize: "36px" }} />
+          </IconButton>
+          <IconButton size="small" onClick={() => handleMinimize()}>
+            <MinimizeIcon sx={{ fontSize: "36px" }} />
+          </IconButton>
+          <IconButton size="small" onClick={() => handleClose()}>
+            <CloseIcon sx={{ fontSize: "36px" }} />
+          </IconButton>
+        </Stack>
       </Box>
     </Box>
   );

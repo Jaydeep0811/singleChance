@@ -80,6 +80,7 @@ function BottomPortion({
 
     // ipcRenderer.send('print-bill', billHTML);
     window.electron.send("print-bill", billHTML)
+    // window.electronAPI.printBill(billHTML);
   };
 
 

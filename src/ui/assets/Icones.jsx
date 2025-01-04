@@ -174,3 +174,37 @@ export const Visbility = createSvgIcon(
     />
   </svg>
 );
+
+export const CloseIcon = createSvgIcon(
+  <svg
+    width={32}
+    height={32}
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width={32} height={32} rx={8} fill="#457DCA" />
+    <path
+      d="M21.25 10.758a.83.83 0 00-1.175 0L16 14.825l-4.075-4.075a.832.832 0 00-1.175 1.175L14.825 16l-4.075 4.075a.832.832 0 001.175 1.175L16 17.175l4.075 4.075a.83.83 0 101.175-1.175L17.175 16l4.075-4.075a.835.835 0 000-1.167z"
+      fill="#fff"
+    />
+  </svg>
+);
+
+export const MinimizeIcon = createSvgIcon(
+  <svg
+    width={32}
+    height={32}
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect width={32} height={32} rx={8} fill="#457DCA" />
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M8.083 16a1.25 1.25 0 011.25-1.25h13.334a1.25 1.25 0 010 2.5H9.333A1.25 1.25 0 018.083 16z"
+      fill="#fff"
+    />
+  </svg>
+);

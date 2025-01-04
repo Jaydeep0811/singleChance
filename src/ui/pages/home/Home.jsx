@@ -29,7 +29,7 @@ const spinnerSound = new Howl({
 });
 
 //Mute the voice
-Howler.mute(true);
+// Howler.mute(true);
 
 function Home() {
   const [betNumList, setBetNumList] = useState([
@@ -290,7 +290,7 @@ function Home() {
   const [isCounting, setIsCounting] = useState(false);
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  const time = 3;
+  const time = 2;
   const intervalMs = time * 60 * 1000;
 
   const fetchBalance = async function () {
