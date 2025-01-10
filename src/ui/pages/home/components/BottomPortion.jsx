@@ -34,10 +34,10 @@ function BottomPortion({
   betFunction,
   chipSound,
   setIsmessageModal,
-  remainingTime, 
+  remainingTime,
   isDisabled,
   betFunc,
-  play
+  play,
 }) {
   // const [chipNum, setChipNum] = useState(null);
   const progressRef = useRef(null);
@@ -47,7 +47,7 @@ function BottomPortion({
   const [isCounting, setIsCounting] = useState(false);
 
   const handleShrink = () => {
-    betFunc()
+    betFunc();
     // if (!isCounting) {
     //   // handlePrint()
     //   setIsCounting(true); // Start countdown
@@ -82,7 +82,6 @@ function BottomPortion({
     // window.electron.send("print-bill", billHTML)
     window.electronAPI.printBill(billHTML);
   };
-
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -184,11 +183,14 @@ function BottomPortion({
                 borderRadius: "8.61px",
               }}
             >
-              {play+".00"}
+              {play + ".00"}
             </Typography>
           </Box>
           <Box>
-            <Button sx={{ p: 0, mb: 1 }} onClick={() => setIsmessageModal(true) }>
+            <Button
+              sx={{ p: 0, mb: 1 }}
+              onClick={() => setIsmessageModal(true)}
+            >
               <img src={winButton} alt="Win" />
             </Button>
             <Typography
@@ -231,7 +233,7 @@ function BottomPortion({
             }}
           >
             <GameButton
-            disabled={isDisabled}
+              disabled={isDisabled}
               variant="contained"
               sx={{
                 width: "220px",
@@ -241,7 +243,7 @@ function BottomPortion({
               UPPER LINE
             </GameButton>
             <GameButton
-            disabled={isDisabled}
+              disabled={isDisabled}
               variant="contained"
               sx={{
                 width: "220px",
@@ -272,8 +274,8 @@ function BottomPortion({
               ODDS
             </GameButton>
             <GameButton
-            disabled={isDisabled}
-            sx={{
+              disabled={isDisabled}
+              sx={{
                 width: "140px",
               }}
               onClick={() => betFunction("even")}
@@ -281,10 +283,11 @@ function BottomPortion({
               EVENS
             </GameButton>
             <GameButton
-            disabled={isDisabled}
-            sx={{
+              disabled={isDisabled}
+              sx={{
                 width: "140px",
               }}
+              onClick={() => betFunction("double") }
             >
               DOUBLE
             </GameButton>
@@ -299,16 +302,17 @@ function BottomPortion({
             }}
           >
             <GameButton
-            disabled={isDisabled}
-            sx={{
+              disabled={isDisabled}
+              sx={{
                 width: "140px",
               }}
+              onClick={() => betFunction("repeat")}
             >
               REPEAT
             </GameButton>
             <GameButton
-            disabled={isDisabled}
-            sx={{
+              disabled={isDisabled}
+              sx={{
                 width: "140px",
               }}
               onClick={() => betFunction("clear")}
@@ -316,7 +320,7 @@ function BottomPortion({
               CLEAR
             </GameButton>
             <GameButton
-            disabled={isDisabled}
+              disabled={isDisabled}
               sx={{
                 width: "140px",
               }}

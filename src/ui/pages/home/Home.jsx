@@ -18,6 +18,7 @@ import SpinnerSound from "../../public/GAME SOUNDS/Spinning Wheel.mp3";
 import MessageModal from "../../components/CustomComponent/MessageModal";
 import { get_balance } from "../../api/gameData";
 import moment from "moment";
+import useLocalStorage from "../../utils/useLocalStorage";
 
 // Setup the new Howl.
 const chipSound = new Howl({
@@ -98,6 +99,8 @@ function Home() {
   const currentRef = useRef(null);
   const boxRef = useRef(null);
 
+  const [local, setLocal] = useLocalStorage("name", {});
+
   const spinner = (targetNumber) => {
     const sections = 10; // Number of sections
     const sectionAngle = 360 / sections; // Angle for each section
@@ -155,9 +158,9 @@ function Home() {
 
   // Handle Spin Button
   const handlePlay = () => {
+    spinner(8); // Spin and land on "1"
     spinnerSound.play();
     // spinner(Math.floor(Math.random() * 10) + 1); // Spin and land on "1"
-    spinner(1); // Spin and land on "1"
   };
 
   const betFunc = function () {
@@ -185,6 +188,9 @@ function Home() {
         },
       ],
     };
+
+    // localStorage.setItem("prevBet", JSON.stringify({betNumList}));
+    setLocal([ ...betNumList ]);
   };
 
   const betButtonClick = function (index) {
@@ -201,7 +207,7 @@ function Home() {
       const tokenValue = parseInt(item.token, 10) || 0; // Convert to integer, fallback to 0 if blank
       return sum + tokenValue;
     }, 0);
-    console.log(totalTokens);
+    // console.log(totalTokens);
     setPlay(totalTokens);
     setBetNumList(newList);
   };
@@ -253,6 +259,17 @@ function Home() {
           return e;
         });
         break;
+      case "double":
+        newList = betNumList.map((e, i) => ({
+          ...e,
+          token: e.token ? e.token * 2 : "",
+        }));
+
+        break;
+      case "repeat":
+        console.log(newList, local);
+        newList = local;
+        break;
       case "clear":
         newList = betNumList.map((e) => ({
           ...e,
@@ -262,6 +279,7 @@ function Home() {
       default:
         break;
     }
+    console.log(newList);
     const totalTokens = newList.reduce((sum, item) => {
       const tokenValue = parseInt(item.token, 10) || 0; // Convert to integer, fallback to 0 if blank
       return sum + tokenValue;
@@ -454,3 +472,8 @@ function Home() {
 }
 
 export default Home;
+
+// Issues
+// Double and Repete
+// Print is not working
+// History issue API not working properly

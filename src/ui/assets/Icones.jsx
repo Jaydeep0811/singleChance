@@ -208,3 +208,116 @@ export const MinimizeIcon = createSvgIcon(
     />
   </svg>
 );
+
+export const CalanderIcon = createSvgIcon(
+  <svg
+    width={32}
+    height={32}
+    viewBox="0 0 32 32"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M3.333 25.333v-16h25.334v16C28.667 26.8 27.467 28 26 28H6a2.675 2.675 0 01-2.667-2.667z"
+      fill="#CFD8DC"
+    />
+    <path
+      d="M28.667 6.667v4H3.333v-4C3.333 5.2 4.533 4 6 4h20c1.467 0 2.667 1.2 2.667 2.667z"
+      fill="#F44336"
+    />
+    <path
+      d="M22 8.667a2 2 0 100-4 2 2 0 000 4zM10 8.667a2 2 0 100-4 2 2 0 000 4z"
+      fill="#B71C1C"
+    />
+    <path
+      d="M22 2c-.733 0-1.333.6-1.333 1.333v3.334C20.667 7.4 21.267 8 22 8s1.333-.6 1.333-1.333V3.333C23.333 2.6 22.733 2 22 2zM10 2c-.733 0-1.333.6-1.333 1.333v3.334C8.667 7.4 9.267 8 10 8s1.333-.6 1.333-1.333V3.333C11.333 2.6 10.733 2 10 2z"
+      fill="#B0BEC5"
+    />
+    <path
+      d="M8.667 13.333h2.666V16H8.667v-2.667zm4 0h2.666V16h-2.666v-2.667zm4 0h2.666V16h-2.666v-2.667zm4 0h2.666V16h-2.666v-2.667zm-12 4h2.666V20H8.667v-2.667zm4 0h2.666V20h-2.666v-2.667zm4 0h2.666V20h-2.666v-2.667zm4 0h2.666V20h-2.666v-2.667zm-12 4h2.666V24H8.667v-2.667zm4 0h2.666V24h-2.666v-2.667zm4 0h2.666V24h-2.666v-2.667zm4 0h2.666V24h-2.666v-2.667z"
+      fill="#90A4AE"
+    />
+  </svg>
+);
+
+export const LeftArrowIcon = createSvgIcon(
+  <svg
+    width={16}
+    height={24}
+    viewBox="0 0 16 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M2 12h13v10L2 12z" fill="url(#paint0_linear_42_2694)" />
+    <path d="M2 12h13V2L2 12z" fill="url(#paint1_linear_42_2694)" />
+    <path
+      d="M14.695 22.396l.805.62V.984l-.805.619L1.83 11.5H.53l.65.5-.65.5h1.3l12.865 9.896zm0 0L15 22h0l-.305.396z"
+      stroke="#A3713D"
+    />
+    <defs>
+      <linearGradient
+        id="paint0_linear_42_2694"
+        x1={8.5}
+        y1={22}
+        x2={8.5}
+        y2={2}
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#DCA74E" />
+        <stop offset={1} stopColor="#A2713D" />
+      </linearGradient>
+      <linearGradient
+        id="paint1_linear_42_2694"
+        x1={8.5}
+        y1={12}
+        x2={8.5}
+        y2={2}
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#F1D984" />
+        <stop offset={1} stopColor="#D39B42" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
+
+export const RightArrowIcon = createSvgIcon(
+  <svg
+    width={16}
+    height={24}
+    viewBox="0 0 16 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M14 12H1V2l13 10z" fill="url(#paint0_linear_42_2697)" />
+    <path d="M14 12H1v10l13-10z" fill="url(#paint1_linear_42_2697)" />
+    <path
+      d="M1.305 1.604L1 2h0l.305-.396zm0 0l13 10 .515.396-.515.396-13 10-.805.62V.984l.805.619z"
+      stroke="#A3713D"
+    />
+    <defs>
+      <linearGradient
+        id="paint0_linear_42_2697"
+        x1={7.5}
+        y1={2}
+        x2={7.5}
+        y2={22}
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#DCA74E" />
+        <stop offset={1} stopColor="#A2713D" />
+      </linearGradient>
+      <linearGradient
+        id="paint1_linear_42_2697"
+        x1={7.5}
+        y1={12}
+        x2={7.5}
+        y2={22}
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#F1D984" />
+        <stop offset={1} stopColor="#D39B42" />
+      </linearGradient>
+    </defs>
+  </svg>
+);

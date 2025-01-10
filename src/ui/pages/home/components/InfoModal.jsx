@@ -17,21 +17,16 @@ import PropTypes from "prop-types";
 import StyledModal from "../../../components/CustomComponent/StyledModal";
 import { useState } from "react";
 import { CancleButton } from "../../../assets/Icones";
+import aImage from "../../../public/icons/buttonActive.png";
+import dImage from "../../../public/icons/buttonDeactive.png";
+import Result from "./infocomponents/Result";
+import GameHistory from "./infocomponents/GameHistory";
+import Report from "./infocomponents/Report";
+import UnclamedTicktes from "./infocomponents/UnclamedTicktes";
+import Rules from "./infocomponents/Rules";
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
-const aImage = "../icons/buttonActive.png";
-const dImage = "../icons/buttonDeactive.png";
+// const aImage = "../icons/buttonActive.png";
+// const dImage = "../icons/buttonDeactive.png";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -42,9 +37,10 @@ function CustomTabPanel(props) {
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
+      style={{ height: "84%"}}
       {...other}
     >
-      {value === index && <Box>{children}</Box>}
+      {value === index && <Box sx={{ height: "100%"}}>{children}</Box>}
     </div>
   );
 }
@@ -69,10 +65,10 @@ function InfoModal({ open, handleClose }) {
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "center",
-          mt: 3,
+          // my: 1,
           gap: 1,
           height: "70.52px",
-          mb: 2,
+          mb: 1,
         }}
       >
         <ToggleButtonGroup
@@ -86,10 +82,11 @@ function InfoModal({ open, handleClose }) {
               // borderRadius: theme.shape.borderRadius,
               // margin: theme.spacing(0.5),
               // m: 0,
+              height: '3.1rem',
               borderRadius: 3,
               p: 0,
               "& .MuiTypography-root": {
-                fontSize: "20px",
+                fontSize: "1rem",
                 fontWeight: "600",
                 color: "#042655",
                 position: "absolute",
@@ -108,7 +105,7 @@ function InfoModal({ open, handleClose }) {
           <ToggleButton
             value="result"
             aria-label="left aligned"
-            sx={{ width: "194px" }}
+            sx={{ width: "10rem" }}
           >
             {/* <FormatAlignLeftIcon /> */}
             <img
@@ -121,7 +118,7 @@ function InfoModal({ open, handleClose }) {
           <ToggleButton
             value="gameHistory"
             aria-label="centered"
-            sx={{ width: "245px" }}
+            sx={{ width: "13rem" }}
           >
             <img
               src={alignment === "gameHistory" ? aImage : dImage}
@@ -131,9 +128,21 @@ function InfoModal({ open, handleClose }) {
             <Typography>GAME HISTORY</Typography>
           </ToggleButton>
           <ToggleButton
+            value="rules"
+            aria-label="right aligned"
+            sx={{ width: "10rem" }}
+          >
+            <img
+              src={alignment === "rules" ? aImage : dImage}
+              alt=""
+              style={{ width: "100%", height: "100%" }}
+            />
+            <Typography>RULES</Typography>
+          </ToggleButton>
+          <ToggleButton
             value="report"
             aria-label="right aligned"
-            sx={{ width: "245px" }}
+            sx={{ width: "10rem" }}
           >
             <img
               src={alignment === "report" ? aImage : dImage}
@@ -146,7 +155,7 @@ function InfoModal({ open, handleClose }) {
           <ToggleButton
             value="unclameTickets"
             aria-label="justified"
-            sx={{ width: "320px", height: "70.52px" }}
+            sx={{ width: "18rem", }}
           >
             <img
               src={alignment === "unclameTickets" ? aImage : dImage}
@@ -161,69 +170,20 @@ function InfoModal({ open, handleClose }) {
         </IconButton>
       </Box>
       <CustomTabPanel value={alignment} index={"result"}>
-        <TableContainer
-          component={Paper}
-          elevation={0}
-          sx={{ bgcolor: "#FFE5C6" }}
-        >
-            <Box sx={{ display: 'flex', alignItems: "center", gap: 2 }} >
-              <Typography>SELECT DATE : 28/11/2024</Typography>  
-              <IconButton>
-                
-              </IconButton>
-            </Box>
-          <Table
-            sx={{ minWidth: 650, borderSpacing: "0 20px" }}
-            aria-label="simple table"
-          >
-            <TableHead>
-              <TableRow
-                sx={{
-                  th: {
-                    mb: 1,
-                    border: 0,
-                    bgcolor: "rgba(255,180,193,39)",
-                    fontSize: "17px",
-                    fontWeight: "600",
-                    borderBottom: "6px solid #FFE5C6"
-                  },
-                }}
-              >
-                <TableCell>Dessert (100g serving)</TableCell>
-                <TableCell align="right">Calories</TableCell>
-                <TableCell align="right">Fat&nbsp;(g)</TableCell>
-                <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-                <TableCell align="right">Protein&nbsp;(g)</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {rows.map((row) => (
-                <TableRow
-                  key={row.name}
-                  sx={{
-                    "td,th": { mb: 10, bgcolor: "#FFFFFF", borderBottom: "6px solid #FFE5C6" },
-                    "&:last-child td, &:last-child th": { border: 0 },
-                  }}
-                >
-                  <TableCell component="th" scope="row">
-                    {row.name}
-                  </TableCell>
-                  <TableCell align="right">{row.calories}</TableCell>
-                  <TableCell align="right">{row.fat}</TableCell>
-                  <TableCell align="right">{row.carbs}</TableCell>
-                  <TableCell align="right">{row.protein}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Result />
       </CustomTabPanel>
-      <CustomTabPanel value={alignment} index={"gameHistory"}></CustomTabPanel>
-      <CustomTabPanel value={alignment} index={"report"}></CustomTabPanel>
-      <CustomTabPanel
-        value={alignment}
-        index={"unclameTickets"}
-      ></CustomTabPanel>
+      <CustomTabPanel value={alignment} index={"gameHistory"}>
+        <GameHistory />
+      </CustomTabPanel>
+      <CustomTabPanel value={alignment} index={"rules"}>
+        <Rules />
+      </CustomTabPanel>
+      <CustomTabPanel value={alignment} index={"report"}>
+        <Report />
+      </CustomTabPanel>
+      <CustomTabPanel value={alignment} index={"unclameTickets"}>
+        <UnclamedTicktes />
+      </CustomTabPanel>
     </StyledModal>
   );
 }

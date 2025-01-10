@@ -1,6 +1,6 @@
 import { Box, IconButton, Paper, Typography } from "@mui/material";
 import { InfoIcon } from "../../../assets/Icones";
-import topBackground from "../../../public/backgrounds/topBackground.png"
+import topBackground from "../../../public/backgrounds/topBackground.png";
 
 const timeLapList = [
   {
@@ -50,34 +50,37 @@ const timeLapList = [
   },
 ];
 
-function Historyinfo({setinfoModal}) {
+function Historyinfo({ setinfoModal }) {
   return (
     <Box
-      sx={
-        {
-          // display: "flex",
-          // justifyContent: "flex-end",
-          // alignItems: "center",
-          // backgroundImage:
-          //   "linear-gradient(180deg, rgba(251,221,138,1) 0%, rgba(255,132,0,1) 49%, rgba(255,187,0,1) 100%)",
-          // p: 1,
-          zIndex: 1,
-          position: "relative"
-        }
-      }
+      sx={{
+        // display: "flex",
+        // justifyContent: "flex-end",
+        // alignItems: "center",
+        // backgroundImage:
+        //   "linear-gradient(180deg, rgba(251,221,138,1) 0%, rgba(255,132,0,1) 49%, rgba(255,187,0,1) 100%)",
+        // p: 1,
+        zIndex: 1,
+        position: "relative",
+      }}
     >
       <img
         src={topBackground}
         alt=""
-        style={{ width: "100%", position: "absolute", top: "-5px" }}
+        style={{
+          width: "100%",
+          position: "absolute",
+          top: "-5px",
+          height: "6.6rem",
+        }}
       />
       <Box
         sx={{
           display: "flex",
           justifyContent: "flex-end",
           alignItems: "center",
-          position:"absolute",
-          top: 12,
+          position: "absolute",
+          // top: 12,
           right: 20,
         }}
       >
@@ -106,7 +109,7 @@ function Historyinfo({setinfoModal}) {
             <Box key={i}>
               <Typography
                 sx={{
-                  fontSize: "12px",
+                  fontSize: "0.7rem",
                   fontWeight: "500",
                   color: "white",
                   mb: 1,
@@ -125,7 +128,7 @@ function Historyinfo({setinfoModal}) {
                 }}
               >
                 <Typography
-                  sx={{ fontSize: "36px", fontWeight: "600", color: "white" }}
+                  sx={{ fontSize: "2rem", fontWeight: "600", color: "white" }}
                 >
                   {e.num}
                 </Typography>
