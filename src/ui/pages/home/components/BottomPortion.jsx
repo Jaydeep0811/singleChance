@@ -48,8 +48,8 @@ function BottomPortion({
 
   const handleShrink = () => {
     betFunc();
+      handlePrint()
     // if (!isCounting) {
-    //   // handlePrint()
     //   setIsCounting(true); // Start countdown
     //   gsap.to(progressRef.current, {
     //     width: 0, // Shrink to 0 width
