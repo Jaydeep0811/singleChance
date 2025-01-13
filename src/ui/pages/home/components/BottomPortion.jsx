@@ -67,11 +67,23 @@ function BottomPortion({
   };
 
   const handlePrint = () => {
-    const billHTML = `
+    const chunkArray = (array, size) => {
+      const chunks = [];
+      for (let i = 0; i < array.length; i += size) {
+        chunks.push(array.slice(i, i + size));
+      }
+      return chunks;
+    };
 
-          <div class="bill">
-          <p>***Super Chance***</p>
-          <p>Customer Name: Aniket Kale </p>
+    const chunks = chunkArray(
+      betNumList.filter((e) => e.token !== ""),
+      5
+    );
+
+    const billHTML = `
+    <div class="bill">
+    <p>***Super Chance***</p>
+    <p>Customer Name: Aniket Kale </p>
     <p>From Amusement Only</p>
     <p>Agent: 634</p>
     <p>Game ID: 521426</p>
@@ -79,13 +91,16 @@ function BottomPortion({
     <p>Draw Time: ${duration}</p>
     <p>Ticket Time: ${moment().format("h:mm A")}</p>
     <p>Total Point: ${play}</p>
-    <table>
-        <tr>
-          <th>Item</th>
-          <th>Point</th>
-        </tr>
-          ${betNumList
-            .filter((e) => e.token !== "")
+    <div style="display: flex; align-items: flex-start;">
+    ${chunks
+      .map(
+        (chunk) => `
+        <table>
+          <tr>
+            <th>Item</th>
+            <th>Point</th>
+          </tr>
+          ${chunk
             .map(
               (e) => `
               <tr>
@@ -95,9 +110,13 @@ function BottomPortion({
             `
             )
             .join("")}
-      </table>
-          </div>
-
+        </table>
+      `
+      )
+      .join("")}
+      </div>
+    </div>
+      <img src=${Chip20} alt="imag">
     `;
 
     // ipcRenderer.send('print-bill', billHTML);
