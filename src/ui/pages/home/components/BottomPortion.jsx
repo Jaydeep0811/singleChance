@@ -39,7 +39,7 @@ function BottomPortion({
   betFunc,
   play,
   betNumList,
-  duration
+  duration,
 }) {
   // const [chipNum, setChipNum] = useState(null);
   const progressRef = useRef(null);
@@ -68,16 +68,10 @@ function BottomPortion({
 
   const handlePrint = () => {
     const billHTML = `
-      <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            .bill {  }
-          </style>
-        </head>
-        <body>
+
           <div class="bill">
           <p>***Super Chance***</p>
+          <p>Customer Name: Aniket Kale </p>
     <p>From Amusement Only</p>
     <p>Agent: 634</p>
     <p>Game ID: 521426</p>
@@ -92,17 +86,18 @@ function BottomPortion({
         </tr>
           ${betNumList
             .filter((e) => e.token !== "")
-            .map((e) => `
+            .map(
+              (e) => `
               <tr>
                 <td>${e.num}</td>
                 <td>${e.token}</td>
               </tr>
-            `)
+            `
+            )
             .join("")}
       </table>
           </div>
-        </body>
-      </html>
+
     `;
 
     // ipcRenderer.send('print-bill', billHTML);
