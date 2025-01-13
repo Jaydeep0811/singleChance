@@ -48,7 +48,7 @@ function BottomPortion({
 
   const handleShrink = () => {
     betFunc();
-      handlePrint()
+    handlePrint();
     // if (!isCounting) {
     //   setIsCounting(true); // Start countdown
     //   gsap.to(progressRef.current, {
@@ -65,14 +65,33 @@ function BottomPortion({
         <head>
           <style>
             body { font-family: Arial, sans-serif; padding: 20px; }
-            .bill { border: 1px solid #000; padding: 10px; }
+            .bill {  }
           </style>
         </head>
         <body>
           <div class="bill">
-            <h1>Invoice</h1>
-            <p>Customer: John Doe</p>
-            <p>Total: $100.00</p>
+          <p>***Super Chance***</p>
+    <p>From Amusement Only</p>
+    <p>Agent: 634</p>
+    <p>Game ID: 521426</p>
+    <p>Game Name: Single Chance</p>
+    <p>Draw Time: ${moment.utc(remainingTime.asMilliseconds()).format("mm:ss")}</p>
+    <p>Ticket Time: ${time}</p>
+    <p>Total Point: 10</p>
+    <table>
+        <tr>
+          <th>Item</th>
+          <th>Point</th>
+        </tr>
+        <tr>
+          <td>0</td>
+          <td>20</td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>50</td>
+        </tr>
+      </table>
           </div>
         </body>
       </html>
@@ -287,7 +306,7 @@ function BottomPortion({
               sx={{
                 width: "140px",
               }}
-              onClick={() => betFunction("double") }
+              onClick={() => betFunction("double")}
             >
               DOUBLE
             </GameButton>
