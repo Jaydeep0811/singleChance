@@ -38,6 +38,8 @@ function BottomPortion({
   isDisabled,
   betFunc,
   play,
+  betNumList,
+  duration
 }) {
   // const [chipNum, setChipNum] = useState(null);
   const progressRef = useRef(null);
@@ -47,6 +49,11 @@ function BottomPortion({
   const [isCounting, setIsCounting] = useState(false);
 
   const handleShrink = () => {
+    console.log(
+      betNumList
+        .filter((e) => e.token !== "")
+        .map((e) => ({ num: e.num, token: e.token }))
+    );
     betFunc();
     handlePrint();
     // if (!isCounting) {
@@ -75,22 +82,23 @@ function BottomPortion({
     <p>Agent: 634</p>
     <p>Game ID: 521426</p>
     <p>Game Name: Single Chance</p>
-    <p>Draw Time: ${moment.utc(remainingTime.asMilliseconds()).format("mm:ss")}</p>
-    <p>Ticket Time: ${time}</p>
+    <p>Draw Time: ${duration}</p>
+    <p>Ticket Time: ${moment().format("h:mm A")}</p>
     <p>Total Point: 10</p>
     <table>
         <tr>
           <th>Item</th>
           <th>Point</th>
         </tr>
-        <tr>
-          <td>0</td>
-          <td>20</td>
-        </tr>
-        <tr>
-          <td>4</td>
-          <td>50</td>
-        </tr>
+          ${betNumList
+            .filter((e) => e.token !== "")
+            .map((e) => `
+              <tr>
+                <td>${e.num}</td>
+                <td>${e.token}</td>
+              </tr>
+            `)
+            .join("")}
       </table>
           </div>
         </body>
@@ -102,13 +110,13 @@ function BottomPortion({
     window.electronAPI.printBill(billHTML);
   };
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(moment().format("h:mm A"));
-    }, 1000);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setTime(moment().format("h:mm A"));
+  //   }, 1000);
 
-    return () => clearInterval(interval); // Cleanup on unmount
-  }, []);
+  //   return () => clearInterval(interval); // Cleanup on unmount
+  // }, []);
 
   // useEffect(() => {
   //   if (remainingTime.asSeconds() > 0 && isCounting === true) {
@@ -359,7 +367,7 @@ function BottomPortion({
               mb: 1,
             }}
           >
-            Next Draw : {time}
+            Next Draw : {duration}
           </Typography>
           <Paper
             elevation={0}

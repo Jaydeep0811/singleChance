@@ -87,6 +87,7 @@ function Home() {
     },
   ]);
 
+  const [duration, setDuration] = useState("")
   const [chipNum, setChipNum] = useState(null);
   const [ismessModal, setIsmessageModal] = useState(false);
   const [play, setPlay] = useState(0);
@@ -190,7 +191,7 @@ function Home() {
     };
 
     // localStorage.setItem("prevBet", JSON.stringify({betNumList}));
-    setLocal([ ...betNumList ]);
+    setLocal([...betNumList]);
   };
 
   const betButtonClick = function (index) {
@@ -279,7 +280,7 @@ function Home() {
       default:
         break;
     }
-    console.log(newList);
+    // console.log(newList);
     const totalTokens = newList.reduce((sum, item) => {
       const tokenValue = parseInt(item.token, 10) || 0; // Convert to integer, fallback to 0 if blank
       return sum + tokenValue;
@@ -326,12 +327,19 @@ function Home() {
 
   useEffect(() => {
     const startTask = () => {
-      const now = new Date();
-      const midnight = new Date();
-      midnight.setHours(0, 0, 0, 0); // Set to 12:00 AM
+      const now = moment();
+      const midnight = moment().startOf("day");
 
-      const elapsedTime = now.getTime() - midnight.getTime();
+      const elapsedTime = now.diff(midnight);
+
       const timeUntilNextInterval = intervalMs - (elapsedTime % intervalMs); // Time until next interval
+      // Calculate the exact moment of next draw by adding timeUntilNextInterval to current time
+      const nextDrawTime = moment().add(timeUntilNextInterval, "milliseconds");
+
+      // Format the time in 12-hour format with AM/PM
+      const formattedTime = nextDrawTime.format("h:mm A"); // Returns like "12:45 PM"
+
+      setDuration(formattedTime)
 
       // Initialize remainingTime
       setRemainingTime(moment.duration(timeUntilNextInterval, "milliseconds"));
@@ -384,7 +392,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    // Countdown timer for `remainingTime`
+    // Countdown timer for remainingTime
     const countdown = setInterval(() => {
       setRemainingTime((prevTime) => {
         const updatedTime = moment.duration(
@@ -458,6 +466,8 @@ function Home() {
           isDisabled={isDisabled}
           betFunc={betFunc}
           play={play}
+          betNumList={betNumList}
+          duration={duration}
         />
       </Box>
       <MessageModal
