@@ -58,9 +58,9 @@ function App() {
 
   return (
     <>
-      {/* <Home />
-      <Login /> */}
-      <Router />
+      <Home />
+      {/* <Login /> */}
+      {/* <Router /> */}
     </>
   );
 }
