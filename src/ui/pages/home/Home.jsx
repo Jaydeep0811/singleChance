@@ -30,7 +30,7 @@ const spinnerSound = new Howl({
 });
 
 //Mute the voice
-// Howler.mute(true);
+Howler.mute(true);
 
 function Home() {
   const [betNumList, setBetNumList] = useState([
@@ -158,9 +158,9 @@ function Home() {
 
   // Handle Spin Button
   const handlePlay = () => {
-    spinner(8); // Spin and land on "1"
+    // spinner(8); // Spin and land on "1"
     spinnerSound.play();
-    // spinner(Math.floor(Math.random() * 10) + 1); // Spin and land on "1"
+    spinner(Math.floor(Math.random() * 10) + 1); // Spin and land on "1"
   };
 
   const betFunc = function () {
