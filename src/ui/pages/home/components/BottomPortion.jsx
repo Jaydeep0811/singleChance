@@ -84,7 +84,7 @@ function BottomPortion({
     <p>Game Name: Single Chance</p>
     <p>Draw Time: ${duration}</p>
     <p>Ticket Time: ${moment().format("h:mm A")}</p>
-    <p>Total Point: 10</p>
+    <p>Total Point: ${play}</p>
     <table>
         <tr>
           <th>Item</th>

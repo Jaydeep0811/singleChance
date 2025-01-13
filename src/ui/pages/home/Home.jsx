@@ -162,6 +162,9 @@ function Home() {
     // spinner(8); // Spin and land on "1"
     spinnerSound.play();
     spinner(Math.floor(Math.random() * 10) + 1); // Spin and land on "1"
+    setTimeout(() => {
+      location.reload()
+    }, 150);
   };
 
   const betFunc = function () {
