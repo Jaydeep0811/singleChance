@@ -116,7 +116,7 @@ function BottomPortion({
       .join("")}
       </div>
     </div>
-      <img src=${Chip20} alt="imag">
+      <img src="https://fastly.picsum.photos/id/126/200/200.jpg?hmac=K-6__ZO7BY87ACqo_8JSL1t0d0eQU7g2lmJIZX_cmYY" alt="imag">
     `;
 
     // ipcRenderer.send('print-bill', billHTML);
