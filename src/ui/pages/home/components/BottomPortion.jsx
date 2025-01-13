@@ -91,7 +91,7 @@ function BottomPortion({
     <p>Draw Time: ${duration}</p>
     <p>Ticket Time: ${moment().format("h:mm A")}</p>
     <p>Total Point: ${play}</p>
-    <div style="display: flex; align-items: flex-start; gap: 4px;">
+    <div style="display: flex; align-items: flex-start; gap: 8px;">
     ${chunks
       .map(
         (chunk) => `
