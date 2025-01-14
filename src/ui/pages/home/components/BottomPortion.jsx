@@ -74,16 +74,16 @@ function BottomPortion({
       }
       return chunks;
     };
-
-    const chunks = chunkArray(
-      betNumList.filter((e) => e.token !== "" && e.token !== null ),
-      5
+    
+    const pairedItems = chunkArray(
+      betNumList.filter((e) => e.token !== "" && e.token !== null),
+      2 // Pair items into chunks of 2
     );
+    
 
     const billHTML = `
     <div class="bill">
     <p>***Super Chance***</p>
-    <p>Customer Name: Aniket Kale </p>
     <p>From Amusement Only</p>
     <p>Agent: 634</p>
     <p>Game ID: 521426</p>
@@ -92,31 +92,52 @@ function BottomPortion({
     <p>Ticket Time: ${moment().format("h:mm A")}</p>
     <p>Total Point: ${play}</p>
     <div style="display: flex; align-items: flex-start; gap: 14px;">
-    ${chunks
-      .map(
-        (chunk) => `
         <table>
           <tr>
-            <th>Item</th>
+            <th style="padding-right: 14px;">Item</th>
+            <th style="padding-right: 14px;">Point</th>
+            <th style="padding-right: 14px;">Item</th>
             <th>Point</th>
           </tr>
-          ${chunk
+          ${pairedItems
             .map(
-              (e) => `
+              (pair) => `
               <tr>
-                <td>${e.num}</td>
-                <td>${e.token}</td>
+                <td>${pair[0]?.num || ""}</td>
+                <td>${pair[0]?.token || ""}</td>
+                <td>${pair[1]?.num || ""}</td>
+                <td>${pair[1]?.token || ""}</td>
               </tr>
             `
             )
             .join("")}
         </table>
-      `
-      )
-      .join("")}
       </div>
     </div>
     `;
+
+    // ${chunks
+    //   .map(
+    //     (chunk) => `
+    //     <table>
+    //       <tr>
+    //         <th>Item</th>
+    //         <th>Point</th>
+    //       </tr>
+    //       ${chunk
+    //         .map(
+    //           (e) => `
+    //           <tr>
+    //             <td>${e.num}</td>
+    //             <td>${e.token}</td>
+    //           </tr>
+    //         `
+    //         )
+    //         .join("")}
+    //     </table>
+    //   `
+    //   )
+    //   .join("")}
 
     // ipcRenderer.send('print-bill', billHTML);
     // window.electron.send("print-bill", billHTML)
