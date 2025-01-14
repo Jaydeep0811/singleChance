@@ -83,14 +83,14 @@ function BottomPortion({
 
     const billHTML = `
     <div class="bill">
-    <p style="margin-bottom: 8px;">***Super Chance***</p>
-    <p style="margin-bottom: 8px;">From Amusement Only</p>
-    <p style="margin-bottom: 8px;">Agent: 634</p>
-    <p style="margin-bottom: 8px;">Game ID: 521426</p>
-    <p style="margin-bottom: 8px;">Game Name: Single Chance</p>
-    <p style="margin-bottom: 8px;">Draw Time: ${duration}</p>
-    <p style="margin-bottom: 8px;">Ticket Time: ${moment().format("DD-MM-YYYY h:mm A")}</p>
-    <p style="margin-bottom: 8px;">Total Point: ${play}</p>
+    <p style="margin-bottom: 4px;">***Super Chance***</p>
+    <p style="margin-bottom: 4px;">From Amusement Only</p>
+    <p style="margin-bottom: 4px;">Agent: 634</p>
+    <p style="margin-bottom: 4px;">Game ID: 521426</p>
+    <p style="margin-bottom: 4px;">Game Name: Single Chance</p>
+    <p style="margin-bottom: 4px;">Draw Time: ${duration}</p>
+    <p style="margin-bottom: 4px;">Ticket Time: ${moment().format("DD-MM-YYYY h:mm A")}</p>
+    <p style="margin-bottom: 4px;">Total Point: ${play}</p>
     <div style="display: flex; align-items: flex-start; gap: 14px;">
         <table>
           <tr>
@@ -105,7 +105,7 @@ function BottomPortion({
               <tr>
                 <td>${pair[0]?.num || ""}</td>
                 <td>${pair[0]?.token || ""}</td>
-                <td>${pair[1]?.num || ""}</td>
+                <td>${pair[1]?.num ?? ""}</td>
                 <td>${pair[1]?.token || ""}</td>
               </tr>
             `
