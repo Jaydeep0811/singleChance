@@ -76,7 +76,7 @@ function BottomPortion({
     };
 
     const chunks = chunkArray(
-      betNumList.filter((e) => e.token !== ""),
+      betNumList.filter((e) => e.token !== "" && e.token !== null ),
       5
     );
 
@@ -91,7 +91,7 @@ function BottomPortion({
     <p>Draw Time: ${duration}</p>
     <p>Ticket Time: ${moment().format("h:mm A")}</p>
     <p>Total Point: ${play}</p>
-    <div style="display: flex; align-items: flex-start; gap: 8px;">
+    <div style="display: flex; align-items: flex-start; gap: 14px;">
     ${chunks
       .map(
         (chunk) => `
