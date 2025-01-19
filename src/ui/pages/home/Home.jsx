@@ -164,12 +164,18 @@ function Home() {
     gsap.set(wheelRef2.current, { rotation: 18, transformOrigin: "50% 50%" });
   }, []);
 
+
+  function generateRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
   // Handle Spin Button
   const handlePlay = () => {
     // spinner(8); // Spin and land on "1"
-    // fetchPredictWinner(); // Predict the winner
+    fetchPredictWinner(); // Predict the winner
     spinnerSound.play();
     spinner(Math.floor(Math.random() * 10) + 1); // Spin and land on "1"
+    setGameID(generateRandomInt(100000, 999999).toString())
     // setTimeout(() => {
     //   // location.reload();
     // }, 150);
@@ -187,10 +193,6 @@ function Home() {
 
     // Combine into the desired format
     return `${randomDigits}-${randomLetters}${randomDigits2}`;
-  }
-
-  function generateRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 
   const betFunc = function () {
@@ -211,6 +213,7 @@ function Home() {
       betNumList.filter((e) => e.token !== "" && e.token !== null),
       2 // Pair items into chunks of 2
     );
+
     const payload = {
       ticket_id: generateUniqueCode(),
       game_id: gameID,
@@ -259,11 +262,13 @@ function Home() {
         </div>
         `;
     // window.electronAPI.printBill(billHTML);
+    console.log(payload);
+    
     openAlertBox(`YOUR BET HAS BEEN ACCEPTED WITH ID: ${payload.ticket_id}`);
     setLocal([...betNumList]);
-    create_game(payload).then((e) => {
-      console.log(e);
-    });
+    // create_game(payload).then((e) => {
+    //   console.log(e);
+    // });
   };
 
   const betButtonClick = function (index) {
@@ -415,9 +420,9 @@ function Home() {
 
   useEffect(() => {
     fetchBalance();
+    setGameID(generateRandomInt(100000, 999999).toString())
   }, []);
 
-  // setGameID(generateRandomInt(100000, 999999).toString())
 
   // useEffect(() => {
   //   const startTask = () => {
@@ -533,19 +538,19 @@ function Home() {
         setRemainingTime(moment.duration(intervalMs, "milliseconds"));
 
         // Schedule recurring intervals
-        const interval = setInterval(() => {
-          handlePlay();
-          enableTimer();
-          setRemainingTime(moment.duration(intervalMs, "milliseconds"));
-        }, intervalMs);
+        // const interval = setInterval(() => {
+        //   handlePlay();
+        //   enableTimer();
+        //   setRemainingTime(moment.duration(intervalMs, "milliseconds"));
+        // }, intervalMs);
 
-        const disableInterval = setInterval(disableTimer, intervalMs - 15000);
+        // const disableInterval = setInterval(disableTimer, intervalMs - 15000);
 
         // Cleanup recurring intervals
-        return () => {
-          clearInterval(interval);
-          clearInterval(disableInterval);
-        };
+        // return () => {
+        //   clearInterval(interval);
+        //   clearInterval(disableInterval);
+        // };
       }, timeUntilNextInterval);
 
       // Cleanup initial timeouts
@@ -558,28 +563,28 @@ function Home() {
     startTask();
   }, [intervalMs, handlePlay]);
 
-  useEffect(() => {
-    // Countdown timer
-    const countdown = setInterval(() => {
-      setRemainingTime((prevTime) => {
-        const updatedTime = moment.duration(prevTime.asSeconds() - 1, "seconds");
+  // useEffect(() => {
+  //   // Countdown timer
+  //   const countdown = setInterval(() => {
+  //     setRemainingTime((prevTime) => {
+  //       const updatedTime = moment.duration(prevTime.asSeconds() - 1, "seconds");
 
-        // Check for countdown end
-        if (updatedTime.asSeconds() <= 0) {
-          clearInterval(countdown);
-          onCountdownEnd();
-          return moment.duration(0, "seconds");
-        }
+  //       // Check for countdown end
+  //       if (updatedTime.asSeconds() <= 0) {
+  //         clearInterval(countdown);
+  //         onCountdownEnd();
+  //         return moment.duration(0, "seconds");
+  //       }
 
-        return updatedTime;
-      });
-    }, 1000);
+  //       return updatedTime;
+  //     });
+  //   }, 1000);
 
-    // Trigger countdown start
-    onCountdownStart();
+  //   // Trigger countdown start
+  //   onCountdownStart();
 
-    return () => clearInterval(countdown); // Cleanup on unmount
-  }, [onCountdownStart, onCountdownEnd]);
+  //   return () => clearInterval(countdown); // Cleanup on unmount
+  // }, [onCountdownStart, onCountdownEnd]);
 
   return (
     <>
