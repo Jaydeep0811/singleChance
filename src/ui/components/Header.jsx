@@ -19,16 +19,20 @@ import {
   HomeIcon,
   MinimizeIcon,
   SoundOnIcon,
+  Visbility,
 } from "../assets/Icones";
+import HeaderBackground from "../public/backgrounds/headerBackground.png";
+import LobbyBg from "../public/backgrounds/lobbyBg.png";
 import { useState } from "react";
 
 function Header({ balance }) {
-  const [toggle, setToggle] = useState(false)
+  const [toggle, setToggle] = useState(false);
+  const [visibillity, setVisibillity] = useState(true)
 
-  const muteFun = function() {
+  const muteFun = function () {
     Howler.mute(!toggle);
     setToggle(!toggle);
-  }
+  };
   const handleMinimize = () => {
     window.electronAPI.minimize();
   };
@@ -40,21 +44,34 @@ function Header({ balance }) {
   return (
     <Box
       sx={{
-        background: "#444670",
+        background: "rgb(42,43,46)",
         fontSize: "16px",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
+        backgroundImage: `linear-gradient(0deg, rgba(42,43,46,1) 43%, rgba(112,117,125,1) 100%)`,
+        position: "relative",
       }}
     >
+      <img
+        src={LobbyBg}
+        alt=""
+        style={{ position: "absolute", height: "100%" }}
+      />
+      <img
+        src={HeaderBackground}
+        alt=""
+        style={{ position: "absolute", width: "100%", height: "100%" }}
+      />
       <Button
         sx={{
           textTransform: "none",
           color: "white",
-          height: "84px",
-          width: "100px",
+          height: "100%",
+          width: "95px",
           borderRadius: "0px",
-          backgroundColor: "rgba(225, 225, 225, 8%)",
+          fontSize: "16px",
+          ml: 2,
         }}
         startIcon={<HomeIcon />}
       >
@@ -68,6 +85,7 @@ function Header({ balance }) {
           alignItems: "center",
           gap: 2,
           p: 2,
+          py: "0.5rem",
         }}
       >
         <FormGroup>
@@ -109,6 +127,7 @@ function Header({ balance }) {
             fontSize: "16px",
             height: "35px",
             borderRadius: "6px",
+            width: "152px",
           }}
         />
 
@@ -121,51 +140,69 @@ function Header({ balance }) {
             fontSize: "16px",
             fontWeight: "600",
             borderRadius: "6px",
+            mr: 4,
           }}
         >
           Clame
         </Button>
 
-        <Typography sx={{ color: "#EEDE01", fontSize: "20px" }}>
+        <Typography sx={{ color: "#EEDE01", fontSize: "18px" }}>
           Welcome, Classic302
         </Typography>
 
         <Paper
           elevation={0}
           sx={{
-            p: "4px",
+            p: "2px",
+            pr: "4px",
             background:
               "linear-gradient(180deg, rgba(255,237,189,1) 0%, rgba(198,146,2,1) 100%)",
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
             gap: 2,
-            width: 160,
+            width: 200,
           }}
         >
-          <Typography
+          <Box
             sx={{
-              backgroundColor: "#042655",
-              color: "white",
+              backgroundColor: "#1F242A",
+              borderRadius: "4px",
               px: 1,
               py: "3px",
-              borderRadius: "4px",
-              fontSize: "16px",
+              display: "flex",
+              alignItems: "center",
+              gap: 2
             }}
           >
-            Balance
-          </Typography>
+            <Typography
+              sx={{
+                color: "white",
+                fontSize: "16px",
+              }}
+            >
+              Balance
+            </Typography>
+            <Checkbox
+              size="small"
+              checkedIcon={<Visbility />}
+              icon={<Visbility />}
+              sx={{ py: "5px", px: 0 }}
+              checked={visibillity}
+              onChange={(e)=> setVisibillity(e.target.checked)}
+            />
+          </Box>
           <Typography
             sx={{
               fontSize: "16px",
             }}
           >
-            {balance + ".00"}
+            { visibillity ? "***.**" : balance + ".00" }
           </Typography>
         </Paper>
 
         <Stack direction={"row"}>
-          <IconButton size="small" onClick={() => muteFun() }>
+          <IconButton size="small" onClick={() => muteFun()}>
             <SoundOnIcon sx={{ fontSize: "36px" }} />
           </IconButton>
           <IconButton size="small" onClick={() => handleMinimize()}>

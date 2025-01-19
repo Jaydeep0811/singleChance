@@ -28,7 +28,7 @@ function Login() {
     if (res.statusCode === 200) {
       setIsLoading(false);
       TokenManager.setAuthTokens(res.response);
-      navigate("game")
+      navigate("game");
     }
   };
 
@@ -51,12 +51,21 @@ function Login() {
       }}
     >
       <Box sx={{ px: 8, pt: 10 }}>
-        <Typography sx={{ fontSize: "64px", fontWeight: "700" }}>
+        <Typography
+          sx={{
+            fontSize: "64px",
+            fontWeight: "700",
+            fontFamily: "Hahmlet",
+            color: "white",
+          }}
+        >
           Welcome to Single Chance
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-          <Typography>Host ID : 254545574 </Typography>
-          <GameButton onClick={logcook} sx={{ fontSize: "14px", px: 2 }}> Get Access </GameButton>
+          <Typography sx={{ color: "white", fontSize: "20px" }}>Agent ID : 254545574 </Typography>
+          <GameButton onClick={logcook} sx={{ fontSize: "14px", px: 2 }}>
+            Get Access
+          </GameButton>
         </Box>
 
         <Box

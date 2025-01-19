@@ -16,9 +16,12 @@ import { Howl, Howler } from "howler";
 import ChipSound from "../../public/GAME SOUNDS/Chip Sound.mp3";
 import SpinnerSound from "../../public/GAME SOUNDS/Spinning Wheel.mp3";
 import MessageModal from "../../components/CustomComponent/MessageModal";
-import { get_balance } from "../../api/gameData";
+import { create_game, get_balance } from "../../api/gameData";
 import moment from "moment";
 import useLocalStorage from "../../utils/useLocalStorage";
+import Stars from "../../public/backgrounds/stars.png";
+import CryptoJS from "crypto-js";
+// const crypto = window.crypto || window.msCrypto;
 
 // Setup the new Howl.
 const chipSound = new Howl({
@@ -30,13 +33,13 @@ const spinnerSound = new Howl({
 });
 
 //Mute the voice
-Howler.mute(true);
+// Howler.mute(true);
 
 function Home() {
   const [betNumList, setBetNumList] = useState([
     {
       num: 1,
-      color: "#005EE1",
+      color: "#B36A09",
       token: "",
     },
 
@@ -57,7 +60,7 @@ function Home() {
     },
     {
       num: 5,
-      color: "#3CC23B",
+      color: "#0D9E7D",
       token: "",
     },
     {
@@ -67,7 +70,7 @@ function Home() {
     },
     {
       num: 7,
-      color: "#3D07A5",
+      color: "#042655",
       token: "",
     },
     {
@@ -82,12 +85,12 @@ function Home() {
     },
     {
       num: 0,
-      color: "#F98C07",
+      color: "#06A5C1",
       token: "",
     },
   ]);
 
-  const [duration, setDuration] = useState("")
+  const [duration, setDuration] = useState(moment());
   const [chipNum, setChipNum] = useState(null);
   const [ismessModal, setIsmessageModal] = useState(false);
   const [play, setPlay] = useState(0);
@@ -99,6 +102,7 @@ function Home() {
   const wheelRef2 = useRef(null);
   const currentRef = useRef(null);
   const boxRef = useRef(null);
+  const progressRef = useRef(null);
 
   const [local, setLocal] = useLocalStorage("name", {});
 
@@ -163,38 +167,99 @@ function Home() {
     spinnerSound.play();
     spinner(Math.floor(Math.random() * 10) + 1); // Spin and land on "1"
     setTimeout(() => {
-      location.reload()
+      // location.reload();
     }, 150);
   };
 
+  function generateUniqueCode() {
+    // Generate 4 random digits
+    const randomDigits = Math.floor(1000 + Math.random() * 9000).toString();
+
+    // Generate 3 random uppercase letters
+    const randomLetters = "SCP";
+
+    // Generate 4 random digits
+    const randomDigits2 = Math.floor(1000 + Math.random() * 9000).toString();
+
+    // Combine into the desired format
+    return `${randomDigits}-${randomLetters}${randomDigits2}`;
+  }
+
+  function generateRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
   const betFunc = function () {
-    // const totalTokens = betNumList.reduce((sum, item) => {
-    //   const tokenValue = parseInt(item.token, 10) || 0; // Convert to integer, fallback to 0 if blank
-    //   return sum + tokenValue;
-    // }, 0);
-    // console.log(totalTokens);
     betFunction("clear");
     setPlay(0);
-    const payload = {
-      ticket_id: "TICKET12345",
-      game_id: "GAME9876",
-      date: moment().format("YYYY-MM-DD"),
-      draw_time: "14:30:00",
-      ticket_time: moment().format("HH:mm:ss"),
-      data: [
-        {
-          bet: 8,
-          played: 120,
-        },
-        {
-          bet: 5,
-          played: 10,
-        },
-      ],
+    let betData = betNumList
+      .filter((e) => e.token !== "")
+      .map((e) => ({ bet: e.num, played: e.token }));
+    const chunkArray = (array, size) => {
+      const chunks = [];
+      for (let i = 0; i < array.length; i += size) {
+        chunks.push(array.slice(i, i + size));
+      }
+      return chunks;
     };
 
-    // localStorage.setItem("prevBet", JSON.stringify({betNumList}));
+    const pairedItems = chunkArray(
+      betNumList.filter((e) => e.token !== "" && e.token !== null),
+      2 // Pair items into chunks of 2
+    );
+    const payload = {
+      ticket_id: generateUniqueCode(),
+      game_id: generateRandomInt(100000, 999999).toString(),
+      date: moment().format("YYYY-MM-DD"),
+      draw_time: duration.format("HH:mm:ss"),
+      ticket_time: moment().format("HH:mm:ss"),
+      data: betData,
+    };
+
+    const billHTML = `
+        <div class="bill">
+        <p style="margin-bottom: 4px;">***Super Chance***</p>
+        <p style="margin-bottom: 4px;">From Amusement Only</p>
+        <p style="margin-bottom: 4px;">Agent: 634</p>
+        <p style="margin-bottom: 4px;">Game ID: ${payload.ticket_id}</p>
+        <p style="margin-bottom: 4px;">Game Name: Single Chance</p>
+        <p style="margin-bottom: 4px;">Draw Time: ${duration?.format(
+          "h:mm A"
+        )}</p>
+        <p style="margin-bottom: 4px;">Ticket Time: ${moment().format(
+          "DD-MM-YYYY h:mm A"
+        )}</p>
+        <p style="margin-bottom: 4px;">Total Point: ${play}</p>
+        <div style="display: flex; align-items: flex-start; gap: 14px;">
+            <table>
+              <tr>
+                <th style="padding-right: 14px;">Item</th>
+                <th style="padding-right: 14px;">Point</th>
+                <th style="padding-right: 14px;">Item</th>
+                <th>Point</th>
+              </tr>
+              ${pairedItems
+                .map(
+                  (pair) => `
+                  <tr>
+                    <td>${pair[0]?.num || ""}</td>
+                    <td>${pair[0]?.token || ""}</td>
+                    <td>${pair[1]?.num ?? ""}</td>
+                    <td>${pair[1]?.token || ""}</td>
+                  </tr>
+                `
+                )
+                .join("")}
+            </table>
+          </div>
+        </div>
+        `;
+    // window.electronAPI.printBill(billHTML);
+    openAlertBox(`YOUR BET HAS BEEN ACCEPTED WITH ID: ${payload.ticket_id}`);
     setLocal([...betNumList]);
+    create_game(payload).then((e) => {
+      console.log(e);
+    });
   };
 
   const betButtonClick = function (index) {
@@ -211,7 +276,7 @@ function Home() {
       const tokenValue = parseInt(item.token, 10) || 0; // Convert to integer, fallback to 0 if blank
       return sum + tokenValue;
     }, 0);
-    // console.log(totalTokens);
+    setBalance(balance - chipNum);
     setPlay(totalTokens);
     setBetNumList(newList);
   };
@@ -288,22 +353,24 @@ function Home() {
       const tokenValue = parseInt(item.token, 10) || 0; // Convert to integer, fallback to 0 if blank
       return sum + tokenValue;
     }, 0);
+    betCase === "clear"
+      ? setBalance(play + balance)
+      : setBalance(balance - totalTokens);
     setPlay(totalTokens);
     setBetNumList(newList);
   };
 
   const [anchorEl, setAnchorEl] = useState(null);
+  const [alertMessage, setAlertMessage] = useState("");
 
-  const handleClick = (event) => {
-    // console.log("clikd");
-    console.log(boxRef);
-
+  const openAlertBox = (message) => {
     setAnchorEl(boxRef.current);
-    // setAnchorEl(event.currentTarget);
+    setAlertMessage(message);
   };
 
   const handleClose = () => {
     setAnchorEl(null);
+    setAlertMessage("");
   };
 
   const [remainingTime, setRemainingTime] = useState(
@@ -325,6 +392,18 @@ function Home() {
   };
 
   useEffect(() => {
+    if (anchorEl) {
+      const timer = setTimeout(() => {
+        handleClose();
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [anchorEl]);
+
+  useEffect(() => {
     fetchBalance();
   }, []);
 
@@ -332,17 +411,9 @@ function Home() {
     const startTask = () => {
       const now = moment();
       const midnight = moment().startOf("day");
-
       const elapsedTime = now.diff(midnight);
-
       const timeUntilNextInterval = intervalMs - (elapsedTime % intervalMs); // Time until next interval
-      // Calculate the exact moment of next draw by adding timeUntilNextInterval to current time
-      const nextDrawTime = moment().add(timeUntilNextInterval, "milliseconds");
-
-      // Format the time in 12-hour format with AM/PM
-      const formattedTime = nextDrawTime.format("h:mm A"); // Returns like "12:45 PM"
-
-      setDuration(formattedTime)
+      setDuration(moment().add(timeUntilNextInterval, "milliseconds"));
 
       // Initialize remainingTime
       setRemainingTime(moment.duration(timeUntilNextInterval, "milliseconds"));
@@ -416,12 +487,17 @@ function Home() {
       <Box
         sx={{
           backgroundImage:
-            "linear-gradient(180deg, rgba(163,91,41,1) 0%, rgba(123,32,27,1) 100%)",
+            "linear-gradient(180deg, rgba(229,89,6,1) 50%, rgba(171,44,4,1) 84%, rgba(134,15,2,1) 100%)",
         }}
       >
         {/* <Button onClick={handlePlay}>Play is here</Button> */}
         <Header balance={balance} />
         <Historyinfo setinfoModal={setinfoModal} />
+        <img
+          src={Stars}
+          alt="star"
+          style={{ position: "absolute", "mix-blend-mode": "screen" }}
+        />
         <Box
           sx={{
             display: "flex",
@@ -438,9 +514,9 @@ function Home() {
             aria-describedby={id}
             sx={{
               position: "absolute",
-              left: "-20px",
-              top: 63,
-              width: "729px",
+              left: "25px",
+              top: 50,
+              width: "680px",
             }}
             ref={boxRef}
           >
@@ -450,7 +526,7 @@ function Home() {
               currentRef={currentRef}
             />
           </Box>
-          <Box sx={{ position: "absolute", right: "1.5rem" }}>
+          <Box sx={{ position: "absolute", right: "1.5rem", top: "6.5rem" }}>
             <BetNumbers
               betNumList={betNumList}
               betButtonClick={betButtonClick}
@@ -464,19 +540,21 @@ function Home() {
           setChipNum={setChipNum}
           betFunction={betFunction}
           chipSound={chipSound}
-          setIsmessageModal={handleClick}
+          openAlertBox={openAlertBox}
           remainingTime={remainingTime}
           isDisabled={isDisabled}
           betFunc={betFunc}
           play={play}
           betNumList={betNumList}
           duration={duration}
+          progressRef={progressRef}
         />
       </Box>
       <MessageModal
         id={id}
         open={open}
         anchorEl={anchorEl}
+        alertMessage={alertMessage}
         handleClose={() => handleClose()}
       />
       <InfoModal open={infoModal} handleClose={() => setinfoModal(false)} />

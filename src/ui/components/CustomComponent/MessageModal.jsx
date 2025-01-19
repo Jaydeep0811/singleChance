@@ -1,6 +1,6 @@
 import { Box, Popover, Typography } from "@mui/material";
 
-function MessageModal({ open, handleClose, anchorEl, id }) {
+function MessageModal({ open, handleClose, anchorEl, alertMessage, id }) {
   return (
     <Popover
       id={id}
@@ -16,10 +16,10 @@ function MessageModal({ open, handleClose, anchorEl, id }) {
         horizontal: "center",
       }}
       sx={{
-        top: -20,
+        top: -50,
         left: -10,
         ".MuiPopover-paper": {
-          width: 670,
+          width: 660,
           backgroundImage:
             "linear-gradient(191deg, rgba(238,222,1,1) 0%, rgba(249,140,7,1) 100%)",
           p: "2px",
@@ -27,14 +27,14 @@ function MessageModal({ open, handleClose, anchorEl, id }) {
         },
       }}
     >
-      <Box sx={{ bgcolor: "#232446", borderRadius: 2, py: 2 }}>
+      <Box sx={{ bgcolor: "#232446", borderRadius: 2, py: 2, px: 10 }}>
         <Typography
-          sx={{ textAlign: "center", color: "white", fontSize: "26px" }}
+          sx={{ textAlign: "center", color: "white", fontSize: "26px", fontWeight: "bold" }}
           id="modal-modal-title"
           variant="h6"
           component="h2"
         >
-          PLACE YOUR BET
+          {alertMessage} 
         </Typography>
       </Box>
     </Popover>

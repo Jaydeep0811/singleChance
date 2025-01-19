@@ -48,6 +48,11 @@ const timeLapList = [
     color: "#3CC23B",
     num: 5,
   },
+  {
+    time: "10:38 PM",
+    color: "#F98C07",
+    num: 3,
+  },
 ];
 
 function Historyinfo({ setinfoModal }) {
@@ -71,7 +76,7 @@ function Historyinfo({ setinfoModal }) {
           width: "100%",
           position: "absolute",
           top: "-5px",
-          height: "6.6rem",
+          height: "6rem",
         }}
       />
       <Box
@@ -86,9 +91,9 @@ function Historyinfo({ setinfoModal }) {
       >
         <Typography
           sx={{
-            color: "#042655",
+            color: "#390206",
             fontSize: "24px",
-            fontWeight: "500",
+            fontWeight: "600",
             textTransform: "uppercase",
             mr: 2,
           }}
@@ -97,8 +102,8 @@ function Historyinfo({ setinfoModal }) {
         </Typography>
         <Box
           sx={{
-            bgcolor: "#042655",
-            p: 1,
+            bgcolor: "#622402",
+            p: "6px",
             borderRadius: 2,
             display: "flex",
             alignItems: "center",
@@ -112,7 +117,7 @@ function Historyinfo({ setinfoModal }) {
                   fontSize: "0.7rem",
                   fontWeight: "500",
                   color: "white",
-                  mb: 1,
+                  mb: "4px",
                 }}
               >
                 {e.time}
@@ -128,7 +133,12 @@ function Historyinfo({ setinfoModal }) {
                 }}
               >
                 <Typography
-                  sx={{ fontSize: "2rem", fontWeight: "600", color: "white" }}
+                  sx={{
+                    fontSize: "2rem",
+                    fontWeight: "600",
+                    color: "white",
+                    fontFamily: "Hahmlet Variable",
+                  }}
                 >
                   {e.num}
                 </Typography>

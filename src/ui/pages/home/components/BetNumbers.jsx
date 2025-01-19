@@ -126,7 +126,7 @@ function BetNumbers({ betNumList, betButtonClick, chipSound }) {
   // };
 
   return (
-    <Box sx={{ flexGrow: 1, width: "40rem", pt: 8 }}>
+    <Box sx={{ flexGrow: 1, width: "40rem", }}>
       <Grid container spacing={2} sx={{ width: "40rem" }}>
         {betNumList.map((e, i) => (
           <Grid size={2.4} key={i + 1}>
@@ -153,6 +153,8 @@ function BetNumbers({ betNumList, betButtonClick, chipSound }) {
                   fontWeight: "700",
                   color: "white",
                   textAlign: "center",
+                  fontFamily: "Hahmlet Variable",
+                  lineHeight: "1.2",
                 }}
               >
                 {e.num}
@@ -171,7 +173,6 @@ function BetNumbers({ betNumList, betButtonClick, chipSound }) {
               >
                 {e.token && (
                   <>
-                    {" "}
                     <img
                       src={token}
                       alt=""
@@ -182,6 +183,7 @@ function BetNumbers({ betNumList, betButtonClick, chipSound }) {
                         fontSize: "17.56px",
                         fontWeight: "700",
                         color: "#042655",
+                        fontFamily: "Hahmlet Variable",
                       }}
                     >
                       {e.token}

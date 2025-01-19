@@ -2,8 +2,11 @@ import Home from "./pages/home/Home";
 import "./App.css";
 import Login from "./pages/credintials/Login";
 import { useEffect, useState } from "react";
-import "./api/axiosmain"
+import "./api/axiosmain";
 import Router from "./router/Router";
+import { createTheme, ThemeProvider } from "@mui/material";
+// Supports weights 100-900
+import '@fontsource-variable/hahmlet';
 
 function App() {
   const time = 2; // Interval time in minutes
@@ -57,11 +60,20 @@ function App() {
   // }, []);
 
   return (
-    <>
-      <Home />
+    <ThemeProvider
+      theme={createTheme({
+        typography: {
+          allVariants: {
+            fontFamily: 'Poppins',
+            color: "black",
+          },
+        },
+      })}
+    >
+      {/* <Home /> */}
       {/* <Login /> */}
-      {/* <Router /> */}
-    </>
+      <Router />
+    </ThemeProvider>
   );
 }
 

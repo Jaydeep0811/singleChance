@@ -4,6 +4,7 @@ import moment from "moment";
 import { useEffect, useRef, useState } from "react";
 import bottom from "../../../public/backgrounds/bottom.png";
 import treasury from "../../../public/backgrounds/treasury.png";
+import LoadingTexture from "../../../public/backgrounds/Loader Texture.png";
 import playButton from "../../../public/icons/playButton.png";
 import winButton from "../../../public/icons/winButton.png";
 import Chip10 from "../../../public/icons/Chip10.png";
@@ -33,116 +34,40 @@ function BottomPortion({
   setChipNum,
   betFunction,
   chipSound,
-  setIsmessageModal,
+  openAlertBox,
   remainingTime,
   isDisabled,
   betFunc,
   play,
   betNumList,
   duration,
+  progressRef,
 }) {
   // const [chipNum, setChipNum] = useState(null);
-  const progressRef = useRef(null);
+  // const progressRef = useRef(null);
   const [time, setTime] = useState(moment().format("h:mm A"));
   // const initialTime = moment.duration(3, "minutes"); // 3 minutes
   // const [remainingTime, setRemainingTime] = useState(initialTime);
   const [isCounting, setIsCounting] = useState(false);
 
   const handleShrink = () => {
-    console.log(
-      betNumList
-        .filter((e) => e.token !== "")
-        .map((e) => ({ num: e.num, token: e.token }))
-    );
+    // console.log(
+    //   betNumList
+    //     .filter((e) => e.token !== "")
+    //     .map((e) => ({ num: e.num, token: e.token }))
+    // );
     betFunc();
-    handlePrint();
+    // handlePrint();
     // if (!isCounting) {
     //   setIsCounting(true); // Start countdown
-    //   gsap.to(progressRef.current, {
-    //     width: 0, // Shrink to 0 width
-    //     duration: 180, // Total duration in seconds (180 seconds)
-    //     ease: "linear", // Linear easing for consistent speed
-    //   });
+      // gsap.to(progressRef.current, {
+      //   width: 0, // Shrink to 0 width
+      //   duration: 180, // Total duration in seconds (180 seconds)
+      //   ease: "linear", // Linear easing for consistent speed
+      // });
     // }
   };
 
-  const handlePrint = () => {
-    const chunkArray = (array, size) => {
-      const chunks = [];
-      for (let i = 0; i < array.length; i += size) {
-        chunks.push(array.slice(i, i + size));
-      }
-      return chunks;
-    };
-    
-    const pairedItems = chunkArray(
-      betNumList.filter((e) => e.token !== "" && e.token !== null),
-      2 // Pair items into chunks of 2
-    );
-    
-
-    const billHTML = `
-    <div class="bill">
-    <p style="margin-bottom: 4px;">***Super Chance***</p>
-    <p style="margin-bottom: 4px;">From Amusement Only</p>
-    <p style="margin-bottom: 4px;">Agent: 634</p>
-    <p style="margin-bottom: 4px;">Game ID: 521426</p>
-    <p style="margin-bottom: 4px;">Game Name: Single Chance</p>
-    <p style="margin-bottom: 4px;">Draw Time: ${duration}</p>
-    <p style="margin-bottom: 4px;">Ticket Time: ${moment().format("DD-MM-YYYY h:mm A")}</p>
-    <p style="margin-bottom: 4px;">Total Point: ${play}</p>
-    <div style="display: flex; align-items: flex-start; gap: 14px;">
-        <table>
-          <tr>
-            <th style="padding-right: 14px;">Item</th>
-            <th style="padding-right: 14px;">Point</th>
-            <th style="padding-right: 14px;">Item</th>
-            <th>Point</th>
-          </tr>
-          ${pairedItems
-            .map(
-              (pair) => `
-              <tr>
-                <td>${pair[0]?.num || ""}</td>
-                <td>${pair[0]?.token || ""}</td>
-                <td>${pair[1]?.num ?? ""}</td>
-                <td>${pair[1]?.token || ""}</td>
-              </tr>
-            `
-            )
-            .join("")}
-        </table>
-      </div>
-    </div>
-    `;
-
-    // ${chunks
-    //   .map(
-    //     (chunk) => `
-    //     <table>
-    //       <tr>
-    //         <th>Item</th>
-    //         <th>Point</th>
-    //       </tr>
-    //       ${chunk
-    //         .map(
-    //           (e) => `
-    //           <tr>
-    //             <td>${e.num}</td>
-    //             <td>${e.token}</td>
-    //           </tr>
-    //         `
-    //         )
-    //         .join("")}
-    //     </table>
-    //   `
-    //   )
-    //   .join("")}
-
-    // ipcRenderer.send('print-bill', billHTML);
-    // window.electron.send("print-bill", billHTML)
-    window.electronAPI.printBill(billHTML);
-  };
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -165,23 +90,30 @@ function BottomPortion({
   // }, [remainingTime, isCounting]);
 
   return (
-    <Box sx={{ position: "relative", height: "182px" }}>
-      <img
+    <Box sx={{ position: "relative", mt: "-235px" }}>
+      {/* <img
         src={bottom}
         alt=""
         style={{ width: "100%", position: "absolute", bottom: 0, left: 0 }}
-      />
+      /> */}
+      <BackgroundSVG />
 
       <img
         src={treasury}
         alt=""
-        style={{ position: "absolute", top: -174, left: 28, width: "599px" }}
+        style={{
+          position: "absolute",
+          top: -14,
+          left: 50,
+          width: "599px",
+          height: "342px",
+        }}
       />
 
       <Box
         sx={{
           position: "absolute",
-          top: -215,
+          top: -50,
           right: 20,
           // zIndex: 5,
           display: "flex",
@@ -217,6 +149,7 @@ function BottomPortion({
                 fontSize: "19px",
                 fontWeight: "600",
                 color: "#042655",
+                fontFamily: "Hahmlet Variable",
               }}
             >
               {e.num}
@@ -225,46 +158,50 @@ function BottomPortion({
         ))}
       </Box>
 
-      <Box sx={{ position: "absolute", top: 16, left: 104, zIndex: 5 }}>
+      <Box sx={{ position: "absolute", bottom: 16, left: 130, zIndex: 5 }}>
         <Box sx={{ display: "flex", gap: 4 }}>
           <Box>
-            <Button sx={{ p: 0, mb: 1 }} onClick={() => handlePlay()}>
-              <img src={playButton} alt="Play" />
-            </Button>
+            {/* <Button sx={{ p: 0, mb: 1 }} onClick={() => handlePlay()}> */}
+            <img src={playButton} alt="Play" />
+            {/* </Button> */}
             <Typography
               sx={{
                 color: "white",
                 py: 1,
-                backgroundImage:
-                  "linear-gradient(180deg, rgba(4,38,85,1) 0%, rgba(9,84,187,1) 100%)",
+                // backgroundImage:
+                //   "linear-gradient(180deg, rgba(4,38,85,1) 0%, rgba(9,84,187,1) 100%)",
+                backgroundColor: "#6D2802",
                 border: "1px solid #FFEDBA",
                 fontSize: "38.72px",
                 fontWeight: "600",
                 textAlign: "center",
                 borderRadius: "8.61px",
+                fontFamily: "Hahmlet Variable",
               }}
             >
               {play + ".00"}
             </Typography>
           </Box>
           <Box>
-            <Button
+            {/* <Button
               sx={{ p: 0, mb: 1 }}
               onClick={() => setIsmessageModal(true)}
-            >
-              <img src={winButton} alt="Win" />
-            </Button>
+            > */}
+            <img src={winButton} alt="Win" />
+            {/* </Button> */}
             <Typography
               sx={{
                 color: "white",
                 py: 1,
-                backgroundImage:
-                  "linear-gradient(180deg, rgba(4,38,85,1) 0%, rgba(9,84,187,1) 100%)",
+                // backgroundImage:
+                //   "linear-gradient(180deg, rgba(4,38,85,1) 0%, rgba(9,84,187,1) 100%)",
+                backgroundColor: "#6D2802",
                 border: "1px solid #FFEDBA",
                 fontSize: "38.72px",
                 fontWeight: "600",
                 textAlign: "center",
                 borderRadius: "8.61px",
+                fontFamily: "Hahmlet Variable",
               }}
             >
               0.00
@@ -276,7 +213,7 @@ function BottomPortion({
       <Box
         sx={{
           position: "absolute",
-          top: -66,
+          bottom: 28,
           right: 20,
           display: "flex",
           alignItems: "flex-start",
@@ -287,17 +224,17 @@ function BottomPortion({
           <Box
             sx={{
               display: "flex",
-              justifyContent: "center",
+              justifyContent: "space-between",
               alignItems: "center",
               gap: 2,
-              mb: 2,
+              mb: 3,
             }}
           >
             <GameButton
               disabled={isDisabled}
               variant="contained"
               sx={{
-                width: "220px",
+                width: "190px",
               }}
               onClick={() => betFunction("upperLine")}
             >
@@ -307,7 +244,7 @@ function BottomPortion({
               disabled={isDisabled}
               variant="contained"
               sx={{
-                width: "220px",
+                width: "190px",
               }}
               onClick={() => betFunction("lowerLine")}
             >
@@ -321,14 +258,14 @@ function BottomPortion({
               justifyContent: "center",
               alignItems: "center",
               gap: 2,
-              mb: 2,
+              mb: 3,
             }}
           >
             <GameButton
               disabled={isDisabled}
               variant="contained"
               sx={{
-                width: "140px",
+                width: "120px",
               }}
               onClick={() => betFunction("odd")}
             >
@@ -336,8 +273,9 @@ function BottomPortion({
             </GameButton>
             <GameButton
               disabled={isDisabled}
+              variant="contained"
               sx={{
-                width: "140px",
+                width: "120px",
               }}
               onClick={() => betFunction("even")}
             >
@@ -345,8 +283,9 @@ function BottomPortion({
             </GameButton>
             <GameButton
               disabled={isDisabled}
+              variant="contained"
               sx={{
-                width: "140px",
+                width: "120px",
               }}
               onClick={() => betFunction("double")}
             >
@@ -364,8 +303,9 @@ function BottomPortion({
           >
             <GameButton
               disabled={isDisabled}
+              variant="contained"
               sx={{
-                width: "140px",
+                width: "120px",
               }}
               onClick={() => betFunction("repeat")}
             >
@@ -373,8 +313,9 @@ function BottomPortion({
             </GameButton>
             <GameButton
               disabled={isDisabled}
+              variant="contained"
               sx={{
-                width: "140px",
+                width: "120px",
               }}
               onClick={() => betFunction("clear")}
             >
@@ -382,8 +323,9 @@ function BottomPortion({
             </GameButton>
             <GameButton
               disabled={isDisabled}
+              variant="contained"
               sx={{
-                width: "140px",
+                width: "120px",
               }}
               onClick={handleShrink}
             >
@@ -395,22 +337,24 @@ function BottomPortion({
           <Typography
             sx={{
               fontSize: "24px",
-              fontWeight: "500",
-              color: "#fff",
+              fontWeight: "600",
+              color: "black",
               textAlign: "center",
               mb: 1,
             }}
           >
-            Next Draw : {duration}
+            Next Draw : {duration?.format("h:mm A")}
           </Typography>
           <Paper
             elevation={0}
             sx={{
-              p: "16px",
+              border: "3px solid black",
+              // p: "16px",
               width: "272px",
               borderRadius: "16px",
-              backgroundImage:
-                "linear-gradient(180deg, rgba(251,221,138,1) 0%, rgba(255,132,0,1) 49%, rgba(255,187,0,1) 100%)",
+              backgroundColor: "transparent",
+              // backgroundImage:
+              //   "linear-gradient(180deg, rgba(251,221,138,1) 0%, rgba(255,132,0,1) 49%, rgba(255,187,0,1) 100%)",
             }}
           >
             <Typography
@@ -419,33 +363,40 @@ function BottomPortion({
                 color: "white",
                 fontSize: "52px",
                 fontWeight: "600",
-                "-webkit-text-stroke": "2px #042655",
+                // "-webkit-text-stroke": "2px #042655",
+                fontFamily: "Hahmlet Variable",
+                bgcolor: "#CB0043",
+                borderRadius: "12px 12px 0px 0px",
               }}
             >
-              {/* 03:00 */}
               {moment.utc(remainingTime.asMilliseconds()).format("mm:ss")}
             </Typography>
-            <Box
-              sx={{
-                overflow: "hidden",
-                border: "2px solid #042655",
-                height: "37px",
-                width: "100%",
-                borderRadius: "30px",
-                backgroundImage:
-                  "linear-gradient(180deg, rgba(4,38,85,1) 0%, rgba(9,84,187,1) 100%)",
-              }}
-            >
+            <Box sx={{ p: "14px" }}>
               <Box
-                ref={progressRef}
                 sx={{
-                  backgroundImage:
-                    "linear-gradient(90deg, rgba(220,0,0,1) 0%, rgba(255,195,0,1) 100%)",
+                  overflow: "hidden",
+                  border: "2px solid #000",
+                  height: "37px",
                   width: "100%",
-                  height: "100%",
-                  transition: "width 0.3s ease-in-out",
+                  borderRadius: "30px",
+                  backgroundImage: `url('${LoadingTexture}')`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
                 }}
-              />
+              >
+                {/* <img src={LoadingTexture} alt="" style={{ position: ""}} /> */}
+                <Box
+                  ref={progressRef}
+                  sx={{
+                    backgroundImage:
+                      "linear-gradient(90deg, rgba(220,0,0,1) 0%, rgba(255,195,0,1) 100%)",
+                    width: "100%",
+                    height: "100%",
+                    transition: "width 0.3s ease-in-out",
+                  }}
+                />
+              </Box>
             </Box>
           </Paper>
         </Box>
@@ -455,3 +406,46 @@ function BottomPortion({
 }
 
 export default BottomPortion;
+
+const BackgroundSVG = () => (
+  <svg
+    width={1440}
+    // height={327}
+    viewBox="0 0 1440 327"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    // {...props}
+  >
+    <path
+      d="M-18.5 47.5V350L1450 338V3H712.5C681.7 3 669 39.36 634 72c-44.5 41.5-111.993 135-279 135C186.5 207 78.5 47.5-18.5 47.5z"
+      fill="url(#paint0_linear_2216_122)"
+      stroke="url(#paint1_linear_2216_122)"
+      strokeWidth={5}
+    />
+    <defs>
+      <linearGradient
+        id="paint0_linear_2216_122"
+        x1={688.503}
+        y1={2.9999}
+        x2={694.503}
+        y2={398}
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#F1830A" />
+        <stop offset={0.508697} stopColor="#BD2F00" />
+        <stop offset={1} stopColor="#FFAC09" />
+      </linearGradient>
+      <linearGradient
+        id="paint1_linear_2216_122"
+        x1={298.5}
+        y1={-70.9994}
+        x2={640.999}
+        y2={341.001}
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#FFCF82" />
+        <stop offset={1} stopColor="#FF9D00" />
+      </linearGradient>
+    </defs>
+  </svg>
+);
