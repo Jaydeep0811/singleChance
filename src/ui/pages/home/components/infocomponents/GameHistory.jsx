@@ -94,6 +94,7 @@ function GameHistory() {
     to: moment(),
   });
   const [pageNum, setPageNum] = useState(1);
+  const [historyList, setHistoryList] = useState([]);
 
   const handleIconClickFrom = () => {
     if (dateRefFrom.current) {
@@ -121,12 +122,20 @@ function GameHistory() {
 
   useEffect(() => {
     game_history().then((data) => {
-      console.log(data);
+      console.log(data.response.data);
+      setHistoryList(data.response.data);
     });
   }, []);
 
   return (
-    <Box sx={{ height: "100%", display: "flex", flexDirection: "column",  justifyContent: "space-between"}}>
+    <Box
+      sx={{
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+      }}
+    >
       <TableContainer
         component={Paper}
         elevation={0}
@@ -260,7 +269,7 @@ function GameHistory() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
+            {historyList.map((row) => (
               <TableRow
                 key={row.ticketId}
                 sx={{
@@ -273,19 +282,19 @@ function GameHistory() {
                 }}
               >
                 <TableCell component="th" scope="row">
-                  {row.ticketId}
+                  {row.ticket_id}
                 </TableCell>
-                <TableCell>{row.gameID}</TableCell>
-                <TableCell>{row.startingPoint}</TableCell>
+                <TableCell>{row.game_id}</TableCell>
+                <TableCell>{row.start_point}</TableCell>
                 <TableCell>{row.played}</TableCell>
                 <TableCell>{row.won}</TableCell>
                 <TableCell>{row.end}</TableCell>
-                <TableCell>{row.endPoint}</TableCell>
+                <TableCell>{row.end_point}</TableCell>
                 <TableCell>{row.status}</TableCell>
-                <TableCell>{row.result}</TableCell>
+                <TableCell>{row?.result}</TableCell>
                 <TableCell>{row.date}</TableCell>
-                <TableCell>{row.drawtime}</TableCell>
-                <TableCell>{row.TicketTime}</TableCell>
+                <TableCell>{row.draw_time}</TableCell>
+                <TableCell>{row.ticket_time}</TableCell>
               </TableRow>
             ))}
           </TableBody>
