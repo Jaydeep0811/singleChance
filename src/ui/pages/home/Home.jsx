@@ -16,7 +16,7 @@ import { Howl, Howler } from "howler";
 import ChipSound from "../../public/GAME SOUNDS/Chip Sound.mp3";
 import SpinnerSound from "../../public/GAME SOUNDS/Spinning Wheel.mp3";
 import MessageModal from "../../components/CustomComponent/MessageModal";
-import { create_game, get_balance } from "../../api/gameData";
+import { create_game, get_balance, predict_winner } from "../../api/gameData";
 import moment from "moment";
 import useLocalStorage from "../../utils/useLocalStorage";
 import Stars from "../../public/backgrounds/stars.png";
@@ -98,13 +98,16 @@ function Home() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [infoModal, setinfoModal] = useState(false);
   const [balance, setBalance] = useState(0);
+  const [gameID, setGameID] = useState("");
+  const [local, setLocal] = useLocalStorage("name", {});
   const wheelRef1 = useRef(null);
   const wheelRef2 = useRef(null);
   const currentRef = useRef(null);
   const boxRef = useRef(null);
   const progressRef = useRef(null);
+  const hasCountdownStarted = useRef(false); // Tracks if onCountdownStart has been called
+  const hasCountdownEnded = useRef(false); // Tracks if onCountdownEnd has been called
 
-  const [local, setLocal] = useLocalStorage("name", {});
 
   const spinner = (targetNumber) => {
     const sections = 10; // Number of sections
@@ -164,11 +167,12 @@ function Home() {
   // Handle Spin Button
   const handlePlay = () => {
     // spinner(8); // Spin and land on "1"
+    // fetchPredictWinner(); // Predict the winner
     spinnerSound.play();
     spinner(Math.floor(Math.random() * 10) + 1); // Spin and land on "1"
-    setTimeout(() => {
-      // location.reload();
-    }, 150);
+    // setTimeout(() => {
+    //   // location.reload();
+    // }, 150);
   };
 
   function generateUniqueCode() {
@@ -209,7 +213,7 @@ function Home() {
     );
     const payload = {
       ticket_id: generateUniqueCode(),
-      game_id: generateRandomInt(100000, 999999).toString(),
+      game_id: gameID,
       date: moment().format("YYYY-MM-DD"),
       draw_time: duration.format("HH:mm:ss"),
       ticket_time: moment().format("HH:mm:ss"),
@@ -391,6 +395,12 @@ function Home() {
     });
   };
 
+  const fetchPredictWinner = async function () {
+    await predict_winner(gameID).then((e) => {
+      console.log(e);
+    });
+  };
+
   useEffect(() => {
     if (anchorEl) {
       const timer = setTimeout(() => {
@@ -407,55 +417,138 @@ function Home() {
     fetchBalance();
   }, []);
 
+  // setGameID(generateRandomInt(100000, 999999).toString())
+
+  // useEffect(() => {
+  //   const startTask = () => {
+  //     const now = moment();
+  //     const midnight = moment().startOf("day");
+  //     const elapsedTime = now.diff(midnight);
+  //     const timeUntilNextInterval = intervalMs - (elapsedTime % intervalMs); // Time until next interval
+  //     setDuration(moment().add(timeUntilNextInterval, "milliseconds"));
+
+  //     // Initialize remainingTime
+  //     setRemainingTime(moment.duration(timeUntilNextInterval, "milliseconds"));
+
+  //     const disableTimer = () => {
+  //       setIsDisabled(true); // Disable buttons
+  //       console.log("Buttons disabled.");
+  //     };
+
+  //     const enableTimer = () => {
+  //       setIsDisabled(false); // Enable buttons
+  //       console.log("Buttons enabled.");
+  //     };
+
+  //     // Disable buttons 15 seconds before the interval ends
+  //     const disableTimeout = setTimeout(
+  //       disableTimer,
+  //       timeUntilNextInterval - 15000
+  //     );
+
+  //     // Run the task on the next interval
+  //     const timeout = setTimeout(() => {
+  //       handlePlay(); // Execute the task
+  //       enableTimer(); // Enable buttons
+  //       setRemainingTime(moment.duration(intervalMs, "milliseconds")); // Reset remaining time
+
+  //       // Schedule recurring intervals for handlePlay and disableTimer
+  //       const interval = setInterval(() => {
+  //         // setGameID(generateRandomInt(100000, 999999).toString())
+  //         handlePlay();
+  //         enableTimer();
+  //         setRemainingTime(moment.duration(intervalMs, "milliseconds")); // Reset remaining time
+  //       }, intervalMs);
+
+  //       const disableInterval = setInterval(disableTimer, intervalMs - 15000);
+
+  //       // Cleanup intervals on unmount
+  //       return () => {
+  //         clearInterval(interval);
+  //         clearInterval(disableInterval);
+  //       };
+  //     }, timeUntilNextInterval);
+
+  //     return () => {
+  //       clearTimeout(timeout);
+  //       clearTimeout(disableTimeout);
+  //     };
+  //   };
+
+  //   startTask();
+  // }, []);
+
+  // useEffect(() => {
+  //   // Countdown timer for remainingTime
+  //   const countdown = setInterval(() => {
+  //     setRemainingTime((prevTime) => {
+  //       const updatedTime = moment.duration(
+  //         prevTime.asSeconds() - 1,
+  //         "seconds"
+  //       );
+  //       return updatedTime.asSeconds() <= 0
+  //         ? moment.duration(0, "seconds")
+  //         : updatedTime;
+  //     });
+  //   }, 1000);
+
+  //   return () => clearInterval(countdown); // Cleanup countdown on unmount
+  // }, []);
+
+  const onCountdownStart = () => {
+    console.log("Countdown started.");
+  };
+
+  const onCountdownEnd = () => {
+    console.log("Countdown ended.");
+  };
+
   useEffect(() => {
     const startTask = () => {
       const now = moment();
       const midnight = moment().startOf("day");
       const elapsedTime = now.diff(midnight);
-      const timeUntilNextInterval = intervalMs - (elapsedTime % intervalMs); // Time until next interval
-      setDuration(moment().add(timeUntilNextInterval, "milliseconds"));
+      const timeUntilNextInterval = intervalMs - (elapsedTime % intervalMs);
 
-      // Initialize remainingTime
       setRemainingTime(moment.duration(timeUntilNextInterval, "milliseconds"));
 
+      // Disable and enable buttons at appropriate times
       const disableTimer = () => {
-        setIsDisabled(true); // Disable buttons
+        setIsDisabled(true);
         console.log("Buttons disabled.");
       };
 
       const enableTimer = () => {
-        setIsDisabled(false); // Enable buttons
+        setIsDisabled(false);
         console.log("Buttons enabled.");
       };
 
-      // Disable buttons 15 seconds before the interval ends
-      const disableTimeout = setTimeout(
-        disableTimer,
-        timeUntilNextInterval - 15000
-      );
+      // Set timeouts for disabling and enabling buttons
+      const disableTimeout = setTimeout(disableTimer, timeUntilNextInterval - 15000);
 
-      // Run the task on the next interval
+      // Schedule the main task and intervals
       const timeout = setTimeout(() => {
-        handlePlay(); // Execute the task
-        enableTimer(); // Enable buttons
-        setRemainingTime(moment.duration(intervalMs, "milliseconds")); // Reset remaining time
+        handlePlay();
+        enableTimer();
+        setRemainingTime(moment.duration(intervalMs, "milliseconds"));
 
-        // Schedule recurring intervals for handlePlay and disableTimer
+        // Schedule recurring intervals
         const interval = setInterval(() => {
           handlePlay();
           enableTimer();
-          setRemainingTime(moment.duration(intervalMs, "milliseconds")); // Reset remaining time
+          setRemainingTime(moment.duration(intervalMs, "milliseconds"));
         }, intervalMs);
 
         const disableInterval = setInterval(disableTimer, intervalMs - 15000);
 
-        // Cleanup intervals on unmount
+        // Cleanup recurring intervals
         return () => {
           clearInterval(interval);
           clearInterval(disableInterval);
         };
       }, timeUntilNextInterval);
 
+      // Cleanup initial timeouts
       return () => {
         clearTimeout(timeout);
         clearTimeout(disableTimeout);
@@ -463,24 +556,30 @@ function Home() {
     };
 
     startTask();
-  }, []);
+  }, [intervalMs, handlePlay]);
 
   useEffect(() => {
-    // Countdown timer for remainingTime
+    // Countdown timer
     const countdown = setInterval(() => {
       setRemainingTime((prevTime) => {
-        const updatedTime = moment.duration(
-          prevTime.asSeconds() - 1,
-          "seconds"
-        );
-        return updatedTime.asSeconds() <= 0
-          ? moment.duration(0, "seconds")
-          : updatedTime;
+        const updatedTime = moment.duration(prevTime.asSeconds() - 1, "seconds");
+
+        // Check for countdown end
+        if (updatedTime.asSeconds() <= 0) {
+          clearInterval(countdown);
+          onCountdownEnd();
+          return moment.duration(0, "seconds");
+        }
+
+        return updatedTime;
       });
     }, 1000);
 
-    return () => clearInterval(countdown); // Cleanup countdown on unmount
-  }, []);
+    // Trigger countdown start
+    onCountdownStart();
+
+    return () => clearInterval(countdown); // Cleanup on unmount
+  }, [onCountdownStart, onCountdownEnd]);
 
   return (
     <>
