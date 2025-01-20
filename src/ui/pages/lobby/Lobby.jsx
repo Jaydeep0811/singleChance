@@ -1,9 +1,28 @@
 // import React from 'react'
 
+import { useState } from "react";
+import useSpinningGame from "../../hooks/useSpinningGame";
+
 function Lobby() {
+  const { countdown, nextIntervalTime } = useSpinningGame(
+    () => console.log("Triggered at 1 minute 45 seconds!"),
+    () => console.log("Triggered every 2 minutes!")
+  );
+
+  const formatCountdown = (ms) => {
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / (1000 * 60)) % 60);
+    return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
   return (
-    <div>Lobby</div>
-  )
+    <div>
+      <h1>Function</h1>
+      <p>Next spin in: {formatCountdown(countdown)}</p>
+      {/* <p>Next interval time: {nextIntervalTime}</p> */}
+      <p>Next interval time: {nextIntervalTime}</p>
+    </div>
+  );
 }
 
-export default Lobby
+export default Lobby;

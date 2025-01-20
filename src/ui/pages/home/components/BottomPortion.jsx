@@ -343,7 +343,8 @@ function BottomPortion({
               mb: 1,
             }}
           >
-            Next Draw : {duration?.format("h:mm A")}
+            Next Draw : {duration}
+            {/* Next Draw : {duration?.format("h:mm A")} */}
           </Typography>
           <Paper
             elevation={0}
@@ -369,7 +370,7 @@ function BottomPortion({
                 borderRadius: "12px 12px 0px 0px",
               }}
             >
-              {moment.utc(remainingTime.asMilliseconds()).format("mm:ss")}
+              {remainingTime}
             </Typography>
             <Box sx={{ p: "14px" }}>
               <Box

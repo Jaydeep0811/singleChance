@@ -11,6 +11,18 @@ export const get_balance = async function () {
   }
 };
 
+export const set_autoclame = async function () {
+  try {
+    const { data } = await axios.post("api/v1/user/balance/", {
+      is_clamed: true,
+    });
+    return data;
+  } catch (error) {
+    console.log("error on  API", error);
+    return error;
+  }
+};
+
 export const create_game = async function (body) {
   try {
     const { data } = await axios.post("api/v1/game/create/", body);

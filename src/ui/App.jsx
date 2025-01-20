@@ -7,6 +7,7 @@ import Router from "./router/Router";
 import { createTheme, ThemeProvider } from "@mui/material";
 // Supports weights 100-900
 import '@fontsource-variable/hahmlet';
+import Lobby from "./pages/lobby/Lobby";
 
 function App() {
   const time = 2; // Interval time in minutes
@@ -73,6 +74,7 @@ function App() {
       {/* <Home /> */}
       {/* <Login /> */}
       <Router />
+      {/* <Lobby /> */}
     </ThemeProvider>
   );
 }
