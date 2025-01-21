@@ -3,7 +3,7 @@
 import gsap from "gsap";
 import Header from "../../components/Header";
 import Spinner from "../../components/Spinner/Spinner";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Box, Button, Popover, Typography } from "@mui/material";
 import Historyinfo from "./components/Historyinfo";
 import BetNumbers from "./components/BetNumbers";
@@ -37,11 +37,9 @@ const spinnerSound = new Howl({
 // Howler.mute(true);
 
 function Home() {
-  
-  const { countdown, nextIntervalTime } = useSpinningGame(
-    () => console.log("Triggered at 1 minute 45 seconds!"),
-    () => console.log("Triggered every 2 minutes!")
-  );
+
+
+
   
   const [betNumList, setBetNumList] = useState([
     {
@@ -105,7 +103,7 @@ function Home() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [infoModal, setinfoModal] = useState(false);
   const [balance, setBalance] = useState(0);
-  const [gameID, setGameID] = useState("");
+  const [ticketID, setTicketID] = useState("");
   const [local, setLocal] = useLocalStorage("name", {});
   const wheelRef1 = useRef(null);
   const wheelRef2 = useRef(null);
@@ -165,26 +163,14 @@ function Home() {
     }
   };
 
-  // useGSAP(() => {
-  //   gsap.set(wheelRef1.current, { rotation: 18, transformOrigin: "50% 50%" });
-  //   gsap.set(wheelRef2.current, { rotation: 18, transformOrigin: "50% 50%" });
-  // }, []);
+  useGSAP(() => {
+    gsap.set(wheelRef1.current, { rotation: 18, transformOrigin: "50% 50%" });
+    gsap.set(wheelRef2.current, { rotation: 18, transformOrigin: "50% 50%" });
+  }, []);
 
-  function generateRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  function generateGameID() {
+    return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
   }
-
-  // Handle Spin Button
-  const handlePlay = () => {
-    // spinner(8); // Spin and land on "1"
-    fetchPredictWinner(); // Predict the winner
-    spinnerSound.play();
-    spinner(Math.floor(Math.random() * 10) + 1); // Spin and land on "1"
-    setGameID(generateRandomInt(100000, 999999).toString());
-    // setTimeout(() => {
-    //   // location.reload();
-    // }, 150);
-  };
 
   function generateUniqueCode() {
     // Generate 4 random digits
@@ -200,6 +186,19 @@ function Home() {
     return `${randomDigits}-${randomLetters}${randomDigits2}`;
   }
 
+  // Handle Spin Button
+  const handlePlay = () => {
+    // spinner(8); // Spin and land on "1"
+    setTicketID(generateUniqueCode().toString());
+    fetchPredictWinner(); // Predict the winner
+    spinnerSound.play();
+    spinner(Math.floor(Math.random() * 10) + 1); // Spin and land on "1"
+    // setTimeout(() => {
+    //   // location.reload();
+    // }, 150);
+  };
+
+
   const betFunc = function () {
     betFunction("clear");
     setPlay(0);
@@ -214,14 +213,23 @@ function Home() {
       return chunks;
     };
 
+
     const pairedItems = chunkArray(
       betNumList.filter((e) => e.token !== "" && e.token !== null),
       2 // Pair items into chunks of 2
     );
 
+    let ticketIDLet;
+    if (ticketID === "") {
+      ticketIDLet = generateUniqueCode().toString();
+      setTicketID(ticketIDLet);
+    } else {
+      ticketIDLet = ticketID;
+    }
+
     const payload = {
-      ticket_id: generateUniqueCode(),
-      game_id: gameID,
+      ticket_id: ticketIDLet,
+      game_id: generateGameID().toString(),
       date: moment().format("YYYY-MM-DD"),
       draw_time: duration.format("HH:mm:ss"),
       ticket_time: moment().format("HH:mm:ss"),
@@ -413,37 +421,25 @@ function Home() {
     });
   };
 
-  const onCountdownStart = () => {
-    console.log("Countdown started.");
-  };
-
-  const onEvery1m45s = () => {
-    setIsDisabled(true);
-    return;
-  };
-
-  const onCountdownEnd = () => {
-    console.log("Countdown ended.");
-    setIsDisabled(false);
-    return;
-  };
-
-  // const { countdown, nextIntervalTime } = useSpinningGame(
-  //   () => {
-  //     setIsDisabled(true);
-  //     console.log("Triggered at 1 minute 45 seconds!");
-  //   },
-  //   () => {
-  //     setIsDisabled(false);
-  //     console.log("Triggered every 2 minutes!");
-  //   }
-  // );
-
   const formatCountdown = (ms) => {
     const seconds = Math.floor((ms / 1000) % 60);
     const minutes = Math.floor((ms / (1000 * 60)) % 60);
     return `${"0" + minutes}:${seconds.toString().padStart(2, "0")}`;
   };
+
+  // Move these callback definitions before any other state or refs
+  const onEvery1m45s = useCallback(() => {
+      setIsDisabled(true);
+      console.log("Triggered at 1 minute 45 seconds!");
+    }, []);  // Empty dependency array since it only uses setIsDisabled
+  
+    const onEvery2min = useCallback(() => {
+      setIsDisabled(false);
+      console.log("Triggered every 2 minutes!");
+      handlePlay();
+    }, []); // Empty dependency array since it only uses setIsDisabled
+
+    const { countdown, nextIntervalTime } = useSpinningGame(onEvery1m45s, onEvery2min);
 
   useEffect(() => {
     if (anchorEl) {

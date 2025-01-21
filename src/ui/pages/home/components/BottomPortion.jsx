@@ -45,10 +45,10 @@ function BottomPortion({
 }) {
   // const [chipNum, setChipNum] = useState(null);
   // const progressRef = useRef(null);
-  const [time, setTime] = useState(moment().format("h:mm A"));
+  // const [time, setTime] = useState(moment().format("h:mm A"));
   // const initialTime = moment.duration(3, "minutes"); // 3 minutes
   // const [remainingTime, setRemainingTime] = useState(initialTime);
-  const [isCounting, setIsCounting] = useState(false);
+  // const [isCounting, setIsCounting] = useState(false);
 
   const handleShrink = () => {
     // console.log(
