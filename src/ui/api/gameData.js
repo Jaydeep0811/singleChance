@@ -33,10 +33,11 @@ export const create_game = async function (body) {
   }
 };
 
-export const game_history = async function () {
-  let cookies = "e51331a2-1fc9-40c5-9d9e-ffa6dcc863ae";
+export const game_history = async function (id) {
+  // e51331a2-1fc9-40c5-9d9e-ffa6dcc863ae
+  // let cookies = "e51331a2-1fc9-40c5-9d9e-ffa6dcc863ae";
   try {
-    const { data } = await axios("api/v1/game/history/" + cookies + "/");
+    const { data } = await axios("api/v1/game/history/" + id + "/");
     return data;
   } catch (error) {
     console.log("error on  API", error);
@@ -46,10 +47,30 @@ export const game_history = async function () {
 
 export const predict_winner = async function (game_id) {
   try {
-    const { data } = await axios("api/v1/game/predict-winner/", {
-      params: {
-        game_id: game_id,
-      },
+    const { data } = await axios.post("api/v1/game/predict-winner/", {
+      game_id: game_id,
+    });
+    return data;
+  } catch (error) {
+    console.log("error on  API", error);
+    return error;
+  }
+};
+
+export const get_unclamed_tickets = async function () {
+  try {
+    const { data } = await axios("api/v1/game/history/unclaimed/");
+    return data;
+  } catch (error) {
+    console.log("error on  API", error);
+    return error;
+  }
+};
+
+export const claim_unclamed_tickets = async function (id) {
+  try {
+    const { data } = await axios.post("api/v1/game/claim/ticket/", {
+      ticket_id: id,
     });
     return data;
   } catch (error) {

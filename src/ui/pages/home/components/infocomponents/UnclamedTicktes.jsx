@@ -13,7 +13,7 @@ import {
   Checkbox,
   Button,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   CalanderIcon,
   CheckedInIcon,
@@ -23,6 +23,7 @@ import {
 } from "../../../../assets/Icones";
 import ViewButton from "../../../../public/icons/viewButton.png";
 import moment from "moment";
+import { get_unclamed_tickets } from "../../../../api/gameData";
 
 function createData(
   ticketId,
@@ -103,6 +104,13 @@ function UnclamedTicktes() {
     const selectedDate = event.target.value; // Get the selected date as a string
     setDate({ ...date, to: moment(selectedDate) }); // Update the state with the new date
   };
+
+  useEffect(() => {
+    get_unclamed_tickets().then((data) => {
+      console.log(data.response.data);
+      setHistoryList(data.response.data);
+    });
+  }, []);
 
   return (
     <Box sx={{ height: "100%", display: "flex", flexDirection: "column",  justifyContent: "space-between"}}>

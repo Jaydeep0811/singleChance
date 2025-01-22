@@ -1,61 +1,105 @@
 import { Box, IconButton, Paper, Typography } from "@mui/material";
 import { InfoIcon } from "../../../assets/Icones";
 import topBackground from "../../../public/backgrounds/topBackground.png";
+import useLocalStorage from "../../../utils/useLocalStorage";
+import { useEffect, useState } from "react";
 
 const timeLapList = [
   {
-    time: "10:50 PM",
-    color: "#F98C07",
-    num: 3,
+    num: 1,
+    color: "#B36A09",
+    token: "",
   },
+
   {
-    time: "10:48 PM",
-    color: "#F98C07",
-    num: 0,
-  },
-  {
-    time: "10:44 PM",
-    color: "#3CC23B",
-    num: 5,
-  },
-  {
-    time: "10:42 PM",
-    color: "#F98C07",
-    num: 3,
-  },
-  {
-    time: "10:40 PM",
-    color: "#EB1B90",
-    num: 8,
-  },
-  {
-    time: "10:38 PM",
-    color: "#F98C07",
-    num: 3,
-  },
-  {
-    time: "10:36 PM",
-    color: "#F98C07",
-    num: 0,
-  },
-  {
-    time: "10:34PM",
-    color: "#EF0202",
     num: 2,
+    color: "#EF0202",
+    token: "",
   },
   {
-    time: "10:32 PM",
-    color: "#3CC23B",
-    num: 5,
-  },
-  {
-    time: "10:38 PM",
-    color: "#F98C07",
     num: 3,
+    color: "#F98C07",
+    token: "",
   },
-];
+  {
+    num: 4,
+    color: "#EEDE01",
+    token: "",
+  },
+  {
+    num: 5,
+    color: "#0D9E7D",
+    token: "",
+  },
+  {
+    num: 6,
+    color: "#0154C9",
+    token: "",
+  },
+  {
+    num: 7,
+    color: "#042655",
+    token: "",
+  },
+  {
+    num: 8,
+    color: "#EB1B90",
+    token: "",
+  },
+  {
+    num: 9,
+    color: "#01A501",
+    token: "",
+  },
+  {
+    num: 0,
+    color: "#06A5C1",
+    token: "",
+  },
+]
+
+const getColorForNumber = (number) => {
+  const colorMap = {
+    1: "#B36A09",
+    2: "#EF0202",
+    3: "#F98C07",
+    4: "#EEDE01",
+    5: "#0D9E7D",
+    6: "#0154C9",
+    7: "#042655",
+    8: "#EB1B90",
+    9: "#01A501",
+    0: "#06A5C1"
+  };
+  return colorMap[number] || "#F98C07"; // Default color if number not found
+};
 
 function Historyinfo({ setinfoModal }) {
+
+  const [historyList, sethistoryList] = useState([])
+
+  // const [historyList] = useLocalStorage("historyList");
+  // console.log(localStorage.getItem("historyList"));
+
+  useEffect(() => {
+    // Initial load
+    sethistoryList(JSON.parse(localStorage.getItem("historyList")));
+
+    // Listen for storage changes
+    const handleStorageChange = (e) => {
+      if (e.key === "historyList") {
+        sethistoryList(JSON.parse(e.newValue));
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+
+    // Cleanup listener on component unmount
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+  
   return (
     <Box
       sx={{
@@ -110,7 +154,7 @@ function Historyinfo({ setinfoModal }) {
             gap: 1,
           }}
         >
-          {timeLapList.map((e, i) => (
+          {historyList.map((e, i) => (
             <Box key={i}>
               <Typography
                 sx={{
@@ -125,7 +169,7 @@ function Historyinfo({ setinfoModal }) {
               <Paper
                 elevation={0}
                 sx={{
-                  bgcolor: e.color || "#F98C07",
+                  bgcolor: getColorForNumber(e.num) || "#F98C07",
                   borderRadius: "6px",
                   display: "flex",
                   justifyContent: "center",

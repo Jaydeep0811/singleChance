@@ -24,6 +24,7 @@ import {
 import ViewButton from "../../../../public/icons/viewButton.png";
 import moment from "moment";
 import { game_history } from "../../../../api/gameData";
+import useLocalStorage from "../../../../utils/useLocalStorage";
 
 function createData(
   ticketId,
@@ -95,7 +96,7 @@ function GameHistory() {
   });
   const [pageNum, setPageNum] = useState(1);
   const [historyList, setHistoryList] = useState([]);
-
+  const [idLocl, setLocalid] = useLocalStorage("userDetails", {});
   const handleIconClickFrom = () => {
     if (dateRefFrom.current) {
       // dateRef.current.click(); // Programmatically trigger the click on the hidden input
@@ -121,7 +122,7 @@ function GameHistory() {
   };
 
   useEffect(() => {
-    game_history().then((data) => {
+    game_history(idLocl.id).then((data) => {
       console.log(data.response.data);
       setHistoryList(data.response.data);
     });

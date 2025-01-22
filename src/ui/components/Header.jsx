@@ -23,14 +23,19 @@ import {
 } from "../assets/Icones";
 import HeaderBackground from "../public/backgrounds/headerBackground.png";
 import LobbyBg from "../public/backgrounds/lobbyBg.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { set_autoclame } from "../api/gameData";
+import useLocalStorage from "../utils/useLocalStorage";
 
-function Header({ balance }) {
-  const [toggle, setToggle] = useState(false);
-  const [visibillity, setVisibillity] = useState(true)
+function Header({ balance, openAlertBox }) {
+  const [visibillity, setVisibillity] = useState(true);
+  const [barcode, setBarcode] = useState("")
+  const [toggle, setToggle] = useLocalStorage("isMute", false);
+  const [isAutoClame, setIsAutoClame] = useLocalStorage("isAutoClame", false);
+  const [isPrint, setIsPrint] = useLocalStorage("isPrint", true);
+  const [isMute, setIsMute] = useLocalStorage("isMute", false);
 
   const muteFun = function () {
-    Howler.mute(!toggle);
     setToggle(!toggle);
   };
   const handleMinimize = () => {
@@ -40,6 +45,22 @@ function Header({ balance }) {
   const handleClose = () => {
     window.electronAPI.close();
   };
+
+  const handleAutoclame = (event) => {
+    setIsAutoClame(event.target.checked);
+    openAlertBox("Auto Clame is " + (event.target.checked ? "ON" : "OFF"));
+    // set_autoclame(event.target.checked).then((data) => {
+    //   console.log(data);
+    // });
+  };
+
+  const handlClame = () => {
+    console.log("clame", barcode);
+  };
+
+  useEffect(() => {
+    Howler.mute(!toggle);
+  }, [toggle]);
 
   return (
     <Box
@@ -90,6 +111,10 @@ function Header({ balance }) {
       >
         <FormGroup>
           <FormControlLabel
+            checked={isPrint}
+            onChange={(e) => {
+              setIsPrint(e.target.checked);
+            }}
             sx={{
               "& .MuiTypography-root": { color: "#EEDE01", fontSize: "20px" },
             }}
@@ -106,6 +131,8 @@ function Header({ balance }) {
 
         <FormGroup>
           <FormControlLabel
+            checked={isAutoClame}
+            onChange={handleAutoclame}
             sx={{
               "& .MuiTypography-root": { color: "#EEDE01", fontSize: "20px" },
             }}
@@ -129,6 +156,8 @@ function Header({ balance }) {
             borderRadius: "6px",
             width: "152px",
           }}
+          value={barcode}
+          onChange={(e) => setBarcode(e.target.value)}
         />
 
         <Button
@@ -142,6 +171,7 @@ function Header({ balance }) {
             borderRadius: "6px",
             mr: 4,
           }}
+          onClick={handlClame}
         >
           Clame
         </Button>
@@ -161,7 +191,7 @@ function Header({ balance }) {
             justifyContent: "space-between",
             alignItems: "center",
             gap: 2,
-            width: 200,
+            minWidth: 200,
           }}
         >
           <Box
@@ -172,7 +202,7 @@ function Header({ balance }) {
               py: "3px",
               display: "flex",
               alignItems: "center",
-              gap: 2
+              gap: 2,
             }}
           >
             <Typography
@@ -189,7 +219,7 @@ function Header({ balance }) {
               icon={<Visbility />}
               sx={{ py: "5px", px: 0 }}
               checked={visibillity}
-              onChange={(e)=> setVisibillity(e.target.checked)}
+              onChange={(e) => setVisibillity(e.target.checked)}
             />
           </Box>
           <Typography
@@ -197,14 +227,37 @@ function Header({ balance }) {
               fontSize: "16px",
             }}
           >
-            { visibillity ? "***.**" : balance + ".00" }
+            {visibillity ? "***.**" : balance + ".00"}
           </Typography>
         </Paper>
 
         <Stack direction={"row"}>
-          <IconButton size="small" onClick={() => muteFun()}>
+          {/* <IconButton size="small"  onClick={() => muteFun()}>
             <SoundOnIcon sx={{ fontSize: "36px" }} />
-          </IconButton>
+          </IconButton> */}
+          {/* <FormGroup> */}
+            {/* <FormControlLabel
+              checked={toggle}
+              onChange={(e) => {
+                setIsPrint(e.target.checked);
+              }}
+              sx={{
+                "& .MuiTypography-root": { color: "#EEDE01", fontSize: "20px" },
+              }}
+              control={ */}
+            <Checkbox
+              checked={toggle}
+              onChange={() => {
+                muteFun();
+              }}
+              size="large"
+              checkedIcon={<SoundOnIcon sx={{ fontSize: "36px" }} />}
+              icon={<SoundOnIcon sx={{ fontSize: "36px" }} />}
+            />
+            {/* //   }
+              
+            // /> */}
+          {/* </FormGroup> */}
           <IconButton size="small" onClick={() => handleMinimize()}>
             <MinimizeIcon sx={{ fontSize: "36px" }} />
           </IconButton>

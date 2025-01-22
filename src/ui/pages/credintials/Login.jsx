@@ -6,9 +6,11 @@ import { useState } from "react";
 import { login_user } from "../../api/gameAuth";
 import TokenManager from "../../utils/TokenManager";
 import { useNavigate } from "react-router-dom";
+import useLocalStorage from "../../utils/useLocalStorage";
 
 function Login() {
   const navigate = useNavigate();
+  const [local, setLocal] = useLocalStorage("userDetails", {});
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -27,7 +29,8 @@ function Login() {
     console.log(res);
     if (res.statusCode === 200) {
       setIsLoading(false);
-      TokenManager.setAuthTokens(res.response);
+      TokenManager.setAuthTokens(res.response.auth);
+      setLocal({id: res.response.id});
       navigate("game");
     }
   };

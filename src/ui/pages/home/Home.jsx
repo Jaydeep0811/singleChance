@@ -15,6 +15,7 @@ import { useGSAP } from "@gsap/react";
 import { Howl, Howler } from "howler";
 import ChipSound from "../../public/GAME SOUNDS/Chip Sound.mp3";
 import SpinnerSound from "../../public/GAME SOUNDS/Spinning Wheel.mp3";
+import NoMoreBetsPlease from "../../public/GAME SOUNDS/No more bets please.mp3";
 import MessageModal from "../../components/CustomComponent/MessageModal";
 import { create_game, get_balance, predict_winner } from "../../api/gameData";
 import moment from "moment";
@@ -33,14 +34,14 @@ const spinnerSound = new Howl({
   src: [SpinnerSound],
 });
 
+const noMoreBetsPlease = new Howl({
+  src: [NoMoreBetsPlease],
+});
+
 //Mute the voice
 // Howler.mute(true);
 
 function Home() {
-
-
-
-  
   const [betNumList, setBetNumList] = useState([
     {
       num: 1,
@@ -103,8 +104,36 @@ function Home() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [infoModal, setinfoModal] = useState(false);
   const [balance, setBalance] = useState(0);
-  const [ticketID, setTicketID] = useState("");
+  const [gameID, setGameID] = useState("");
   const [local, setLocal] = useLocalStorage("name", {});
+
+  const generateHistoryData = () => {
+    const data = [];
+    const baseTime = new Date();
+    
+    for (let i = 0; i < 10; i++) {
+      // Generate random number between 1 and 5
+      const randomNum = Math.floor(Math.random() * 5) + 1;
+      
+      // Subtract 2 minutes for each entry
+      const entryTime = new Date(baseTime - i * 2 * 60000);
+      const formattedTime = entryTime.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+      });
+
+      data.push({
+        num: randomNum,
+        time: formattedTime
+      });
+    }
+    return data;
+  };
+
+  const [historyList, setHistoryList] = useLocalStorage("historyList", generateHistoryData());
+
+
   const wheelRef1 = useRef(null);
   const wheelRef2 = useRef(null);
   const currentRef = useRef(null);
@@ -188,16 +217,25 @@ function Home() {
 
   // Handle Spin Button
   const handlePlay = () => {
+    let spinum = Math.floor(Math.random() * 10) + 1;
+    const newHistory = [...historyList];
+    newHistory.pop(); // Remove the last item
+    setHistoryList([
+      {
+        num: spinum,
+        time: moment().format("h:mm A"),
+      },
+      ...newHistory
+    ]);
     // spinner(8); // Spin and land on "1"
-    setTicketID(generateUniqueCode().toString());
+    // setTicketID(generateUniqueCode().toString());
     fetchPredictWinner(); // Predict the winner
     spinnerSound.play();
-    spinner(Math.floor(Math.random() * 10) + 1); // Spin and land on "1"
+    spinner(spinum); // Spin and land on "1"
     // setTimeout(() => {
     //   // location.reload();
     // }, 150);
   };
-
 
   const betFunc = function () {
     betFunction("clear");
@@ -213,23 +251,22 @@ function Home() {
       return chunks;
     };
 
-
     const pairedItems = chunkArray(
       betNumList.filter((e) => e.token !== "" && e.token !== null),
       2 // Pair items into chunks of 2
     );
 
-    let ticketIDLet;
-    if (ticketID === "") {
-      ticketIDLet = generateUniqueCode().toString();
-      setTicketID(ticketIDLet);
+    let gameIDLet;
+    if (gameID === "") {
+      gameIDLet = generateGameID().toString();
+      setGameID(gameIDLet);
     } else {
-      ticketIDLet = ticketID;
+      gameIDLet = gameID;
     }
 
     const payload = {
-      ticket_id: ticketIDLet,
-      game_id: generateGameID().toString(),
+      ticket_id: generateUniqueCode().toString(),
+      game_id: gameIDLet,
       date: moment().format("YYYY-MM-DD"),
       draw_time: duration.format("HH:mm:ss"),
       ticket_time: moment().format("HH:mm:ss"),
@@ -415,10 +452,23 @@ function Home() {
     });
   };
 
+  // console.log(gameID);
+
   const fetchPredictWinner = async function () {
-    await predict_winner(gameID).then((e) => {
-      console.log(e);
-    });
+    try {
+      // if (!gameID) {
+      //   console.error("No game ID available");
+      //   return;
+      // }
+      const response = await predict_winner(gameID);
+      if (response.statusCode === 200) {
+        console.log("Prediction successful:", response);
+      } else {
+        console.error("Prediction failed:", response);
+      }
+    } catch (error) {
+      console.error("Error predicting winner:", error);
+    }
   };
 
   const formatCountdown = (ms) => {
@@ -429,17 +479,23 @@ function Home() {
 
   // Move these callback definitions before any other state or refs
   const onEvery1m45s = useCallback(() => {
-      setIsDisabled(true);
-      console.log("Triggered at 1 minute 45 seconds!");
-    }, []);  // Empty dependency array since it only uses setIsDisabled
-  
-    const onEvery2min = useCallback(() => {
-      setIsDisabled(false);
-      console.log("Triggered every 2 minutes!");
-      handlePlay();
-    }, []); // Empty dependency array since it only uses setIsDisabled
+    fetchPredictWinner();
+    setIsDisabled(true);
+    noMoreBetsPlease.play();
+    console.log("Triggered at 1 minute 45 seconds!");
+  }, []); // Empty dependency array since it only uses setIsDisabled
 
-    const { countdown, nextIntervalTime } = useSpinningGame(onEvery1m45s, onEvery2min);
+  const onEvery2min = useCallback(() => {
+    setIsDisabled(false);
+    setGameID("");
+    handlePlay();
+    console.log("Triggered every 2 minutes!");
+  }, []); // Empty dependency array since it only uses setIsDisabled
+
+  const { countdown, nextIntervalTime } = useSpinningGame(
+    onEvery1m45s,
+    onEvery2min
+  );
 
   useEffect(() => {
     if (anchorEl) {
@@ -458,7 +514,6 @@ function Home() {
     // setGameID(generateRandomInt(100000, 999999).toString());
   }, []);
 
-
   return (
     <>
       <Box
@@ -467,7 +522,7 @@ function Home() {
             "linear-gradient(180deg, rgba(229,89,6,1) 50%, rgba(171,44,4,1) 84%, rgba(134,15,2,1) 100%)",
         }}
       >
-        <Header balance={balance} />
+        <Header balance={balance} openAlertBox={openAlertBox} />
         <Historyinfo setinfoModal={setinfoModal} />
         <img
           src={Stars}
