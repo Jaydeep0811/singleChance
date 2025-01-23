@@ -1,4 +1,5 @@
 import Home from "./pages/home/Home";
+import Home2 from "./pages/home/Home2";
 import "./App.css";
 import Login from "./pages/credintials/Login";
 import { useEffect, useState } from "react";
@@ -71,7 +72,7 @@ function App() {
         },
       })}
     >
-      {/* <Home /> */}
+      {/* <Home2 /> */}
       {/* <Login /> */}
       <Router />
       {/* <Lobby /> */}

@@ -1,18 +1,28 @@
-// import React from 'react'
-
 import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Box } from "@mui/material";
+import moment from "moment";
+import { Howl } from "howler";
+
+// Components
 import Header from "../../components/Header";
-import Spinner from "../../components/Spinner/Spinner";
-import { useEffect, useRef, useState, useCallback } from "react";
-import { Box, Button, Popover, Typography } from "@mui/material";
+import Spinner2 from "../../components/Spinner/Spinner2";
 import Historyinfo from "./components/Historyinfo";
 import BetNumbers from "./components/BetNumbers";
 import BottomPortion from "./components/BottomPortion";
-// import StyledModal from "../../components/CustomComponent/StyledModal";
 import InfoModal from "./components/InfoModal";
-import Spinner2 from "../../components/Spinner/Spinner2";
-import { useGSAP } from "@gsap/react";
-import { Howl, Howler } from "howler";
+import MessageModal from "../../components/CustomComponent/MessageModal";
+
+// API
+import { create_game, get_balance, predict_winner } from "../../api/gameData";
+
+// Hooks
+import useLocalStorage from "../../utils/useLocalStorage";
+import useSpinningGame from "../../hooks/useSpinningGame";
+
+// Assets
+import Stars from "../../public/backgrounds/stars.png";
 import ChipSound from "../../public/GAME SOUNDS/Chip Sound.mp3";
 import SpinnerSound from "../../public/GAME SOUNDS/Spinning Wheel.mp3";
 import NoMoreBetsPlease from "../../public/GAME SOUNDS/No more bets please.mp3";
@@ -20,111 +30,56 @@ import YouWinSound from "../../public/GAME SOUNDS/Victory.mp3";
 import LastChance from "../../public/GAME SOUNDS/Last chance.mp3";
 import PlaceYourBets from "../../public/GAME SOUNDS/Place your bets.mp3";
 
-import MessageModal from "../../components/CustomComponent/MessageModal";
-import { create_game, get_balance, predict_winner } from "../../api/gameData";
-import moment from "moment";
-import useLocalStorage from "../../utils/useLocalStorage";
-import Stars from "../../public/backgrounds/stars.png";
-import CryptoJS from "crypto-js";
-import useSpinningGame from "../../hooks/useSpinningGame";
-import YouWin from "./components/YouWin";
-// const crypto = window.crypto || window.msCrypto;
+// Sound Effects Setup
+const soundEffects = {
+  chip: new Howl({ src: [ChipSound] }),
+  spinner: new Howl({ src: [SpinnerSound] }),
+  noMoreBets: new Howl({ src: [NoMoreBetsPlease] }),
+  youWin: new Howl({ src: [YouWinSound] }),
+  lastChance: new Howl({ src: [LastChance] }),
+  placeYourBets: new Howl({ src: [PlaceYourBets] })
+};
 
-// Setup the new Howl.
-const chipSound = new Howl({
-  src: [ChipSound],
-});
 
-const spinnerSound = new Howl({
-  src: [SpinnerSound],
-});
-
-const noMoreBetsPlease = new Howl({
-  src: [NoMoreBetsPlease],
-});
-
-const youWinSound = new Howl({
-  src: [YouWinSound],
-});
-
-const lastChanceSound = new Howl({
-  src: [LastChance],
-});
-
-const placeYourBetsSound = new Howl({
-  src: [PlaceYourBets],
-});
-
-//Mute the voice
-// Howler.mute(true);
+// Initial bet numbers configuration
+const initialBetNumbers = [
+  { num: 1, color: "#B36A09", token: "" },
+  { num: 2, color: "#EF0202", token: "" },
+  { num: 3, color: "#F98C07", token: "" },
+  { num: 4, color: "#EEDE01", token: "" },
+  { num: 5, color: "#0D9E7D", token: "" },
+  { num: 6, color: "#0154C9", token: "" },
+  { num: 7, color: "#042655", token: "" },
+  { num: 8, color: "#EB1B90", token: "" },
+  { num: 9, color: "#01A501", token: "" },
+  { num: 0, color: "#06A5C1", token: "" }
+];
 
 function Home() {
-  const [betNumList, setBetNumList] = useState([
-    {
-      num: 1,
-      color: "#B36A09",
-      token: "",
-    },
-
-    {
-      num: 2,
-      color: "#EF0202",
-      token: "",
-    },
-    {
-      num: 3,
-      color: "#F98C07",
-      token: "",
-    },
-    {
-      num: 4,
-      color: "#EEDE01",
-      token: "",
-    },
-    {
-      num: 5,
-      color: "#0D9E7D",
-      token: "",
-    },
-    {
-      num: 6,
-      color: "#0154C9",
-      token: "",
-    },
-    {
-      num: 7,
-      color: "#042655",
-      token: "",
-    },
-    {
-      num: 8,
-      color: "#EB1B90",
-      token: "",
-    },
-    {
-      num: 9,
-      color: "#01A501",
-      token: "",
-    },
-    {
-      num: 0,
-      color: "#06A5C1",
-      token: "",
-    },
-  ]);
-
+  // State
+  const [betNumList, setBetNumList] = useState(initialBetNumbers);
   const [duration, setDuration] = useState(moment());
   const [chipNum, setChipNum] = useState(null);
   const [ismessModal, setIsmessageModal] = useState(false);
   const [play, setPlay] = useState(0);
   const [win, setWin] = useState(0);
   const [isDisabled, setIsDisabled] = useState(false);
-  const [infoModal, setinfoModal] = useState(false);
+  const [infoModal, setInfoModal] = useState(false);
   const [balance, setBalance] = useState(0);
   const [gameID, setGameID] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [local, setLocal] = useLocalStorage("name", {});
 
+  // Refs
+  const wheelRef1 = useRef(null);
+  const wheelRef2 = useRef(null);
+  const currentRef = useRef(null);
+  const boxRef = useRef(null);
+  const progressRef = useRef(null);
+  const hasCountdownStarted = useRef(false); // Tracks if onCountdownStart has been called
+  const hasCountdownEnded = useRef(false); // Tracks if onCountdownEnd has been called
+
+  // Utility Functions
   const generateHistoryData = () => {
     const data = [];
     const baseTime = new Date();
@@ -151,113 +106,71 @@ function Home() {
 
   const [historyList, setHistoryList] = useLocalStorage("historyList", generateHistoryData());
 
+  const generateGameID = () => Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+  const generateUniqueCode = () => {
+    const randomDigits = Math.floor(1000 + Math.random() * 9000).toString();
+    const randomDigits2 = Math.floor(1000 + Math.random() * 9000).toString();
+    return `${randomDigits}-SCP${randomDigits2}`;
+  };
 
-  const wheelRef1 = useRef(null);
-  const wheelRef2 = useRef(null);
-  const currentRef = useRef(null);
-  const boxRef = useRef(null);
-  const progressRef = useRef(null);
-  const hasCountdownStarted = useRef(false); // Tracks if onCountdownStart has been called
-  const hasCountdownEnded = useRef(false); // Tracks if onCountdownEnd has been called
-
+  // Spinner Animation
   const spinner = (targetNumber) => {
-    const sections = 10; // Number of sections
-    const sectionAngle = 360 / sections; // Angle for each section
-    const angleOffset = sectionAngle / 2; // Offset to align with the center of the section
-    const initialRotation = -72; // Initial offset to align with "1"
+    const sections = 10;
+    const sectionAngle = 360 / sections;
+    const angleOffset = sectionAngle / 2;
+    const initialRotation = -72;
+    const currentRotation = gsap.getProperty(wheelRef1.current, "rotation") || 0;
+    const targetRotation = 360 - (targetNumber * sectionAngle + angleOffset) - initialRotation;
+    const randomExtraRotation = 360 * gsap.utils.random(5, 10, 1);
+    const rotationNext = currentRotation + randomExtraRotation + ((targetRotation - currentRotation) % 360);
 
-    // Get the current rotation of the spinner
-    const currentRotation =
-      gsap.getProperty(wheelRef1.current, "rotation") || 0;
-
-    // Calculate the target rotation to land on the desired number
-    const targetRotation =
-      360 - (targetNumber * sectionAngle + angleOffset) - initialRotation;
-
-    // Ensure the spinner always rotates clockwise by adding extra full spins
-    const randomExtraRotation = 360 * gsap.utils.random(5, 10, 1); // 5-10 full spins
-    const rotationNext =
-      currentRotation +
-      randomExtraRotation +
-      ((targetRotation - currentRotation) % 360);
-
-    // Spin the wheel to land on the target number
-    const luckywheelTimeline = gsap.timeline({
-      onComplete: () => {
-        console.log(`Spinner landed on number: ${targetNumber}`);
-      },
-    });
-
-    luckywheelTimeline.to(wheelRef1.current, {
+    const spinAnimation = gsap.timeline();
+    spinAnimation.to([wheelRef1.current, wheelRef2.current], {
       duration: 11.3,
       rotation: rotationNext,
       transformOrigin: "50% 50%",
-      ease: "power4",
+      ease: "power4"
     });
-
-    // Optional: Spin the second wheel, if necessary
-    if (wheelRef2) {
-      luckywheelTimeline.to(
-        wheelRef2.current,
-        {
-          duration: 11.3,
-          rotation: rotationNext,
-          transformOrigin: "50% 50%",
-          ease: "power4",
-        },
-        "<" // Start both animations simultaneously
-      );
-    }
   };
 
+  // Initialize wheel position
   useGSAP(() => {
-    gsap.set(wheelRef1.current, { rotation: 18, transformOrigin: "50% 50%" });
-    gsap.set(wheelRef2.current, { rotation: 18, transformOrigin: "50% 50%" });
+    gsap.set([wheelRef1.current, wheelRef2.current], { 
+      rotation: 18, 
+      transformOrigin: "50% 50%" 
+    });
   }, []);
 
-  function generateGameID() {
-    return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
-  }
+  // Betting Functions
+  const handleBetClick = (index) => {
+    if (!chipNum) return;
+    
+    setBetNumList(prev => prev.map((item, i) => 
+      i === index ? { ...item, token: chipNum } : item
+    ));
+    
+    setBalance(prev => prev - chipNum);
+    setPlay(prev => prev + chipNum);
+    soundEffects.chip.play();
+  };
 
-  function generateUniqueCode() {
-    // Generate 4 random digits
-    const randomDigits = Math.floor(1000 + Math.random() * 9000).toString();
-
-    // Generate 3 random uppercase letters
-    const randomLetters = "SCP";
-
-    // Generate 4 random digits
-    const randomDigits2 = Math.floor(1000 + Math.random() * 9000).toString();
-
-    // Combine into the desired format
-    return `${randomDigits}-${randomLetters}${randomDigits2}`;
-  }
-
-  // Handle Spin Button
+  // Game Control Functions
   const handlePlay = () => {
-    let spinum = Math.floor(Math.random() * 10) + 1;
-    const newHistory = [...historyList];
-    newHistory.pop(); // Remove the last item
-    setHistoryList([
-      {
-        num: spinum,
-        time: moment().format("h:mm A"),
-      },
-      ...newHistory
-    ]);
-    // spinner(8); // Spin and land on "1"
-    // setTicketID(generateUniqueCode().toString());
-    fetchPredictWinner(); // Predict the winner
-    spinnerSound.play();
-    spinner(spinum); // Spin and land on "1"
-    // setTimeout(() => {
-    //   // location.reload();
-    // }, 150);
+    const spinNumber = Math.floor(Math.random() * 10);
+    
+    setHistoryList(prev => [{
+      num: spinNumber,
+      time: moment().format("h:mm A")
+    }, ...prev.slice(0, -1)]);
+
+    soundEffects.spinner.play();
+    spinner(spinNumber);
+    fetchPredictWinner();
   };
 
   const handleYouWin = () => {
     setIsOpen(true);
-    youWinSound.play();
+    soundEffects.youWin.play();
     setAlertMessage("message");
   }
 
@@ -335,8 +248,7 @@ function Home() {
           </div>
         </div>
         `;
-    // window.electronAPI.printBill(billHTML);
-    console.log(payload);
+    // window.electronAPI.printBill(billHTML, payload.ticket_id);
 
     openAlertBox(`YOUR BET HAS BEEN ACCEPTED WITH ID: ${payload.ticket_id}`);
     setLocal([...betNumList]);
@@ -345,25 +257,6 @@ function Home() {
         fetchBalance();
       }
     });
-  };
-
-  const betButtonClick = function (index) {
-    let newList = betNumList.map((e, i) => {
-      if (index == i) {
-        return {
-          ...e,
-          token: chipNum,
-        };
-      }
-      return e;
-    });
-    const totalTokens = newList.reduce((sum, item) => {
-      const tokenValue = parseInt(item.token, 10) || 0; // Convert to integer, fallback to 0 if blank
-      return sum + tokenValue;
-    }, 0);
-    setBalance(balance - chipNum);
-    setPlay(totalTokens);
-    setBetNumList(newList);
   };
 
   const betFunction = function (betCase) {
@@ -458,14 +351,9 @@ function Home() {
     setAlertMessage("");
   };
 
-  const [remainingTime, setRemainingTime] = useState(
-    moment.duration(0, "seconds")
-  );
-  const [isCounting, setIsCounting] = useState(false);
+
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
-  const time = 2;
-  const intervalMs = time * 60 * 1000;
 
   const fetchBalance = async function () {
     await get_balance().then((e) => {
@@ -476,14 +364,9 @@ function Home() {
     });
   };
 
-  // console.log(gameID);
 
   const fetchPredictWinner = async function () {
     try {
-      // if (!gameID) {
-      //   console.error("No game ID available");
-      //   return;
-      // }
       const response = await predict_winner(gameID);
       if (response.statusCode === 200) {
         console.log("Prediction successful:", response);
@@ -501,19 +384,14 @@ function Home() {
     return `${"0" + minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
+  // Callback Functions for Game Timing
   const onEvery15sec = useCallback(() => {
-    // fetchPredictWinner();
-    // setIsDisabled(true);
-    openAlertBox(`PLACE YOUR BET`);
-    placeYourBetsSound.play();
+    soundEffects.placeYourBets.play();
     console.log("Triggered at 15sec!");
   }, []);
 
   const onEvery1m40s = useCallback(() => {
-    // fetchPredictWinner();
-    // setIsDisabled(true);
-    openAlertBox(`LAST CHANCE`);
-    lastChanceSound.play();
+    soundEffects.lastChance.play();
     console.log("Triggered at 1 minute 40 seconds!");
   }, []);
 
@@ -521,9 +399,7 @@ function Home() {
   const onEvery1m45s = useCallback(() => {
     fetchPredictWinner();
     setIsDisabled(true);
-    noMoreBetsPlease.play();
-    openAlertBox(`NO MORE BETS PLEASE`);
-
+    soundEffects.noMoreBets.play();
     console.log("Triggered at 1 minute 05 seconds!");
   }, []); // Empty dependency array since it only uses setIsDisabled
 
@@ -534,6 +410,7 @@ function Home() {
     console.log("Triggered every 2 minutes!");
   }, []); // Empty dependency array since it only uses setIsDisabled
 
+  // Game Timer Hook
   const { countdown, nextIntervalTime } = useSpinningGame(
     onEvery1m45s,
     onEvery2min,
@@ -567,7 +444,7 @@ function Home() {
         }}
       >
         <Header balance={balance} openAlertBox={openAlertBox} />
-        <Historyinfo setinfoModal={setinfoModal} />
+        <Historyinfo setinfoModal={setInfoModal} />
         <img
           src={Stars}
           alt="star"
@@ -609,7 +486,7 @@ function Home() {
           <Box sx={{ position: "absolute", right: "1.5rem", top: "6.5rem" }}>
             <BetNumbers
               betNumList={betNumList}
-              betButtonClick={betButtonClick}
+              betButtonClick={handleBetClick}
               chipSound={chipSound}
             />
           </Box>
@@ -637,7 +514,7 @@ function Home() {
         alertMessage={alertMessage}
         handleClose={() => handleClose()}
       />
-      <InfoModal open={infoModal} handleClose={() => setinfoModal(false)} />
+      <InfoModal open={infoModal} handleClose={() => setInfoModal(false)} />
     </>
   );
 }

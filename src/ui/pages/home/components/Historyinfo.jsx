@@ -81,24 +81,24 @@ function Historyinfo({ setinfoModal }) {
   // const [historyList] = useLocalStorage("historyList");
   // console.log(localStorage.getItem("historyList"));
 
-  useEffect(() => {
-    // Initial load
-    sethistoryList(JSON.parse(localStorage.getItem("historyList")));
+  // useEffect(() => {
+  //   // Initial load
+  //   sethistoryList(JSON.parse(localStorage.getItem("historyList")));
 
-    // Listen for storage changes
-    const handleStorageChange = (e) => {
-      if (e.key === "historyList") {
-        sethistoryList(JSON.parse(e.newValue));
-      }
-    };
+  //   // Listen for storage changes
+  //   const handleStorageChange = (e) => {
+  //     if (e.key === "historyList") {
+  //       sethistoryList(JSON.parse(e.newValue));
+  //     }
+  //   };
 
-    window.addEventListener("storage", handleStorageChange);
+  //   window.addEventListener("storage", handleStorageChange);
 
-    // Cleanup listener on component unmount
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
+  //   // Cleanup listener on component unmount
+  //   return () => {
+  //     window.removeEventListener("storage", handleStorageChange);
+  //   };
+  // }, []);
   
   return (
     <Box

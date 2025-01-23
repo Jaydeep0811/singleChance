@@ -49,9 +49,9 @@ function Header({ balance, openAlertBox }) {
   const handleAutoclame = (event) => {
     setIsAutoClame(event.target.checked);
     openAlertBox("Auto Clame is " + (event.target.checked ? "ON" : "OFF"));
-    // set_autoclame(event.target.checked).then((data) => {
-    //   console.log(data);
-    // });
+    set_autoclame(event.target.checked).then((data) => {
+      console.log(data);
+    });
   };
 
   const handlClame = () => {
