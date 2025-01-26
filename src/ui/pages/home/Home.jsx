@@ -333,7 +333,7 @@ function Home() {
           </div>
         </div>
         `;
-    // window.electronAPI.printBill(billHTML);
+    window.electronAPI.printBill(billHTML);
     console.log(payload);
 
     openAlertBox(`YOUR BET HAS BEEN ACCEPTED WITH ID: ${payload.ticket_id}`);
