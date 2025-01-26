@@ -26,8 +26,10 @@ import LobbyBg from "../public/backgrounds/lobbyBg.png";
 import { useEffect, useState } from "react";
 import { set_autoclame } from "../api/gameData";
 import useLocalStorage from "../utils/useLocalStorage";
+import { useNavigate } from "react-router-dom";
 
 function Header({ balance, openAlertBox }) {
+  const navigate = useNavigate();
   const [visibillity, setVisibillity] = useState(true);
   const [barcode, setBarcode] = useState("")
   const [toggle, setToggle] = useLocalStorage("isMute", false);
@@ -57,6 +59,21 @@ function Header({ balance, openAlertBox }) {
   const handlClame = () => {
     console.log("clame", barcode);
   };
+
+  const handleLogout = () => {
+    // Clear all cookies
+    document.cookie.split(";").forEach((cookie) => {
+      document.cookie = cookie
+        .replace(/^ +/, "")
+        .replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/");
+    });
+    // Clear storages and reload
+    navigate("/");
+    localStorage.clear();
+    sessionStorage.clear();
+    // window.location.reload();
+  };
+
 
   useEffect(() => {
     Howler.mute(!toggle);
@@ -93,8 +110,10 @@ function Header({ balance, openAlertBox }) {
           borderRadius: "0px",
           fontSize: "16px",
           ml: 2,
+          zIndex: 100,
         }}
         startIcon={<HomeIcon />}
+        onClick={handleLogout}
       >
         Lobby
       </Button>
@@ -113,6 +132,7 @@ function Header({ balance, openAlertBox }) {
           <FormControlLabel
             checked={isPrint}
             onChange={(e) => {
+              openAlertBox("Print is " + (e.target.checked ? "ON" : "OFF"));
               setIsPrint(e.target.checked);
             }}
             sx={{

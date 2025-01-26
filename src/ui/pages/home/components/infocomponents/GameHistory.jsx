@@ -278,6 +278,7 @@ function GameHistory() {
                     mb: 10,
                     bgcolor: "#FFFFFF",
                     borderBottom: "6px solid #FFE5C6",
+                    fontWeight: "bold",
                   },
                   "&:last-child td, &:last-child th": { border: 0 },
                 }}
@@ -294,8 +295,8 @@ function GameHistory() {
                 <TableCell>{row.status}</TableCell>
                 <TableCell>{row?.result}</TableCell>
                 <TableCell>{row.date}</TableCell>
-                <TableCell>{row.draw_time}</TableCell>
-                <TableCell>{row.ticket_time}</TableCell>
+                <TableCell>{moment(row.draw_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}</TableCell>
+                <TableCell>{moment(row.ticket_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}</TableCell>
               </TableRow>
             ))}
           </TableBody>

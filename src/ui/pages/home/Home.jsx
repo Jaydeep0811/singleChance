@@ -28,6 +28,7 @@ import Stars from "../../public/backgrounds/stars.png";
 import CryptoJS from "crypto-js";
 import useSpinningGame from "../../hooks/useSpinningGame";
 import YouWin from "./components/YouWin";
+import Spinner3 from "../../components/Spinner/Spinner3";
 // const crypto = window.crypto || window.msCrypto;
 
 // Setup the new Howl.
@@ -156,7 +157,6 @@ function Home() {
   const wheelRef2 = useRef(null);
   const currentRef = useRef(null);
   const boxRef = useRef(null);
-  const progressRef = useRef(null);
   const hasCountdownStarted = useRef(false); // Tracks if onCountdownStart has been called
   const hasCountdownEnded = useRef(false); // Tracks if onCountdownEnd has been called
 
@@ -486,7 +486,11 @@ function Home() {
       // }
       const response = await predict_winner(gameID);
       if (response.statusCode === 200) {
-        console.log("Prediction successful:", response);
+        const win = response.message.general[0];
+        setWin(win.win);
+        if (win.is_win === true) {
+          handleYouWin();
+        }
       } else {
         console.error("Prediction failed:", response);
       }
@@ -554,6 +558,14 @@ function Home() {
   }, [anchorEl]);
 
   useEffect(() => {
+    if (balance <= 0) {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
+  }, [balance]);
+
+  useEffect(() => {
     fetchBalance();
     // setGameID(generateRandomInt(100000, 999999).toString());
   }, []);
@@ -604,10 +616,12 @@ function Home() {
               wheelRef2={wheelRef2}
               currentRef={currentRef}
             />
-            {/* <YouWin win={win} isOpen={isOpen} /> */}
+            {/* <Spinner3 /> */}
+            <YouWin win={win} isOpen={isOpen} />
           </Box>
           <Box sx={{ position: "absolute", right: "1.5rem", top: "6.5rem" }}>
             <BetNumbers
+              isDisabled={isDisabled}
               betNumList={betNumList}
               betButtonClick={betButtonClick}
               chipSound={chipSound}
@@ -615,19 +629,20 @@ function Home() {
           </Box>
         </Box>
         <BottomPortion
+          balance={balance}
           chipNum={chipNum}
           handlePlay={handlePlay}
           setChipNum={setChipNum}
           betFunction={betFunction}
           chipSound={chipSound}
           openAlertBox={openAlertBox}
-          remainingTime={formatCountdown(countdown)}
+          remainingTime={countdown}
           isDisabled={isDisabled}
           betFunc={betFunc}
           play={play}
           betNumList={betNumList}
           duration={nextIntervalTime}
-          progressRef={progressRef}
+          // progressRef={progressRef}
         />
       </Box>
       <MessageModal

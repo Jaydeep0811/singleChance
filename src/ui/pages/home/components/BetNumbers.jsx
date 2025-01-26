@@ -57,7 +57,7 @@ import token from "../../../public/icons/token.png";
 //   },
 // ];
 
-function BetNumbers({ betNumList, betButtonClick, chipSound }) {
+function BetNumbers({ betNumList, betButtonClick, chipSound, isDisabled }) {
   // const [betNumList, setBetNumList] = useState([
   //   {
   //     num: 1,
@@ -131,6 +131,7 @@ function BetNumbers({ betNumList, betButtonClick, chipSound }) {
         {betNumList.map((e, i) => (
           <Grid size={2.4} key={i + 1}>
             <Button
+              disabled={isDisabled}
               component={Paper}
               elevation={0}
               sx={{

@@ -41,7 +41,7 @@ function BottomPortion({
   play,
   betNumList,
   duration,
-  progressRef,
+  // progressRef,
 }) {
   // const [chipNum, setChipNum] = useState(null);
   // const progressRef = useRef(null);
@@ -49,7 +49,8 @@ function BottomPortion({
   // const initialTime = moment.duration(3, "minutes"); // 3 minutes
   // const [remainingTime, setRemainingTime] = useState(initialTime);
   // const [isCounting, setIsCounting] = useState(false);
-
+  const progressRef = useRef(null);
+  const TOTAL_DURATION = 120000; // 2 minutes in milliseconds
   const handleShrink = () => {
     // console.log(
     //   betNumList
@@ -60,14 +61,13 @@ function BottomPortion({
     // handlePrint();
     // if (!isCounting) {
     //   setIsCounting(true); // Start countdown
-      // gsap.to(progressRef.current, {
-      //   width: 0, // Shrink to 0 width
-      //   duration: 180, // Total duration in seconds (180 seconds)
-      //   ease: "linear", // Linear easing for consistent speed
-      // });
+    // gsap.to(progressRef.current, {
+    //   width: 0, // Shrink to 0 width
+    //   duration: 180, // Total duration in seconds (180 seconds)
+    //   ease: "linear", // Linear easing for consistent speed
+    // });
     // }
   };
-
 
   // useEffect(() => {
   //   const interval = setInterval(() => {
@@ -88,6 +88,30 @@ function BottomPortion({
   //     return () => clearInterval(timer); // Cleanup timer
   //   }
   // }, [remainingTime, isCounting]);
+
+  const formatCountdown = (ms) => {
+    const seconds = Math.floor((ms / 1000) % 60);
+    const minutes = Math.floor((ms / (1000 * 60)) % 60);
+    return `${"0" + minutes}:${seconds.toString().padStart(2, "0")}`;
+  };
+
+  // Add useEffect for progress bar animation
+  useEffect(() => {
+    if (remainingTime > 0 && progressRef.current) {
+      const percentageRemaining = (remainingTime / TOTAL_DURATION) * 100;
+      
+      // Set initial width based on remaining time
+      gsap.set(progressRef.current, { width: `${percentageRemaining}%` });
+      
+      // Animate remaining time to 0
+      gsap.to(progressRef.current, {
+        width: '0%',
+        duration: remainingTime / 1000,
+        ease: "linear",
+      });
+    }
+  }, [remainingTime]);
+
 
   return (
     <Box sx={{ position: "relative", mt: "-235px" }}>
@@ -123,6 +147,7 @@ function BottomPortion({
       >
         {chipList.map((e, i) => (
           <IconButton
+            disabled={isDisabled}
             key={i + 1}
             sx={{ position: "relative", width: "110px", height: "110px" }}
             onClick={() => {
@@ -370,7 +395,7 @@ function BottomPortion({
                 borderRadius: "12px 12px 0px 0px",
               }}
             >
-              {remainingTime}
+              {formatCountdown(remainingTime)}
             </Typography>
             <Box sx={{ p: "14px" }}>
               <Box
@@ -391,7 +416,8 @@ function BottomPortion({
                   ref={progressRef}
                   sx={{
                     backgroundImage:
-                      "linear-gradient(90deg, rgba(220,0,0,1) 0%, rgba(255,195,0,1) 100%)",
+                      "linear-gradient(90deg, rgba(220,0,0,1) 0%, rgba(255,195,0,1) 48%, rgba(0,255,30,1) 100%)",
+                    backgroundColor: "rgb(220,0,0)",
                     width: "100%",
                     height: "100%",
                     transition: "width 0.3s ease-in-out",
