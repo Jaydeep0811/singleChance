@@ -216,7 +216,9 @@ function Home() {
   }, []);
 
   function generateGameID() {
-    return Math.floor(Math.random() * (999999 - 100000 + 1)) + 100000;
+    const timestamp = Date.now();
+    const random = Math.floor(Math.random() * 1000);
+    return parseInt(`${timestamp}`.slice(-6) + random.toString().padStart(3, '0'));
   }
 
   function generateUniqueCode() {
@@ -333,7 +335,7 @@ function Home() {
           </div>
         </div>
         `;
-    window.electronAPI.printBill(billHTML);
+    // window.electronAPI.printBill(billHTML, payload.ticket_id);
     console.log(payload);
 
     openAlertBox(`YOUR BET HAS BEEN ACCEPTED WITH ID: ${payload.ticket_id}`);
@@ -478,14 +480,16 @@ function Home() {
 
   const fetchPredictWinner = async function () {
     try {
-      let response;
-      if (gameID) {
-        // If gameID exists, call API with gameID to calculate profit margin
-        response = await predict_winner(gameID);
-      } else {
-        // If no gameID, call API without parameters for random prediction
-        response = await predict_winner();
+      const currentGameID = localStorage.getItem('gameID');
+      console.log('Fetching prediction for gameID:', currentGameID);
+
+      if (!currentGameID) {
+        console.warn('No gameID available for prediction');
+        return;
       }
+
+      const response = await predict_winner(currentGameID);
+      console.log('Prediction response:', response);
       
       if (response.statusCode === 200) {
         const win = response.message.general[0];
@@ -525,20 +529,35 @@ function Home() {
 
   // Move these callback definitions before any other state or refs
   const onEvery1m45s = useCallback(() => {
+    const currentGameID = localStorage.getItem('gameID');
+    console.log('1m45s - Current gameID:', currentGameID);
+    
     fetchPredictWinner();
     setIsDisabled(true);
     noMoreBetsPlease.play();
     openAlertBox(`NO MORE BETS PLEASE`);
-
-    console.log("Triggered at 1 minute 05 seconds!");
-  }, []); // Empty dependency array since it only uses setIsDisabled
+  }, [fetchPredictWinner, setIsDisabled, noMoreBetsPlease, openAlertBox]);
 
   const onEvery2min = useCallback(() => {
-    setIsDisabled(false);
-    setGameID("");
+    console.log('2min - Starting new game cycle');
+    
+    // First handle the play animation
     handlePlay();
-    console.log("Triggered every 2 minutes!");
-  }, []); // Empty dependency array since it only uses setIsDisabled
+    
+    // Clear game state
+    setIsDisabled(false);
+    setGameID(''); // Clear React state
+    localStorage.removeItem('gameID'); // Clear localStorage
+    
+    // Generate new gameID for next round
+    const newGameID = generateGameID().toString();
+    setTimeout(() => {
+      setGameID(newGameID);
+      localStorage.setItem('gameID', newGameID);
+      console.log('New gameID set:', newGameID);
+    }, 2000); // Wait for 2 seconds before setting new gameID
+    
+  }, [setIsDisabled, setGameID, handlePlay]);
 
   const { countdown, nextIntervalTime } = useSpinningGame(
     onEvery1m45s,
@@ -560,12 +579,17 @@ function Home() {
   }, [anchorEl]);
 
   useEffect(() => {
+    console.log('Disabled state changed:', isDisabled);
+  }, [isDisabled]);
+
+  useEffect(() => {
+    console.log('Balance effect - Balance:', balance, 'IsCounting:', isCounting);
     if (balance <= 0) {
       setIsDisabled(true);
-    } else {
+    } else if (!isCounting) {
       setIsDisabled(false);
     }
-  }, [balance]);
+  }, [balance, isCounting]);
 
   useEffect(() => {
     fetchBalance();
