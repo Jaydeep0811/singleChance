@@ -444,7 +444,7 @@ export default BottomPortion;
 
 const BackgroundSVG = () => (
   <svg
-    width={1440}
+    // width={1440}
     // height={327}
     viewBox="0 0 1440 327"
     fill="none"

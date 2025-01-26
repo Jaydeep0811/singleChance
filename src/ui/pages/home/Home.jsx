@@ -607,8 +607,8 @@ function Home() {
             aria-describedby={id}
             sx={{
               position: "absolute",
-              left: "25px",
-              top: 50,
+              left: "8px",
+              top: 45,
               width: "680px",
             }}
             ref={boxRef}
