@@ -122,7 +122,7 @@ function Home() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [infoModal, setinfoModal] = useState(false);
   const [balance, setBalance] = useState(0);
-  const [gameID, setGameID] = useState("");
+  const [gameID, setGameID] = useLocalStorage("gameID", "");
   const [isOpen, setIsOpen] = useState(false);
   const [local, setLocal] = useLocalStorage("name", {});
 
@@ -235,7 +235,7 @@ function Home() {
 
   // Handle Spin Button
   const handlePlay = () => {
-    let spinum = Math.floor(Math.random() * 10) + 1;
+    let spinum = win;
     const newHistory = [...historyList];
     newHistory.pop(); // Remove the last item
     setHistoryList([
@@ -247,7 +247,7 @@ function Home() {
     ]);
     // spinner(8); // Spin and land on "1"
     // setTicketID(generateUniqueCode().toString());
-    fetchPredictWinner(); // Predict the winner
+    // fetchPredictWinner(); // Predict the winner
     spinnerSound.play();
     spinner(spinum); // Spin and land on "1"
     // setTimeout(() => {
@@ -277,20 +277,18 @@ function Home() {
 
     const pairedItems = chunkArray(
       betNumList.filter((e) => e.token !== "" && e.token !== null),
-      2 // Pair items into chunks of 2
+      2
     );
 
-    let gameIDLet;
-    if (gameID === "") {
-      gameIDLet = generateGameID().toString();
-      setGameID(gameIDLet);
-    } else {
-      gameIDLet = gameID;
+    // Use the existing gameID from localStorage if available, otherwise generate new one
+    const currentGameID = gameID || generateGameID().toString();
+    if (!gameID) {
+      setGameID(currentGameID);
     }
 
     const payload = {
       ticket_id: generateUniqueCode().toString(),
-      game_id: gameIDLet,
+      game_id: currentGameID, // Use the currentGameID here
       date: moment().format("YYYY-MM-DD"),
       draw_time: duration.format("HH:mm:ss"),
       ticket_time: moment().format("HH:mm:ss"),
@@ -480,11 +478,15 @@ function Home() {
 
   const fetchPredictWinner = async function () {
     try {
-      // if (!gameID) {
-      //   console.error("No game ID available");
-      //   return;
-      // }
-      const response = await predict_winner(gameID);
+      let response;
+      if (gameID) {
+        // If gameID exists, call API with gameID to calculate profit margin
+        response = await predict_winner(gameID);
+      } else {
+        // If no gameID, call API without parameters for random prediction
+        response = await predict_winner();
+      }
+      
       if (response.statusCode === 200) {
         const win = response.message.general[0];
         setWin(win.win);

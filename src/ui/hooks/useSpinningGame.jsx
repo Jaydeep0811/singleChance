@@ -48,13 +48,17 @@ const useSpinningGame = (onEvery1m45s, onEvery2m, onEvery15sec, onEvery1m40s) =>
       // Schedule the 15sec callback
       if (interval15secRef.current) clearTimeout(interval15secRef.current);
       const fifteenSecDelay = 15000; // 15 seconds from start
-      interval15secRef.current = setTimeout(() => {
-        if (!hasCalled15secRef.current) {
-          onEvery15sec();
-          hasCalled15secRef.current = true;
-        }
-        interval15secRef.current = null;
-      }, fifteenSecDelay); // Call after 15 seconds from now
+      
+      // Only schedule if we're at the start of the interval
+      if (timeUntilNextInterval > (2 * 60 * 1000 - 15000)) {
+        interval15secRef.current = setTimeout(() => {
+          if (!hasCalled15secRef.current) {
+            onEvery15sec();
+            hasCalled15secRef.current = true;
+          }
+          interval15secRef.current = null;
+        }, fifteenSecDelay);
+      }
 
       // Schedule the 1m40s callback
       if (interval4Ref.current) clearTimeout(interval4Ref.current);

@@ -2,7 +2,9 @@ import { Box, IconButton, Paper, Typography } from "@mui/material";
 import { InfoIcon } from "../../../assets/Icones";
 import topBackground from "../../../public/backgrounds/topBackground.png";
 import useLocalStorage from "../../../utils/useLocalStorage";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { get_game_result } from "../../../api/gameData";
+import moment from "moment";
 
 const timeLapList = [
   {
@@ -77,29 +79,40 @@ const getColorForNumber = (number) => {
 function Historyinfo({ setinfoModal }) {
 
   const [historyList, sethistoryList] = useState([])
+  const [idLocl, setLocalid] = useLocalStorage("userDetails", {});
 
-  // const [historyList] = useLocalStorage("historyList");
-  // console.log(localStorage.getItem("historyList"));
+  const calculateNextInterval = useCallback(() => {
+    const time = 2; // Interval time in minutes
+    const intervalMs = time * 60 * 1000;
 
-  // useEffect(() => {
-  //   // Initial load
-  //   sethistoryList(JSON.parse(localStorage.getItem("historyList")));
+    const now = moment();
+    const midnight = moment().startOf("day");
+    const elapsedTime = now.diff(midnight);
+    const timeUntilNextInterval = intervalMs - (elapsedTime % intervalMs);
 
-  //   // Listen for storage changes
-  //   const handleStorageChange = (e) => {
-  //     if (e.key === "historyList") {
-  //       sethistoryList(JSON.parse(e.newValue));
-  //     }
-  //   };
+    return {
+      timeUntilNextInterval,
+    };
+  }, []);
 
-  //   window.addEventListener("storage", handleStorageChange);
+  const fetchGameResult = async () => {
+    const response = await get_game_result(idLocl.id, 1, 10);
+    sethistoryList(response.response.data);
+    // console.log(response.response.data, "response data ((((((((((((");
+  };
 
-  //   // Cleanup listener on component unmount
-  //   return () => {
-  //     window.removeEventListener("storage", handleStorageChange);
-  //   };
-  // }, []);
-  
+  useEffect(() => {
+    const { timeUntilNextInterval } = calculateNextInterval();
+    const setInterval = setTimeout(() => {
+      fetchGameResult();
+    }, timeUntilNextInterval);
+    return () => clearTimeout(setInterval);
+  }, []);
+
+  useEffect(() => {
+    fetchGameResult();
+  }, []);
+
   return (
     <Box
       sx={{
@@ -164,12 +177,12 @@ function Historyinfo({ setinfoModal }) {
                   mb: "4px",
                 }}
               >
-                {e.time}
+                {moment(e.draw_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}
               </Typography>
               <Paper
                 elevation={0}
                 sx={{
-                  bgcolor: getColorForNumber(e.num) || "#F98C07",
+                  bgcolor: getColorForNumber(e.bet) || "#F98C07",
                   borderRadius: "6px",
                   display: "flex",
                   justifyContent: "center",
@@ -184,7 +197,7 @@ function Historyinfo({ setinfoModal }) {
                     fontFamily: "Hahmlet Variable",
                   }}
                 >
-                  {e.num}
+                  {e.bet}
                 </Typography>
               </Paper>
             </Box>

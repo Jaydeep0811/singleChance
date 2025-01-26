@@ -238,69 +238,71 @@ function GameHistory() {
             </IconButton>
           </Box>
         </Box>
-        <Table
-          sx={{ minWidth: 650, borderSpacing: "0 20px" }}
-          aria-label="simple table"
-        >
-          <TableHead>
-            <TableRow
-              sx={{
-                th: {
-                  mb: 1,
-                  border: 0,
-                  bgcolor: "rgba(255,180,193,39)",
-                  fontSize: "0.9rem",
-                  fontWeight: "600",
-                  borderBottom: "6px solid #FFE5C6",
-                },
-              }}
-            >
-              <TableCell>Ticket ID</TableCell>
-              <TableCell>Game ID</TableCell>
-              <TableCell>Start Point</TableCell>
-              <TableCell>Played</TableCell>
-              <TableCell>Won</TableCell>
-              <TableCell>End</TableCell>
-              <TableCell>End Point</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Result</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Draw Time</TableCell>
-              <TableCell>Ticket Time</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {historyList.map((row) => (
-              <TableRow
-                key={row.ticketId}
-                sx={{
-                  "td,th": {
-                    mb: 10,
-                    bgcolor: "#FFFFFF",
-                    borderBottom: "6px solid #FFE5C6",
-                    fontWeight: "bold",
-                  },
-                  "&:last-child td, &:last-child th": { border: 0 },
-                }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.ticket_id}
-                </TableCell>
-                <TableCell>{row.game_id}</TableCell>
-                <TableCell>{row.start_point}</TableCell>
-                <TableCell>{row.played}</TableCell>
-                <TableCell>{row.won}</TableCell>
-                <TableCell>{row.end}</TableCell>
-                <TableCell>{row.end_point}</TableCell>
-                <TableCell>{row.status}</TableCell>
-                <TableCell>{row?.result}</TableCell>
-                <TableCell>{row.date}</TableCell>
-                <TableCell>{moment(row.draw_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}</TableCell>
-                <TableCell>{moment(row.ticket_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}</TableCell>
+        <TableContainer sx={{ maxHeight: '400px', overflow: 'auto' }}>
+          <Table
+            stickyHeader
+            sx={{ 
+              // minWidth: 650, 
+              // borderSpacing: "0 20px",
+              // tableLayout: 'fixed',
+              '& .MuiTableCell-stickyHeader': {
+                backgroundColor: "rgba(255,180,193,39)",
+                // borderBottom: "6px solid #FFE5C6",
+                fontWeight: "600",
+                fontSize: "0.9rem",
+              }
+            }}
+            // aria-label="simple table"
+          >
+            <TableHead>
+              <TableRow>
+                <TableCell>Ticket ID</TableCell>
+                <TableCell>Game ID</TableCell>
+                <TableCell>Start Point</TableCell>
+                <TableCell>Played</TableCell>
+                <TableCell>Won</TableCell>
+                <TableCell>End</TableCell>
+                <TableCell>End Point</TableCell>
+                <TableCell>Status</TableCell>
+                <TableCell>Result</TableCell>
+                <TableCell>Date</TableCell>
+                <TableCell>Draw Time</TableCell>
+                <TableCell>Ticket Time</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+            </TableHead>
+            <TableBody>
+              {historyList.map((row) => (
+                <TableRow
+                  key={row.ticketId}
+                  sx={{
+                    "td,th": {
+                      // mb: 10,
+                      bgcolor: "#FFFFFF",
+                      borderBottom: "6px solid #FFE5C6",
+                      fontWeight: "bold",
+                    },
+                    "&:last-child td, &:last-child th": { border: 0 },
+                  }}
+                >
+                  <TableCell component="th" scope="row">
+                    {row.ticket_id}
+                  </TableCell>
+                  <TableCell>{row.game_id}</TableCell>
+                  <TableCell>{row.start_point}</TableCell>
+                  <TableCell>{row.played}</TableCell>
+                  <TableCell>{row.won}</TableCell>
+                  <TableCell>{row.end}</TableCell>
+                  <TableCell>{row.end_point}</TableCell>
+                  <TableCell>{row.status}</TableCell>
+                  <TableCell>{row?.result}</TableCell>
+                  <TableCell>{row.date}</TableCell>
+                  <TableCell>{moment(row.draw_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}</TableCell>
+                  <TableCell>{moment(row.ticket_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </TableContainer>
 
       <Box

@@ -22,6 +22,7 @@ function StyledModal({ open, handleClose, children }) {
           height: 615,
           backgroundPosition: "center",
           boxShadow: 24,
+          zIndex: 99999,
           //   bgcolor: "background.paper",
           //   border: "2px solid #000",
           //   p: 4,

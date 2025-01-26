@@ -13,7 +13,7 @@ import {
   Checkbox,
   Button,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   CalanderIcon,
   CheckedInIcon,
@@ -23,6 +23,8 @@ import {
 } from "../../../../assets/Icones";
 import ViewButton from "../../../../public/icons/viewButton.png";
 import moment from "moment";
+import { get_game_result } from "../../../../api/gameData";
+import useLocalStorage from "../../../../utils/useLocalStorage";
 
 function createData(name, calories, fat, carbs, protein) {
   return { name, calories, fat, carbs, protein };
@@ -40,6 +42,9 @@ function Result() {
   const dateRef = useRef(null);
   const [date, setDate] = useState(moment());
   const [pageNum, setPageNum] = useState(1)
+  const [gameResult, setGameResult] = useState([])
+  const [idLocl, setLocalid] = useLocalStorage("userDetails", {});
+
 
   const handleIconClick = () => {
     console.log(dateRef);
@@ -54,6 +59,15 @@ function Result() {
     const selectedDate = event.target.value; // Get the selected date as a string
     setDate(moment(selectedDate)); // Update the state with the new date
   };
+
+  const fetchGameResult = async () => {
+    const response = await get_game_result(idLocl.id, pageNum);
+    setGameResult(response.response.data);
+  };
+
+  useEffect(() => {
+    fetchGameResult();
+  }, [pageNum]);
 
   return (
     <>
@@ -140,58 +154,71 @@ function Result() {
             </IconButton>
           </Box>
         </Box>
-        <Table
-          sx={{ minWidth: 650, borderSpacing: "0 20px" }}
-          aria-label="simple table"
-        >
-          <TableHead>
-            <TableRow
-              sx={{
-                th: {
-                  mb: 1,
-                  border: 0,
-                  bgcolor: "rgba(255,180,193,39)",
-                  fontSize: "17px",
-                  fontWeight: "600",
-                  borderBottom: "6px solid #FFE5C6",
-                },
-              }}
+        <Box sx={{ 
+          maxHeight: '400px', 
+          overflow: 'auto',
+          '& .MuiTableContainer-root': {
+            maxHeight: '100%',
+          },
+          '& .MuiTableHead-root': {
+            position: 'sticky',
+            top: 0,
+            zIndex: 2,
+            backgroundColor: "rgba(255,180,193,39)",
+          },
+          '& .MuiTableHead-root .MuiTableCell-root': {
+            backgroundColor: "rgba(255,180,193,39)",
+          }
+        }}>
+          <TableContainer>
+            <Table
+              sx={{ minWidth: 650, borderSpacing: "0 20px", tableLayout: 'fixed' }}
+              aria-label="simple table"
             >
-              <TableCell sx={{ width: "50%", fontSize: "0.9rem !important" }}>
-                DRAW TIME
-              </TableCell>
-              <TableCell sx={{ width: "50%", fontSize: "0.9rem !important" }}>
-                RESULT
-              </TableCell>
-              {/* <TableCell align="right">Fat&nbsp;(g)</TableCell>
-              <TableCell align="right">Carbs&nbsp;(g)</TableCell>
-              <TableCell align="right">Protein&nbsp;(g)</TableCell> */}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{
-                  "td,th": {
-                    mb: 10,
-                    bgcolor: "#FFFFFF",
-                    borderBottom: "6px solid #FFE5C6",
-                  },
-                  "&:last-child td, &:last-child th": { border: 0 },
-                }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell>{row.calories}</TableCell>
-                {/* <TableCell align="right">{row.fat}</TableCell>
-                <TableCell align="right">{row.carbs}</TableCell>
-                <TableCell align="right">{row.protein}</TableCell> */}
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+              <TableHead>
+                <TableRow
+                  sx={{
+                    th: {
+                      mb: 1,
+                      border: 0,
+                      fontSize: "17px",
+                      fontWeight: "600",
+                      borderBottom: "6px solid #FFE5C6",
+                    },
+                  }}
+                >
+                  <TableCell sx={{ width: "50%", fontSize: "0.9rem !important" }}>
+                    DRAW TIME
+                  </TableCell>
+                  <TableCell sx={{ width: "50%", fontSize: "0.9rem !important" }}>
+                    RESULT
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {gameResult.map((row) => (
+                  <TableRow
+                    key={row.name}
+                    sx={{
+                      "td,th": {
+                        mb: 10,
+                        bgcolor: "#FFFFFF",
+                        borderBottom: "6px solid #FFE5C6",
+                        fontWeight: "bold",
+                      },
+                      "&:last-child td, &:last-child th": { border: 0 },
+                    }}
+                  >
+                    <TableCell component="th" scope="row">
+                      {row.bet}
+                    </TableCell>
+                    <TableCell>{moment(row.draw_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       </TableContainer>
     </>
   );

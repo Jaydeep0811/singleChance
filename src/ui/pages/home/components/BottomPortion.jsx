@@ -98,17 +98,25 @@ function BottomPortion({
   // Add useEffect for progress bar animation
   useEffect(() => {
     if (remainingTime > 0 && progressRef.current) {
+      // Kill any existing animations on the progress bar
+      gsap.killTweensOf(progressRef.current);
+      
       const percentageRemaining = (remainingTime / TOTAL_DURATION) * 100;
       
-      // Set initial width based on remaining time
+      // Reset to initial width
       gsap.set(progressRef.current, { width: `${percentageRemaining}%` });
       
-      // Animate remaining time to 0
-      gsap.to(progressRef.current, {
+      // Create new animation
+      const animation = gsap.to(progressRef.current, {
         width: '0%',
         duration: remainingTime / 1000,
         ease: "linear",
       });
+
+      // Cleanup function to kill animation when component unmounts or remainingTime changes
+      return () => {
+        animation.kill();
+      };
     }
   }, [remainingTime]);
 
