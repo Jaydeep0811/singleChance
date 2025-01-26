@@ -1,7 +1,9 @@
-import Cookies from 'js-cookie';
+// Import electron-store if you want persistent storage
+// import Store from 'electron-store';
+// const store = new Store();
 
 const TokenManager = {
-    // Cookie names
+    // Storage keys
     ACCESS_TOKEN: 'accessToken',
     REFRESH_TOKEN: 'refreshToken',
     TOKEN_EXPIRY: 'tokenExpiry',
@@ -9,30 +11,14 @@ const TokenManager = {
     // Set authentication tokens
     setAuthTokens: (response) => {
       try {
-        // Set access token with explicit expiry
-        Cookies.set(TokenManager.ACCESS_TOKEN, response.accessToken, {
-          secure: true,
-          sameSite: 'Strict',
-          path: '/'
-        });
-  
-        // Set refresh token
-        Cookies.set(TokenManager.REFRESH_TOKEN, response.refreshToken, {
-          secure: true,
-          sameSite: 'Strict',
-          path: '/'
-        });
-  
-        // Store expiry
-        Cookies.set(TokenManager.TOKEN_EXPIRY, response.expiry, {
-          secure: true,
-          sameSite: 'Strict',
-          path: '/'
-        });
+        // Set tokens in localStorage
+        localStorage.setItem(TokenManager.ACCESS_TOKEN, response.accessToken);
+        localStorage.setItem(TokenManager.REFRESH_TOKEN, response.refreshToken);
+        localStorage.setItem(TokenManager.TOKEN_EXPIRY, response.expiry);
   
         // Verify tokens were set
-        const accessToken = Cookies.get(TokenManager.ACCESS_TOKEN);
-        const refreshToken = Cookies.get(TokenManager.REFRESH_TOKEN);
+        const accessToken = localStorage.getItem(TokenManager.ACCESS_TOKEN);
+        const refreshToken = localStorage.getItem(TokenManager.REFRESH_TOKEN);
         
         if (!accessToken || !refreshToken) {
           console.error('Failed to set tokens');
@@ -47,15 +33,15 @@ const TokenManager = {
     },
   
     // Get tokens
-    getAccessToken: () => Cookies.get(TokenManager.ACCESS_TOKEN),
-    getRefreshToken: () => Cookies.get(TokenManager.REFRESH_TOKEN),
-    getTokenExpiry: () => Cookies.get(TokenManager.TOKEN_EXPIRY),
+    getAccessToken: () => localStorage.getItem(TokenManager.ACCESS_TOKEN),
+    getRefreshToken: () => localStorage.getItem(TokenManager.REFRESH_TOKEN),
+    getTokenExpiry: () => localStorage.getItem(TokenManager.TOKEN_EXPIRY),
   
     // Clear all auth tokens
     clearTokens: () => {
-      Cookies.remove(TokenManager.ACCESS_TOKEN, { path: '/' });
-      Cookies.remove(TokenManager.REFRESH_TOKEN, { path: '/' });
-      Cookies.remove(TokenManager.TOKEN_EXPIRY, { path: '/' });
+      localStorage.removeItem(TokenManager.ACCESS_TOKEN);
+      localStorage.removeItem(TokenManager.REFRESH_TOKEN);
+      localStorage.removeItem(TokenManager.TOKEN_EXPIRY);
     },
   
     // Check if user is authenticated
