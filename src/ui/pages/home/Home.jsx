@@ -21,7 +21,7 @@ import LastChance from "../../public/GAME SOUNDS/Last chance.mp3";
 import PlaceYourBets from "../../public/GAME SOUNDS/Place your bets.mp3";
 
 import MessageModal from "../../components/CustomComponent/MessageModal";
-import { create_game, get_balance, predict_winner } from "../../api/gameData";
+import { create_game, get_balance, get_game_result, predict_winner } from "../../api/gameData";
 import moment from "moment";
 import useLocalStorage from "../../utils/useLocalStorage";
 import Stars from "../../public/backgrounds/stars.png";
@@ -114,14 +114,17 @@ function Home() {
     },
   ]);
 
+  const [idLocl, setLocalid] = useLocalStorage("userDetails", {});
   const [duration, setDuration] = useState(moment());
   const [chipNum, setChipNum] = useState(null);
   const [ismessModal, setIsmessageModal] = useState(false);
   const [play, setPlay] = useState(0);
-  const [win, setWin] = useState(0);
+
   const [isDisabled, setIsDisabled] = useState(false);
   const [infoModal, setinfoModal] = useState(false);
   const [balance, setBalance] = useState(0);
+  const [winAmount, setWinAmount] = useState(0)
+  const [betHistory, setBetHistory] = useState([])
   const [gameID, setGameID] = useLocalStorage("gameID", "");
   const [isOpen, setIsOpen] = useState(false);
   const [local, setLocal] = useLocalStorage("name", {});
@@ -215,10 +218,21 @@ function Home() {
     gsap.set(wheelRef2.current, { rotation: 18, transformOrigin: "50% 50%" });
   }, []);
 
+  const fetchGameResult = async () => {
+    const response = await get_game_result(idLocl.id, 1, 10);
+    setBetHistory(response.response.data);
+    // console.log(response.response.data, "response data ((((((((((((");
+  };
+
   function generateGameID() {
     const timestamp = Date.now();
-    const random = Math.floor(Math.random() * 1000);
-    return parseInt(`${timestamp}`.slice(-6) + random.toString().padStart(3, '0'));
+    const lastSixTimestamp = timestamp.toString().slice(-6);
+    const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
+    
+    // Combine last digit of timestamp with 5 random digits
+    const uniqueNumber = lastSixTimestamp.slice(-1) + random;
+    
+    return parseInt(uniqueNumber);
   }
 
   function generateUniqueCode() {
@@ -237,7 +251,8 @@ function Home() {
 
   // Handle Spin Button
   const handlePlay = () => {
-    let spinum = win;
+    // localStorage.getItem('winPoint');
+    let spinum = JSON.parse(localStorage.getItem('winPoint'));
     const newHistory = [...historyList];
     newHistory.pop(); // Remove the last item
     setHistoryList([
@@ -255,12 +270,17 @@ function Home() {
     // setTimeout(() => {
     //   // location.reload();
     // }, 150);
+    if (isOpen === true) {
+      handleYouWin();
+    }
+    fetchGameResult();
   };
 
   const handleYouWin = () => {
     setIsOpen(true);
     youWinSound.play();
     setAlertMessage("message");
+    fetchBalance();
   }
 
   const betFunc = function () {
@@ -480,35 +500,43 @@ function Home() {
 
   const fetchPredictWinner = async function () {
     try {
-      const currentGameID = localStorage.getItem('gameID');
+      let currentGameID = localStorage.getItem('gameID');
+      // Remove quotes, newlines, and trim whitespace
+      currentGameID = currentGameID 
+        ? JSON.parse(currentGameID.replace(/\n/g, '').trim())
+        : null;
       console.log('Fetching prediction for gameID:', currentGameID);
 
       if (!currentGameID) {
-        console.warn('No gameID available for prediction');
+        const response = await predict_winner();
+        console.warn('No gameID available, using default prediction');
+        if (response.statusCode === 200) {
+          const win = response.message.general[0];
+          localStorage.setItem('winPoint', JSON.stringify(win.win));
+          setWinAmount(win.amount);
+        }
         return;
       }
 
-      const response = await predict_winner(currentGameID);
+      const response = await predict_winner(currentGameID.toString());
       console.log('Prediction response:', response);
       
       if (response.statusCode === 200) {
         const win = response.message.general[0];
-        setWin(win.win);
-        if (win.is_win === true) {
-          handleYouWin();
-        }
+        // Explicitly stringify the win value and verify it's set
+        localStorage.setItem('winPoint', JSON.stringify(win.win));
+        console.log('Set winPoint in localStorage:', win.win);
+        // Verify the value was set correctly
+        const storedWinPoint = localStorage.getItem('winPoint');
+        console.log('Verified winPoint in localStorage:', storedWinPoint);
+        
+        setWinAmount(win.amount);
       } else {
         console.error("Prediction failed:", response);
       }
     } catch (error) {
       console.error("Error predicting winner:", error);
     }
-  };
-
-  const formatCountdown = (ms) => {
-    const seconds = Math.floor((ms / 1000) % 60);
-    const minutes = Math.floor((ms / (1000 * 60)) % 60);
-    return `${"0" + minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
   const onEvery15sec = useCallback(() => {
@@ -536,7 +564,7 @@ function Home() {
     setIsDisabled(true);
     noMoreBetsPlease.play();
     openAlertBox(`NO MORE BETS PLEASE`);
-  }, [fetchPredictWinner, setIsDisabled, noMoreBetsPlease, openAlertBox]);
+  }, []);
 
   const onEvery2min = useCallback(() => {
     console.log('2min - Starting new game cycle');
@@ -548,16 +576,18 @@ function Home() {
     setIsDisabled(false);
     setGameID(''); // Clear React state
     localStorage.removeItem('gameID'); // Clear localStorage
+    // localStorage.removeItem('winPoint');
     
     // Generate new gameID for next round
-    const newGameID = generateGameID().toString();
-    setTimeout(() => {
-      setGameID(newGameID);
-      localStorage.setItem('gameID', newGameID);
-      console.log('New gameID set:', newGameID);
-    }, 2000); // Wait for 2 seconds before setting new gameID
+    // const newGameID = generateGameID().toString();
+    // setTimeout(() => {
+    //   setGameID(newGameID);
+    //   localStorage.setItem('gameID', newGameID);
+    //   console.log('New gameID set:', newGameID);
+    // }, 2000); // Wait for 2 seconds before setting new gameID
     
-  }, [setIsDisabled, setGameID, handlePlay]);
+    
+  }, []);
 
   const { countdown, nextIntervalTime } = useSpinningGame(
     onEvery1m45s,
@@ -588,11 +618,13 @@ function Home() {
       setIsDisabled(true);
     } else if (!isCounting) {
       setIsDisabled(false);
+
     }
   }, [balance, isCounting]);
 
   useEffect(() => {
     fetchBalance();
+    fetchGameResult();
     // setGameID(generateRandomInt(100000, 999999).toString());
   }, []);
 
@@ -605,7 +637,7 @@ function Home() {
         }}
       >
         <Header balance={balance} openAlertBox={openAlertBox} />
-        <Historyinfo setinfoModal={setinfoModal} />
+        <Historyinfo betHistory={betHistory} setinfoModal={setinfoModal} />
         <img
           src={Stars}
           alt="star"
@@ -637,13 +669,14 @@ function Home() {
             }}
             ref={boxRef}
           >
+            {/* <h1 >7x</h1> */}
             <Spinner2
               wheelRef1={wheelRef1}
               wheelRef2={wheelRef2}
               currentRef={currentRef}
             />
             {/* <Spinner3 /> */}
-            <YouWin win={win} isOpen={isOpen} />
+            <YouWin winAmount={winAmount} isOpen={isOpen} setIsOpen={setIsOpen} />
           </Box>
           <Box sx={{ position: "absolute", right: "1.5rem", top: "6.5rem" }}>
             <BetNumbers
@@ -669,6 +702,7 @@ function Home() {
           betNumList={betNumList}
           duration={nextIntervalTime}
           // progressRef={progressRef}
+          totalWin={winAmount}
         />
       </Box>
       <MessageModal

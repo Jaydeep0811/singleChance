@@ -76,42 +76,42 @@ const getColorForNumber = (number) => {
   return colorMap[number] || "#F98C07"; // Default color if number not found
 };
 
-function Historyinfo({ setinfoModal }) {
+function Historyinfo({ setinfoModal, betHistory }) {
 
-  const [historyList, sethistoryList] = useState([])
-  const [idLocl, setLocalid] = useLocalStorage("userDetails", {});
+  // const [historyList, sethistoryList] = useState([])
+  // const [idLocl, setLocalid] = useLocalStorage("userDetails", {});
 
-  const calculateNextInterval = useCallback(() => {
-    const time = 2; // Interval time in minutes
-    const intervalMs = time * 60 * 1000;
+  // const calculateNextInterval = useCallback(() => {
+  //   const time = 2; // Interval time in minutes
+  //   const intervalMs = time * 60 * 1000;
 
-    const now = moment();
-    const midnight = moment().startOf("day");
-    const elapsedTime = now.diff(midnight);
-    const timeUntilNextInterval = intervalMs - (elapsedTime % intervalMs);
+  //   const now = moment();
+  //   const midnight = moment().startOf("day");
+  //   const elapsedTime = now.diff(midnight);
+  //   const timeUntilNextInterval = intervalMs - (elapsedTime % intervalMs);
 
-    return {
-      timeUntilNextInterval,
-    };
-  }, []);
+  //   return {
+  //     timeUntilNextInterval,
+  //   };
+  // }, []);
 
-  const fetchGameResult = async () => {
-    const response = await get_game_result(idLocl.id, 1, 10);
-    sethistoryList(response.response.data);
-    // console.log(response.response.data, "response data ((((((((((((");
-  };
+  // const fetchGameResult = async () => {
+  //   const response = await get_game_result(idLocl.id, 1, 10);
+  //   sethistoryList(response.response.data);
+  //   // console.log(response.response.data, "response data ((((((((((((");
+  // };
 
-  useEffect(() => {
-    const { timeUntilNextInterval } = calculateNextInterval();
-    const setInterval = setTimeout(() => {
-      fetchGameResult();
-    }, timeUntilNextInterval);
-    return () => clearTimeout(setInterval);
-  }, []);
+  // useEffect(() => {
+  //   const { timeUntilNextInterval } = calculateNextInterval();
+  //   const setInterval = setTimeout(() => {
+  //     fetchGameResult();
+  //   }, timeUntilNextInterval);
+  //   return () => clearTimeout(setInterval);
+  // }, []);
 
-  useEffect(() => {
-    fetchGameResult();
-  }, []);
+  // useEffect(() => {
+  //   fetchGameResult();
+  // }, []);
 
   return (
     <Box
@@ -167,7 +167,7 @@ function Historyinfo({ setinfoModal }) {
             gap: 1,
           }}
         >
-          {historyList.map((e, i) => (
+          {betHistory.map((e, i) => (
             <Box key={i}>
               <Typography
                 sx={{

@@ -41,6 +41,7 @@ function BottomPortion({
   play,
   betNumList,
   duration,
+  totalWin,
   // progressRef,
 }) {
   // const [chipNum, setChipNum] = useState(null);
@@ -237,7 +238,7 @@ function BottomPortion({
                 fontFamily: "Hahmlet Variable",
               }}
             >
-              0.00
+              {totalWin + ".00"}
             </Typography>
           </Box>
         </Box>

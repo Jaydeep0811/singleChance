@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import YouWinImg from "../../../public/backgrounds/youWin.png";
 import {  Typography, Zoom } from "@mui/material";
 
-function YouWin({ isOpen, win }) {
+function YouWin({ isOpen, winAmount, setIsOpen }) {
+
+
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => {
+        setIsOpen(false);
+      }, 3000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [isOpen]);
   return (
     <div
       style={{
@@ -27,7 +40,7 @@ function YouWin({ isOpen, win }) {
               fontFamily: "Hahmlet Variable",
             }}
           >
-            1000
+            {winAmount}
           </Typography>
         </div>
       </Zoom>
