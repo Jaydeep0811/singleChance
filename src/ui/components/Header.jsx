@@ -24,7 +24,7 @@ import {
 import HeaderBackground from "../public/backgrounds/headerBackground.png";
 import LobbyBg from "../public/backgrounds/lobbyBg.png";
 import { useEffect, useState } from "react";
-import { set_autoclame } from "../api/gameData";
+import { claim_unclamed_tickets, set_autoclame } from "../api/gameData";
 import useLocalStorage from "../utils/useLocalStorage";
 import { useNavigate } from "react-router-dom";
 
@@ -33,9 +33,12 @@ function Header({ balance, openAlertBox }) {
   const [visibillity, setVisibillity] = useState(true);
   const [barcode, setBarcode] = useState("")
   const [toggle, setToggle] = useLocalStorage("isMute", false);
-  const [isAutoClame, setIsAutoClame] = useLocalStorage("isAutoClame", false);
-  const [isPrint, setIsPrint] = useLocalStorage("isPrint", true);
-  const [isMute, setIsMute] = useLocalStorage("isMute", false);
+  const [isAutoClame, setIsAutoClame] = useLocalStorage("isAutoClame", true);
+  const [isPrinterEnabled, setIsPrinterEnabled] = useLocalStorage(
+    "isPrinterEnabled",
+    true
+  );
+  // const [isMute, setIsMute] = useLocalStorage("isMute", false);
 
   const muteFun = function () {
     setToggle(!toggle);
@@ -56,8 +59,10 @@ function Header({ balance, openAlertBox }) {
     });
   };
 
-  const handlClame = () => {
-    console.log("clame", barcode);
+  const handlClame = async () => {
+    // console.log("clame", barcode);
+    await claim_unclamed_tickets(barcode);
+    setBarcode("");
   };
 
   const handleLogout = () => {
@@ -73,6 +78,9 @@ function Header({ balance, openAlertBox }) {
     sessionStorage.clear();
     // window.location.reload();
   };
+
+  const handleUnclamedTicket = async () => {
+  }
 
 
   useEffect(() => {
@@ -130,10 +138,10 @@ function Header({ balance, openAlertBox }) {
       >
         <FormGroup>
           <FormControlLabel
-            checked={isPrint}
+            checked={isPrinterEnabled}
             onChange={(e) => {
               openAlertBox("Print is " + (e.target.checked ? "ON" : "OFF"));
-              setIsPrint(e.target.checked);
+              setIsPrinterEnabled(e.target.checked);
             }}
             sx={{
               "& .MuiTypography-root": { color: "#EEDE01", fontSize: "20px" },

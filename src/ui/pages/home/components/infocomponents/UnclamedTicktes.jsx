@@ -273,8 +273,9 @@ function UnclamedTicktes() {
                   <TableCell>{row.won}</TableCell>
                   <TableCell>{row.end}</TableCell>
                   <TableCell>{row.end_point}</TableCell>
-                  <TableCell>{row.status}</TableCell>
-                  <TableCell>{row?.result}</TableCell>
+                  {/* <TableCell sx={{ color: "lightblue"}}>{row.status}</TableCell> */}
+                  <TableCell sx={{ color: "#90D69F", textTransform: "uppercase"}}>PENDING</TableCell>
+                  <TableCell >{row?.result}</TableCell>
                   <TableCell>{row.date}</TableCell>
                   <TableCell>{moment(row.draw_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}</TableCell>
                   <TableCell>{moment(row.ticket_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}</TableCell>

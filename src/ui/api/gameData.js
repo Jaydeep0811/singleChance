@@ -82,7 +82,7 @@ export const get_unclamed_tickets = async function (id) {
 
 export const claim_unclamed_tickets = async function (id) {
   try {
-    const { data } = await axios.post("api/v1/game/claim/ticket/", {
+    const { data } = await axios.patch("api/v1/game/claim/ticket/", {
       ticket_id: id,
     });
     return data;

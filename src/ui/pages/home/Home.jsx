@@ -21,7 +21,12 @@ import LastChance from "../../public/GAME SOUNDS/Last chance.mp3";
 import PlaceYourBets from "../../public/GAME SOUNDS/Place your bets.mp3";
 
 import MessageModal from "../../components/CustomComponent/MessageModal";
-import { create_game, get_balance, get_game_result, predict_winner } from "../../api/gameData";
+import {
+  create_game,
+  get_balance,
+  get_game_result,
+  predict_winner,
+} from "../../api/gameData";
 import moment from "moment";
 import useLocalStorage from "../../utils/useLocalStorage";
 import Stars from "../../public/backgrounds/stars.png";
@@ -123,38 +128,44 @@ function Home() {
   const [isDisabled, setIsDisabled] = useState(false);
   const [infoModal, setinfoModal] = useState(false);
   const [balance, setBalance] = useState(0);
-  const [winAmount, setWinAmount] = useState(0)
-  const [betHistory, setBetHistory] = useState([])
+  const [winAmount, setWinAmount] = useState(0);
+  const [betHistory, setBetHistory] = useState([]);
   const [gameID, setGameID] = useLocalStorage("gameID", "");
   const [isOpen, setIsOpen] = useState(false);
   const [local, setLocal] = useLocalStorage("name", {});
+  const [isPrinterEnabled, setIsPrinterEnabled] = useLocalStorage(
+    "isPrinterEnabled",
+    true
+  );
 
   const generateHistoryData = () => {
     const data = [];
     const baseTime = new Date();
-    
+
     for (let i = 0; i < 10; i++) {
       // Generate random number between 1 and 5
       const randomNum = Math.floor(Math.random() * 5) + 1;
-      
+
       // Subtract 2 minutes for each entry
       const entryTime = new Date(baseTime - i * 2 * 60000);
-      const formattedTime = entryTime.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
+      const formattedTime = entryTime.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
       });
 
       data.push({
         num: randomNum,
-        time: formattedTime
+        time: formattedTime,
       });
     }
     return data;
   };
 
-  const [historyList, setHistoryList] = useLocalStorage("historyList", generateHistoryData());
-
+  const [historyList, setHistoryList] = useLocalStorage(
+    "historyList",
+    generateHistoryData()
+  );
 
   const wheelRef1 = useRef(null);
   const wheelRef2 = useRef(null);
@@ -227,11 +238,13 @@ function Home() {
   function generateGameID() {
     const timestamp = Date.now();
     const lastSixTimestamp = timestamp.toString().slice(-6);
-    const random = Math.floor(Math.random() * 100000).toString().padStart(5, '0');
-    
+    const random = Math.floor(Math.random() * 100000)
+      .toString()
+      .padStart(5, "0");
+
     // Combine last digit of timestamp with 5 random digits
     const uniqueNumber = lastSixTimestamp.slice(-1) + random;
-    
+
     return parseInt(uniqueNumber);
   }
 
@@ -252,7 +265,7 @@ function Home() {
   // Handle Spin Button
   const handlePlay = () => {
     // localStorage.getItem('winPoint');
-    let spinum = JSON.parse(localStorage.getItem('winPoint'));
+    let spinum = JSON.parse(localStorage.getItem("winPoint"));
     const newHistory = [...historyList];
     newHistory.pop(); // Remove the last item
     setHistoryList([
@@ -260,7 +273,7 @@ function Home() {
         num: spinum,
         time: moment().format("h:mm A"),
       },
-      ...newHistory
+      ...newHistory,
     ]);
     // spinner(8); // Spin and land on "1"
     // setTicketID(generateUniqueCode().toString());
@@ -281,7 +294,7 @@ function Home() {
     youWinSound.play();
     setAlertMessage("message");
     fetchBalance();
-  }
+  };
 
   const betFunc = function () {
     betFunction("clear");
@@ -312,21 +325,20 @@ function Home() {
       ticket_id: generateUniqueCode().toString(),
       game_id: currentGameID, // Use the currentGameID here
       date: moment().format("YYYY-MM-DD"),
-      draw_time: duration.format("HH:mm:ss"),
+      draw_time: moment(nextIntervalTime, "h:mm A").format("HH:mm:ss"),
       ticket_time: moment().format("HH:mm:ss"),
       data: betData,
     };
 
-    const billHTML = `
+    if (isPrinterEnabled) {
+      const billHTML = /*html*/ `
         <div class="bill">
         <p style="margin-bottom: 4px;">***Super Chance***</p>
         <p style="margin-bottom: 4px;">From Amusement Only</p>
         <p style="margin-bottom: 4px;">Agent: 634</p>
         <p style="margin-bottom: 4px;">Game ID: ${payload.ticket_id}</p>
         <p style="margin-bottom: 4px;">Game Name: Single Chance</p>
-        <p style="margin-bottom: 4px;">Draw Time: ${duration?.format(
-          "h:mm A"
-        )}</p>
+        <p style="margin-bottom: 4px;">Draw Time: ${nextIntervalTime}</p>
         <p style="margin-bottom: 4px;">Ticket Time: ${moment().format(
           "DD-MM-YYYY h:mm A"
         )}</p>
@@ -355,8 +367,9 @@ function Home() {
           </div>
         </div>
         `;
-    // window.electronAPI.printBill(billHTML, payload.ticket_id);
-    console.log(payload);
+
+      window.electronAPI.printBill(billHTML, payload.ticket_id);
+    }
 
     openAlertBox(`YOUR BET HAS BEEN ACCEPTED WITH ID: ${payload.ticket_id}`);
     setLocal([...betNumList]);
@@ -500,36 +513,36 @@ function Home() {
 
   const fetchPredictWinner = async function () {
     try {
-      let currentGameID = localStorage.getItem('gameID');
+      let currentGameID = localStorage.getItem("gameID");
       // Remove quotes, newlines, and trim whitespace
-      currentGameID = currentGameID 
-        ? JSON.parse(currentGameID.replace(/\n/g, '').trim())
+      currentGameID = currentGameID
+        ? JSON.parse(currentGameID.replace(/\n/g, "").trim())
         : null;
-      console.log('Fetching prediction for gameID:', currentGameID);
+      console.log("Fetching prediction for gameID:", currentGameID);
 
       if (!currentGameID) {
         const response = await predict_winner();
-        console.warn('No gameID available, using default prediction');
+        console.warn("No gameID available, using default prediction");
         if (response.statusCode === 200) {
           const win = response.message.general[0];
-          localStorage.setItem('winPoint', JSON.stringify(win.win));
+          localStorage.setItem("winPoint", JSON.stringify(win.win));
           setWinAmount(win.amount);
         }
         return;
       }
 
       const response = await predict_winner(currentGameID.toString());
-      console.log('Prediction response:', response);
-      
+      console.log("Prediction response:", response);
+
       if (response.statusCode === 200) {
         const win = response.message.general[0];
         // Explicitly stringify the win value and verify it's set
-        localStorage.setItem('winPoint', JSON.stringify(win.win));
-        console.log('Set winPoint in localStorage:', win.win);
+        localStorage.setItem("winPoint", JSON.stringify(win.win));
+        console.log("Set winPoint in localStorage:", win.win);
         // Verify the value was set correctly
-        const storedWinPoint = localStorage.getItem('winPoint');
-        console.log('Verified winPoint in localStorage:', storedWinPoint);
-        
+        const storedWinPoint = localStorage.getItem("winPoint");
+        console.log("Verified winPoint in localStorage:", storedWinPoint);
+
         setWinAmount(win.amount);
       } else {
         console.error("Prediction failed:", response);
@@ -542,6 +555,7 @@ function Home() {
   const onEvery15sec = useCallback(() => {
     // fetchPredictWinner();
     // setIsDisabled(true);
+    setWinAmount(0);
     openAlertBox(`PLACE YOUR BET`);
     placeYourBetsSound.play();
     console.log("Triggered at 15sec!");
@@ -557,9 +571,9 @@ function Home() {
 
   // Move these callback definitions before any other state or refs
   const onEvery1m45s = useCallback(() => {
-    const currentGameID = localStorage.getItem('gameID');
-    console.log('1m45s - Current gameID:', currentGameID);
-    
+    const currentGameID = localStorage.getItem("gameID");
+    console.log("1m45s - Current gameID:", currentGameID);
+
     fetchPredictWinner();
     setIsDisabled(true);
     noMoreBetsPlease.play();
@@ -567,17 +581,17 @@ function Home() {
   }, []);
 
   const onEvery2min = useCallback(() => {
-    console.log('2min - Starting new game cycle');
-    
+    console.log("2min - Starting new game cycle");
+
     // First handle the play animation
     handlePlay();
-    
+
     // Clear game state
     setIsDisabled(false);
-    setGameID(''); // Clear React state
-    localStorage.removeItem('gameID'); // Clear localStorage
+    setGameID(""); // Clear React state
+    localStorage.removeItem("gameID"); // Clear localStorage
     // localStorage.removeItem('winPoint');
-    
+
     // Generate new gameID for next round
     // const newGameID = generateGameID().toString();
     // setTimeout(() => {
@@ -585,15 +599,13 @@ function Home() {
     //   localStorage.setItem('gameID', newGameID);
     //   console.log('New gameID set:', newGameID);
     // }, 2000); // Wait for 2 seconds before setting new gameID
-    
-    
   }, []);
 
   const { countdown, nextIntervalTime } = useSpinningGame(
     onEvery1m45s,
     onEvery2min,
     onEvery15sec,
-    onEvery1m40s,
+    onEvery1m40s
   );
 
   useEffect(() => {
@@ -609,16 +621,20 @@ function Home() {
   }, [anchorEl]);
 
   useEffect(() => {
-    console.log('Disabled state changed:', isDisabled);
+    console.log("Disabled state changed:", isDisabled);
   }, [isDisabled]);
 
   useEffect(() => {
-    console.log('Balance effect - Balance:', balance, 'IsCounting:', isCounting);
+    console.log(
+      "Balance effect - Balance:",
+      balance,
+      "IsCounting:",
+      isCounting
+    );
     if (balance <= 0) {
       setIsDisabled(true);
     } else if (!isCounting) {
       setIsDisabled(false);
-
     }
   }, [balance, isCounting]);
 
@@ -641,12 +657,22 @@ function Home() {
         <img
           src={Stars}
           alt="star"
-          style={{ position: "absolute", top: "60px", left: "186px", "mix-blend-mode": "screen" }}
+          style={{
+            position: "absolute",
+            top: "60px",
+            left: "186px",
+            "mix-blend-mode": "screen",
+          }}
         />
         <img
           src={Stars}
           alt="star"
-          style={{ position: "absolute", top: "2px", left: "-494px", "mix-blend-mode": "screen" }}
+          style={{
+            position: "absolute",
+            top: "2px",
+            left: "-494px",
+            "mix-blend-mode": "screen",
+          }}
         />
         <Box
           sx={{
@@ -670,13 +696,21 @@ function Home() {
             ref={boxRef}
           >
             {/* <h1 >7x</h1> */}
-            <Spinner2
+            {/* <Spinner2
+              wheelRef1={wheelRef1}
+              wheelRef2={wheelRef2}
+              currentRef={currentRef}
+            /> */}
+            <Spinner3
               wheelRef1={wheelRef1}
               wheelRef2={wheelRef2}
               currentRef={currentRef}
             />
-            {/* <Spinner3 /> */}
-            <YouWin winAmount={winAmount} isOpen={isOpen} setIsOpen={setIsOpen} />
+            <YouWin
+              winAmount={winAmount}
+              isOpen={isOpen}
+              setIsOpen={setIsOpen}
+            />
           </Box>
           <Box sx={{ position: "absolute", right: "1.5rem", top: "6.5rem" }}>
             <BetNumbers

@@ -58,7 +58,7 @@ const timeLapList = [
     color: "#06A5C1",
     token: "",
   },
-]
+];
 
 const getColorForNumber = (number) => {
   const colorMap = {
@@ -71,13 +71,12 @@ const getColorForNumber = (number) => {
     7: "#042655",
     8: "#EB1B90",
     9: "#01A501",
-    0: "#06A5C1"
+    0: "#06A5C1",
   };
   return colorMap[number] || "#F98C07"; // Default color if number not found
 };
 
 function Historyinfo({ setinfoModal, betHistory }) {
-
   // const [historyList, sethistoryList] = useState([])
   // const [idLocl, setLocalid] = useLocalStorage("userDetails", {});
 
@@ -132,8 +131,8 @@ function Historyinfo({ setinfoModal, betHistory }) {
         style={{
           width: "100%",
           position: "absolute",
-          top: "-5px",
-          height: "6rem",
+          top: "-3px",
+          height: "5.8rem",
         }}
       />
       <Box
@@ -164,11 +163,21 @@ function Historyinfo({ setinfoModal, betHistory }) {
             borderRadius: 2,
             display: "flex",
             alignItems: "center",
+            justifyContent: "flex-end",
             gap: 1,
+            width: "585px",
+            height: "80px",
           }}
         >
           {betHistory.map((e, i) => (
-            <Box key={i}>
+            <Box
+              key={i}
+              sx={{
+                // display: "flex",
+                // flexDirection: "column",
+                // alignItems: "center",
+              }}
+            >
               <Typography
                 sx={{
                   fontSize: "0.7rem",
@@ -177,16 +186,18 @@ function Historyinfo({ setinfoModal, betHistory }) {
                   mb: "4px",
                 }}
               >
-                {moment(e.draw_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}
+                {moment(e.draw_time, "HH:mm:ss.SSSSSS").format("hh:mm A")}
               </Typography>
               <Paper
                 elevation={0}
                 sx={{
-                  bgcolor: getColorForNumber(e.bet) || "#F98C07",
+                  bgcolor: getColorForNumber(e.result) || "#F98C07",
                   borderRadius: "6px",
                   display: "flex",
                   justifyContent: "center",
                   alignItems: "center",
+                  // // width: "100%",
+                  width: "50px",
                 }}
               >
                 <Typography
@@ -197,7 +208,7 @@ function Historyinfo({ setinfoModal, betHistory }) {
                     fontFamily: "Hahmlet Variable",
                   }}
                 >
-                  {e.bet}
+                  {e.result}
                 </Typography>
               </Paper>
             </Box>

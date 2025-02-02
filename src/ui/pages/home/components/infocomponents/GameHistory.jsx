@@ -118,6 +118,7 @@ function GameHistory() {
 
   const handleClose = () => {
     setOpen(false);
+    setTicketID(null);
   };
 
   const handleRowClick = (ticketId) => {
@@ -313,8 +314,8 @@ function GameHistory() {
                     <TableCell>{row.won}</TableCell>
                     <TableCell>{row.end}</TableCell>
                     <TableCell>{row.end_point}</TableCell>
-                    <TableCell>{row.status}</TableCell>
-                    <TableCell>{row?.result}</TableCell>
+                    <TableCell sx={{ color: row.status === "won" ? "green" : "red", textTransform: "uppercase" }}>{row.status}</TableCell>
+                    <TableCell>{row?.result ? row.result + "-N" : ""}</TableCell>
                     <TableCell>{row.date}</TableCell>
                     <TableCell>
                       {moment(row.draw_time, "HH:mm:ss.SSSSSS").format(
@@ -437,50 +438,77 @@ const GameHistoryModal = function ({ open, handleClose }) {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "calc(55vw - 80px)",
+          width: "calc(45vw - 80px)",
           height: 515,
           backgroundPosition: "center",
           boxShadow: 24,
           zIndex: 99999,
           bgcolor: "#D6D6D6",
           //   border: "2px solid #000",
-          //   p: 4,
+          // p: 4,
           //   backgroundImage: "url('../backgrounds/bgModal.png')",
           //   backgroundRepeat: "no-repeat",
           //   backgroundSize: "cover",
         }}
       >
-        <IconButton onClick={() => handleClose()}>
-          <CancleButton sx={{ fontSize: "35px" }} />
-        </IconButton>
-        <TableContainer sx={{ maxHeight: "400px", overflow: "auto" }}>
-          <Table
-            stickyHeader
+        <Box
+          sx={{ width: "100%", display: "flex", justifyContent: "flex-end" }}
+        >
+          <IconButton onClick={() => handleClose()}>
+            <CancleButton sx={{ fontSize: "35px" }} />
+          </IconButton>
+        </Box>
+        <Box sx={{ p: 4, pt: 0 }}>
+          <TableContainer
             sx={{
-              // minWidth: 650,
-              // borderSpacing: "0 20px",
-              // tableLayout: 'fixed',
-              "& .MuiTableCell-stickyHeader": {
-                backgroundColor: "rgba(255,180,193,39)",
-                // borderBottom: "6px solid #FFE5C6",
-                fontWeight: "600",
-                fontSize: "0.9rem",
-              },
+              maxHeight: "400px",
+              height: "100%",
+              overflow: "auto",
+              bgcolor: "#EDE9D3",
+              border: "1px solid black",
+              // m: 4
             }}
-            // aria-label="simple table"
           >
-            <TableHead>
-              <TableRow>
-                <TableCell>Ticket ID</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>Ticket ID</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+            <Table
+              stickyHeader
+              sx={{
+                // minWidth: 650,
+                // borderSpacing: "0 20px",
+                // tableLayout: 'fixed',
+                "& .MuiTableCell-stickyHeader": {
+                  backgroundColor: "#D3C891",
+                  border: "none",
+                  borderBottom: "6px solid #FFE5C6",
+                  fontWeight: "700",
+                  fontSize: "0.9rem",
+                  fontFamily: "Poppins",
+                },
+                "& .MuiTableCell-root": {
+                  fontFamily: "Poppins",
+                  fontSize: "0.8rem",
+                  fontWeight: "600",
+                },
+              }}
+              // aria-label="simple table"
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell>BET POSITION</TableCell>
+                  <TableCell>PLAY</TableCell>
+                  <TableCell>WON</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <TableCell>Singles : 1</TableCell>
+                  <TableCell>100</TableCell>
+                  <TableCell>1000</TableCell>
+                </TableRow>
+                <TableRow></TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
       </Box>
     </Modal>
   );

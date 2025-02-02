@@ -210,7 +210,7 @@ function Result() {
                     }}
                   >
                     <TableCell component="th" scope="row">
-                      {row.bet}
+                      {row.result}
                     </TableCell>
                     <TableCell>{moment(row.draw_time, 'HH:mm:ss.SSSSSS').format("hh:mm A")}</TableCell>
                   </TableRow>

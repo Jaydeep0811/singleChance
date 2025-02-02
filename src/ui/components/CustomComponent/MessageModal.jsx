@@ -16,6 +16,7 @@ function MessageModal({ open, handleClose, anchorEl, alertMessage, id }) {
         horizontal: "center",
       }}
       sx={{
+        zIndex: 1,
         top: -50,
         left: -10,
         ".MuiPopover-paper": {
