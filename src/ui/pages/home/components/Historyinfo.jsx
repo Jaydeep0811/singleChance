@@ -1,6 +1,6 @@
 import { Box, IconButton, Paper, Typography } from "@mui/material";
 import { InfoIcon } from "../../../assets/Icones";
-import topBackground from "../../../public/backgrounds/topBackground.png";
+import topBackground from "../../../public/svgs/h_bg.png";
 import useLocalStorage from "../../../utils/useLocalStorage";
 import { useCallback, useEffect, useState } from "react";
 import { get_game_result } from "../../../api/gameData";
@@ -131,27 +131,30 @@ function Historyinfo({ setinfoModal, betHistory }) {
         style={{
           width: "100%",
           position: "absolute",
-          top: "-3px",
-          height: "5.8rem",
+          top: "-6px",
+      
         }}
       />
       <Box
         sx={{
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "center",
           alignItems: "center",
           position: "absolute",
           // top: 12,
+          gap:"10px", 
+          mr:3,
           right: 20,
         }}
       >
         <Typography
           sx={{
             color: "#390206",
-            fontSize: "24px",
+            fontSize: "32px",
             fontWeight: "600",
+            fontFamily:"Poppins-SemiBold",
             textTransform: "uppercase",
-            mr: 2,
+            mr: 1,
           }}
         >
           HISTORY
@@ -163,10 +166,10 @@ function Historyinfo({ setinfoModal, betHistory }) {
             borderRadius: 2,
             display: "flex",
             alignItems: "center",
-            justifyContent: "flex-end",
+            justifyContent: "CENTER",
             gap: 1,
-            width: "585px",
-            height: "80px",
+            width: "660px",
+            height: "110px",
           }}
         >
           {betHistory.map((e, i) => (
@@ -180,7 +183,7 @@ function Historyinfo({ setinfoModal, betHistory }) {
             >
               <Typography
                 sx={{
-                  fontSize: "0.7rem",
+                  fontSize: "12PX",
                   fontWeight: "500",
                   color: "white",
                   mb: "4px",
@@ -202,10 +205,10 @@ function Historyinfo({ setinfoModal, betHistory }) {
               >
                 <Typography
                   sx={{
-                    fontSize: "2rem",
+                    fontSize: "2.5rem",
                     fontWeight: "600",
                     color: "white",
-                    fontFamily: "Hahmlet Variable",
+                    fontFamily: "Poppins-Regular",
                   }}
                 >
                   {e.result}
@@ -214,8 +217,8 @@ function Historyinfo({ setinfoModal, betHistory }) {
             </Box>
           ))}
         </Box>
-        <IconButton onClick={() => setinfoModal(true)}>
-          <InfoIcon sx={{ fontSize: "42px" }} />
+        <IconButton sx={{width:"52px"}} onClick={() => setinfoModal(true)}>
+          <InfoIcon sx={{ fontSize: "42px",width:"52px" }} />
         </IconButton>
       </Box>
     </Box>

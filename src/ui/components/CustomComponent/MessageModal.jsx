@@ -12,7 +12,7 @@ function MessageModal({ open, handleClose, anchorEl, alertMessage, id }) {
         horizontal: "center",
       }}
       transformOrigin={{
-        vertical: "top",
+        vertical: "center",
         horizontal: "center",
       }}
       sx={{
@@ -28,7 +28,7 @@ function MessageModal({ open, handleClose, anchorEl, alertMessage, id }) {
         },
       }}
     >
-      <Box sx={{ bgcolor: "#232446", borderRadius: 2, py: 2, px: 10 }}>
+      <Box sx={{ bgcolor: "#25252D", borderRadius: 2, py: 2, px: 10 }}>
         <Typography
           sx={{ textAlign: "center", color: "white", fontSize: "26px", fontWeight: "bold" }}
           id="modal-modal-title"

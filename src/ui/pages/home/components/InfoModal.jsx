@@ -63,12 +63,13 @@ function InfoModal({ open, handleClose }) {
       <Box
         sx={{
           display: "flex",
-          justifyContent: "flex-end",
+          justifyContent: "end",
           alignItems: "center",
           // my: 1,
-          gap: 1,
+          gap: 2,
           height: "70.52px",
-          mb: 1,
+          mt: 1,
+          ml:2,
         }}
       >
         <ToggleButtonGroup
@@ -105,7 +106,7 @@ function InfoModal({ open, handleClose }) {
           <ToggleButton
             value="result"
             aria-label="left aligned"
-            sx={{ width: "10rem" }}
+            sx={{ width:"176.72px", padding:"0px 18.8px" ,fontSize:"18.8px" ,fontFamily:"Poppins-SemiBold" }}
           >
             {/* <FormatAlignLeftIcon /> */}
             <img
@@ -115,10 +116,10 @@ function InfoModal({ open, handleClose }) {
             />
             <Typography>RESULT</Typography>
           </ToggleButton>
-          <ToggleButton
+          <ToggleButton 
             value="gameHistory"
             aria-label="centered"
-            sx={{ width: "13rem" }}
+            sx={{  width:"224.66px",  padding:"0px 18.8px" ,fontSize:"18.8px" ,fontFamily:"Poppins-SemiBold"}}
           >
             <img
               src={alignment === "gameHistory" ? aImage : dImage}
@@ -130,7 +131,7 @@ function InfoModal({ open, handleClose }) {
           <ToggleButton
             value="rules"
             aria-label="right aligned"
-            sx={{ width: "10rem" }}
+            sx={{width:"176.72px",  padding:"0px 18.8px",fontSize:"18.8px" ,fontFamily:"Poppins-SemiBold"  }}
           >
             <img
               src={alignment === "rules" ? aImage : dImage}
@@ -142,7 +143,7 @@ function InfoModal({ open, handleClose }) {
           <ToggleButton
             value="report"
             aria-label="right aligned"
-            sx={{ width: "10rem" }}
+            sx={{ width:"176.72px", padding:"0px 18.8px",fontSize:"18.8px" ,fontFamily:"Poppins-SemiBold"  }}
           >
             <img
               src={alignment === "report" ? aImage : dImage}
@@ -155,7 +156,7 @@ function InfoModal({ open, handleClose }) {
           <ToggleButton
             value="unclameTickets"
             aria-label="justified"
-            sx={{ width: "18rem", }}
+            sx={{width:"291.4px", padding:"0px 18.8px"  }}
           >
             <img
               src={alignment === "unclameTickets" ? aImage : dImage}

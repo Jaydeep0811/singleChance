@@ -141,7 +141,9 @@ function Home() {
     });
   }, []);
 
-  // Betting Functions
+
+
+  // Betting Functions 
   const handleBetClick = (index) => {
     if (!chipNum) return;
     

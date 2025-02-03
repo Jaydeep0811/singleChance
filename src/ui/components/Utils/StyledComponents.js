@@ -2,28 +2,24 @@ import { Button, styled } from "@mui/material";
 
 export const GameButton = styled(Button)(({ theme, isActive }) => ({
   color: "white",
-  fontSize: "20px",
-  fontWeight: "bolder !important",
-  fontFamily: "Poppins",
+  fontSize:"1.5rem",
+  fontFamily:"Poppins-Bold",
   textTransform: "uppercase",
   border: isActive ? "2px solid #FFBB00" : "2px solid rgba(206,0,0,1)",
   background: "rgb(255,183,183)",
-  backgroundImage:
-    "linear-gradient(180deg, rgba(255,183,183,1) 0%, rgba(206,0,0,1) 10%)",
+  backgroundImage:"linear-gradient(180deg  ,rgb(255, 183, 183,0.1), #CE0000 , #CE0000, #CE0000 ,#CE0000 , #CE0000 , #CE0000 , #CE0000  , #CE0000 , #CE0000  )",
   borderRadius: "8px",
-  boxShadow: "0px 5px 4px 0px rgba(0, 0, 0, 0.7)",
+  boxShadow:"0px 2px 0px 0px rgba(0, 0, 0, 0.7)",
   transition: "background-image 0.5s ease",
   ":hover": {
     border: "2px solid #FFBB00",
     boxShadow: "0px 5px 4px 0px rgba(0, 0, 0, 0.7)",
-    backgroundImage:
-      "linear-gradient(180deg, rgba(255,183,183,1) 0%, rgba(206,0,0,1) 10%)",
+    backgroundImage:"linear-gradient(180deg, rgba(255,183,183,1) 0%, rgba(206,0,0,1) 10%)",
   },
   "&.Mui-disabled": {
-    boxShadow: "0px 5px 4px 0px rgba(0, 0, 0, 0.7)",
-    color: "#FFFFFF50",
-    backgroundImage:
-    "linear-gradient(180deg, rgba(255,183,183,1) 0%, rgba(206,0,0,1) 10%)",
+    boxShadow:"0px 5px 4px 0px rgba(0, 0, 0, 0.7)",
+    color:"#FFFFFF50",
+    backgroundImage:"linear-gradient(180deg, rgba(255,183,183,1) 0%, rgba(206,0,0,1) 10%)",
   },
 }));
 

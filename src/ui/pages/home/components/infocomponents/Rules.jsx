@@ -11,7 +11,7 @@ function Rules() {
         borderRadius: "16px",
         py: 3,
         px: 4,
-        mx: 2,
+        mx: 2,fontFamily:"Poppins-Bold",fontSize:"18.8px"
       }}
     >
       <Box component={"ul"} sx={{ li: { mb: 2 }}}>

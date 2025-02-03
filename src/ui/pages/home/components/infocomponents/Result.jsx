@@ -74,7 +74,7 @@ function Result() {
       <TableContainer
         component={Paper}
         elevation={0}
-        sx={{ bgcolor: "#FFE5C6", height: "93%" }}
+        sx={{ bgcolor: "#FFE5C6", height: "93%" ,fontFamily:"Poppins-Bold",fontSize:"13.16px"}}
       >
         <Box
           sx={{

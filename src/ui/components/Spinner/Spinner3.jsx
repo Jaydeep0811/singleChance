@@ -11,7 +11,7 @@ const Spinner3 = React.forwardRef(function (
       height={644}
       fill="none"
     >
-      <g className="wheelSpinner" ref={wheelRef1}>
+      {/* <g className="wheelSpinner" ref={wheelRef1}>
         <path
           fill="#B36A09"
           d="M343.293 26.768c-87.278-.356-155.409 39.485-178.564 59.227l178.564 244.468z"
@@ -185,7 +185,7 @@ const Spinner3 = React.forwardRef(function (
             d="M395.142 408.388L503.17 564.245"
           />
         </g>
-      </g>
+      </g> */}
       <g filter="url(#t)">
         <circle cx={342.848} cy={330.906} r={75.701} fill="url(#u)" />
         <circle
@@ -1925,6 +1925,8 @@ const Spinner3 = React.forwardRef(function (
         </linearGradient>
       </defs>
     </svg>
+
+    
   );
 });
 

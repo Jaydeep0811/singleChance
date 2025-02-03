@@ -171,6 +171,7 @@ function GameHistory() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
+         fontFamily:"Poppins-Bold",fontSize:"13.16px"
         }}
       >
         <TableContainer

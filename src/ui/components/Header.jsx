@@ -18,6 +18,7 @@ import {
   CloseIcon,
   HomeIcon,
   MinimizeIcon,
+  MutedIcon,
   SoundOnIcon,
   Visbility,
 } from "../assets/Icones";
@@ -90,6 +91,8 @@ function Header({ balance, openAlertBox }) {
   return (
     <Box
       sx={{
+        width:"100%",
+        height:"62px",
         background: "rgb(42,43,46)",
         fontSize: "16px",
         display: "flex",
@@ -97,6 +100,8 @@ function Header({ balance, openAlertBox }) {
         alignItems: "center",
         backgroundImage: `linear-gradient(0deg, rgba(42,43,46,1) 43%, rgba(112,117,125,1) 100%)`,
         position: "relative",
+        margin:0,
+        padding:0
       }}
     >
       <img
@@ -118,6 +123,7 @@ function Header({ balance, openAlertBox }) {
           borderRadius: "0px",
           fontSize: "16px",
           ml: 2,
+         
           zIndex: 100,
         }}
         startIcon={<HomeIcon />}
@@ -147,7 +153,7 @@ function Header({ balance, openAlertBox }) {
               "& .MuiTypography-root": { color: "#EEDE01", fontSize: "20px" },
             }}
             control={
-              <Checkbox
+              <Checkbox 
                 size="large"
                 checkedIcon={<CheckedInIcon />}
                 icon={<CheckIcon />}
@@ -180,9 +186,10 @@ function Header({ balance, openAlertBox }) {
             px: 1,
             backgroundColor: "white",
             fontSize: "16px",
-            height: "35px",
+            height: "32px",
+            width:"282px",
             borderRadius: "6px",
-            width: "152px",
+            width: "152px", border:'1px solid #000',
           }}
           value={barcode}
           onChange={(e) => setBarcode(e.target.value)}
@@ -192,11 +199,15 @@ function Header({ balance, openAlertBox }) {
           size="small"
           sx={{
             px: 2,
+            height: "32px",
+            width:"110px",
             backgroundColor: "#0BCC05",
             color: "white",
             fontSize: "16px",
             fontWeight: "600",
             borderRadius: "6px",
+            fontFamily:"Poppins-SemiBold",
+            border:'1px solid #000',
             mr: 4,
           }}
           onClick={handlClame}
@@ -204,7 +215,7 @@ function Header({ balance, openAlertBox }) {
           Clame
         </Button>
 
-        <Typography sx={{ color: "#EEDE01", fontSize: "18px" }}>
+        <Typography sx={{ color: "#EEDE01", fontSize: "20px",fontFamily:"Poppins-Medium", }}>
           Welcome, Classic302
         </Typography>
 
@@ -218,7 +229,8 @@ function Header({ balance, openAlertBox }) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            gap: 2,
+            gap: 2, border:'1px solid #000',
+
             minWidth: 200,
           }}
         >
@@ -236,7 +248,7 @@ function Header({ balance, openAlertBox }) {
             <Typography
               sx={{
                 color: "white",
-                fontSize: "16px",
+                fontSize: "16px",fontSize: "20px",fontFamily:"Poppins-Medium",
               }}
             >
               Balance
@@ -273,24 +285,25 @@ function Header({ balance, openAlertBox }) {
                 "& .MuiTypography-root": { color: "#EEDE01", fontSize: "20px" },
               }}
               control={ */}
-            <Checkbox
+            <Checkbox 
               checked={toggle}
               onChange={() => {
                 muteFun();
               }}
               size="large"
-              checkedIcon={<SoundOnIcon sx={{ fontSize: "36px" }} />}
-              icon={<SoundOnIcon sx={{ fontSize: "36px" }} />}
+          
+              checkedIcon={<SoundOnIcon sx={{fontSize: "36px" ,bgcolor:"#0FD0BC" ,border:"2px solid #000" ,borderRadius:"10px"}}   />}
+              icon={<MutedIcon sx={{ fontSize: "36px",bgcolor:"#0FD0BC" ,border:"2px solid #000" ,borderRadius:"10px"}} />}
             />
             {/* //   }
               
             // /> */}
           {/* </FormGroup> */}
           <IconButton size="small" onClick={() => handleMinimize()}>
-            <MinimizeIcon sx={{ fontSize: "36px" }} />
+            <MinimizeIcon sx={{ fontSize: "36px",border:"2px solid #000" ,borderRadius:"10px" }} />
           </IconButton>
           <IconButton size="small" onClick={() => handleClose()}>
-            <CloseIcon sx={{ fontSize: "36px" }} />
+            <CloseIcon sx={{ fontSize: "36px" ,border:"2px solid #000" ,borderRadius:"10px"}} />
           </IconButton>
         </Stack>
       </Box>

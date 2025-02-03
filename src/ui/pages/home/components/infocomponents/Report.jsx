@@ -75,7 +75,7 @@ function Report() {
           borderRadius: "16px",
           mx: 1,
           height: "90%",
-          width: "auto !important",
+          width: "auto !important",fontFamily:"Poppins-Bold",fontSize:"13.16px"
         }}
       >
         <Box
