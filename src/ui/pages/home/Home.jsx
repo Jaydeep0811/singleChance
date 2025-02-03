@@ -258,32 +258,35 @@ function Home() {
     const spots = innerWheelLight.current.querySelectorAll(`g`);
     for (let i = 0; i <= spots.length; i++) {
       if (i % 2 == 0) {
-        let tl = anime.timeline({ easing: 'linear', duration: 300, loop: true })
+        let tl = anime.timeline({ easing: 'linear',direction:"alternate", duration: 500,loop:true })
         tl.add({
           targets: spots[i],
           fillOpacity: 1
-        }).add({
-          targets: spots[i],
-          fillOpacity: 0
-        }).add({
-          targets: spots[i],
-          fillOpacity: 1
+          
         })
+        // .add({
+        //   targets: spots[i],
+        //   fillOpacity: 0
+        // }).add({
+        //   targets: spots[i],
+        //   fillOpacity: 1
+        // })
       }
-
-      for (let i = 0; i < spots.length; i++) {
+          for (let i = 0; i < spots.length; i++) {
         if (!(i % 2 == 0)) {
-          let tl = anime.timeline({ easing: 'linear', duration: 300, loop: true, delay: 300 })
+          let tl = anime.timeline({ easing: 'linear',direction:"alternate", duration: 500,delay:500 ,loop:true})
           tl.add({
             targets: spots[i],
             fillOpacity: 1
-          }).add({
-            targets: spots[i],
-            fillOpacity: 0
-          }).add({
-            targets: spots[i],
-            fillOpacity: 1
           })
+          
+          // .add({
+          //   targets: spots[i],
+          //   fillOpacity: 0
+          // }).add({
+          //   targets: spots[i],
+          //   fillOpacity: 1
+          // })
         }
       }
     }
