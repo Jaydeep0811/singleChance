@@ -166,10 +166,12 @@ function Historyinfo({ setinfoModal, betHistory }) {
             borderRadius: 2,
             display: "flex",
             alignItems: "center",
-            justifyContent: "CENTER",
+            justifyContent: "end",
             gap: 1,
             width: "660px",
             height: "110px",
+         
+
           }}
         >
           {betHistory.map((e, i) => (
@@ -183,7 +185,7 @@ function Historyinfo({ setinfoModal, betHistory }) {
             >
               <Typography
                 sx={{
-                  fontSize: "12PX",
+                  fontSize: "12px",
                   fontWeight: "500",
                   color: "white",
                   mb: "4px",
