@@ -138,12 +138,22 @@ export const cancel_game = async function (ticket_id, game_id) {
   }
 };
 
-export const clame_all_tickets = async function (id) {
+export const clame_all_tickets = async function () {
   try {
-    const { data } = await axios("api/v1/game/claim/all/ticket/",);
+    const { data } = await axios.patch("api/v1/game/claim/all/",);
     return data;
   } catch (error) {
     console.log("error on  API", error);
     return error;
   }
 };
+
+export const daily_report = async function () {
+  try {
+    const { data } = await axios.patch("api/v1/game/daily-report/",);
+    return data;
+  } catch (error) {
+    console.log("error on  API", error);
+    return error;
+  }
+}

@@ -211,7 +211,7 @@ function Historyinfo({ setinfoModal, betHistory }) {
                     fontFamily: "Poppins-Regular",
                   }}
                 >
-                  {e.result}
+                  {e.result || e.bet}
                 </Typography>
               </Paper>
             </Box>

@@ -7,7 +7,7 @@ const Spinner4 = React.forwardRef(function (
     return (
         <svg width="684.93" height="643" viewBox="0 -10 684.93 643" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-
+<g className="wheelSpinner" ref={wheelRef1}>
 
         <path d="M341.434 31.7679C254.155 31.4117 186.025 71.2534 162.869 90.9949L341.434 335.463V31.7679Z" fill="#AC6507" />
         <path d="M341.434 639.601C254.155 639.958 186.025 600.116 162.869 580.374L341.434 335.906V639.601Z" fill="#36098D" />
@@ -75,6 +75,7 @@ const Spinner4 = React.forwardRef(function (
         </g>
         <g filter="url(#filter18_f_2362_1839)">
             <path d="M394.935 413L502.963 568.857" stroke="#097058" stroke-width="2.67178" />
+        </g>
         </g>
 
 {/* inner Wheel  */}
@@ -174,7 +175,7 @@ const Spinner4 = React.forwardRef(function (
 
         </g>
         </g>
-            <g>
+            <g className="wheelSpinner" ref={wheelRef2}>
                 <mask id="path-72-outside-1_2362_1839" maskUnits="userSpaceOnUse" x="248.28" y="100.848" width="36.923" height="59.9339" fill="black">
                     <rect fill="white" x="248.28" y="100.848" width="36.923" height="59.9339" />
                     <path d="M253.919 117.131L251.323 108.315L267.794 103.464L282.466 153.288L272.624 156.187L260.548 115.179L253.919 117.131Z" />

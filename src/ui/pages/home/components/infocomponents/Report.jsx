@@ -13,7 +13,7 @@ import {
   Checkbox,
   Button,
 } from "@mui/material";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   CalanderIcon,
   CheckedInIcon,
@@ -23,6 +23,8 @@ import {
 } from "../../../../assets/Icones";
 import ViewButton from "../../../../public/icons/viewButton.png";
 import moment from "moment";
+import { daily_report } from "../../../../api/gameData";
+import useLocalStorage from "../../../../utils/useLocalStorage";
 
 function createData(name, play, win, claim, unclaim, end, ntp) {
   return { name, play, win, claim, unclaim, end, ntp };
@@ -38,6 +40,19 @@ function Report() {
   const [date, setDate] = useState({
     from: moment(),
     to: moment(),
+  });
+
+  const [local, setLocal] = useLocalStorage("userDetails", {});
+
+
+  const [reportData, setReportData] = useState({
+    name: local.username,
+    play: "100000.00",
+    win: "90000.00",
+    claim: "90000.00",
+    end: "0.00",
+    commission: "10000.00",
+    net_profit: "5000.00",
   });
 
   const handleIconClickFrom = () => {
@@ -63,6 +78,15 @@ function Report() {
     const selectedDate = event.target.value; // Get the selected date as a string
     setDate({ ...date, to: moment(selectedDate) }); // Update the state with the new date
   };
+
+  const fetchDailyReport = async () => {
+    await daily_report();
+  };
+
+  useEffect(() => {
+    fetchDailyReport();
+  }, []);
+
   return (
     <>
       {/* <Box sx={{ height: "20rem"}}></Box> */}
@@ -75,7 +99,9 @@ function Report() {
           borderRadius: "16px",
           mx: 1,
           height: "90%",
-          width: "auto !important",fontFamily:"Poppins-Bold",fontSize:"13.16px"
+          width: "auto !important",
+          fontFamily: "Poppins-Bold",
+          fontSize: "13.16px",
         }}
       >
         <Box
@@ -183,33 +209,31 @@ function Report() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row) => (
               <TableRow
-                key={row.ticketId}
                 sx={{
                   "td,th": {
                     mb: 10,
                     bgcolor: "#FFFFFF",
                     borderBottom: "6px solid #FFE5C6",
+                    fontWeight: "bold",
                   },
                   "&:last-child td, &:last-child th": { border: 0 },
                 }}
               >
                 <TableCell component="th" scope="row">
-                  {row.name}
+                  {reportData.name}
                 </TableCell>
-                <TableCell>{row.play}</TableCell>
-                <TableCell>{row.win}</TableCell>
-                <TableCell>{row.claim}</TableCell>
-                <TableCell>{row.unclaim}</TableCell>
-                <TableCell>{row.end}</TableCell>
-                <TableCell>{row.ntp}</TableCell>
+                <TableCell>{reportData.play}</TableCell>
+                <TableCell>{reportData.win}</TableCell>
+                <TableCell>{reportData.claim}</TableCell>
+                <TableCell>{reportData.end}</TableCell>
+                <TableCell>{reportData.commission}</TableCell>
+                <TableCell>{reportData.net_profit}</TableCell>
               </TableRow>
-            ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Box sx={{ display: "flex", justifyContent: "center", mt:1 }}>
+      <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
         <Button
           value="result"
           aria-label="left aligned"

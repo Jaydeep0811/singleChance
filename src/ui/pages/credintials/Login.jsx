@@ -1,4 +1,4 @@
-import { Box, Typography, InputBase, IconButton } from "@mui/material";
+import { Box, Typography, InputBase, IconButton, Button } from "@mui/material";
 import { GameButton } from "../../components/Utils/StyledComponents";
 import { Visbility } from "../../assets/Icones";
 import SpinnerSound from "../../public/backgrounds/loginWeel.png";
@@ -30,7 +30,7 @@ function Login() {
     if (res.statusCode === 200) {
       setIsLoading(false);
       TokenManager.setAuthTokens(res.response.auth);
-      setLocal({id: res.response.id});
+      setLocal({ id: res.response.id, username: res.response.username });
       navigate("game");
     }
   };
@@ -40,6 +40,10 @@ function Login() {
     const refreshToken = TokenManager.getRefreshToken();
     console.log(refreshToken);
     console.log(accessToken);
+  };
+
+  const handleClose = () => {
+    window.electronAPI.close();
   };
 
   return (
@@ -65,10 +69,12 @@ function Login() {
           Welcome to Single Chance
         </Typography>
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
-          <Typography sx={{ color: "white", fontSize: "20px" }}>Agent ID : 254545574 </Typography>
-          <GameButton onClick={logcook} sx={{ fontSize: "14px", px: 2 }}>
+          <Typography sx={{ color: "white", fontSize: "20px" }}>
+            Host ID : SC101
+          </Typography>
+          {/* <GameButton onClick={logcook} sx={{ fontSize: "14px", px: 2 }}>
             HOST NAME
-          </GameButton>
+          </GameButton> */}
         </Box>
 
         <Box
@@ -85,74 +91,106 @@ function Login() {
             sx={{
               backgroundColor: "#292A59",
               borderRadius: "24px",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 2,
+
               p: 2,
               py: 6,
             }}
           >
-            <InputBase
-              placeholder="Login"
-              type="text"
-              value={formData.username}
-              onChange={(e) =>
-                setFormData({ ...formData, username: e.target.value })
-              }
-              sx={{
-                backgroundColor: "#3D3F85",
-                fontSize: "20px",
-                borderRadius: "16px",
-                color: "white",
-                p: 1,
-                width: "100%",
-                "& .MuiInputBase-input::placeholder": {
-                  color: "white",
-                  opacity: 1,
-                },
-              }}
-            />
             <Box
               sx={{
-                backgroundColor: "#3D3F85",
-                borderRadius: "16px",
-                width: "100%",
-                p: 1,
                 display: "flex",
+                flexDirection: "column",
                 alignItems: "center",
-                justifyContent: "space-between",
-                "& .MuiInputBase-input::placeholder": {
-                  color: "white",
-                  opacity: 1,
-                },
+                justifyContent: "center",
+                gap: 2,
+                mb: 2,
               }}
             >
               <InputBase
-                value={formData.password}
-                type={isShowPassword ? "text" : "password"}
+                placeholder="Login"
+                type="text"
+                value={formData.username}
                 onChange={(e) =>
-                  setFormData({ ...formData, password: e.target.value })
+                  setFormData({ ...formData, username: e.target.value })
                 }
-                placeholder="Password"
                 sx={{
+                  backgroundColor: "#3D3F85",
                   fontSize: "20px",
+                  borderRadius: "16px",
                   color: "white",
+                  p: 1,
                   width: "100%",
+                  "& .MuiInputBase-input::placeholder": {
+                    color: "white",
+                    opacity: 1,
+                  },
                 }}
               />
-              <IconButton onClick={() => setIsShowPassword(!isShowPassword)}>
-                <Visbility />
-              </IconButton>
+              <Box
+                sx={{
+                  backgroundColor: "#3D3F85",
+                  borderRadius: "16px",
+                  width: "100%",
+                  p: 1,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  "& .MuiInputBase-input::placeholder": {
+                    color: "white",
+                    opacity: 1,
+                  },
+                }}
+              >
+                <InputBase
+                  value={formData.password}
+                  type={isShowPassword ? "text" : "password"}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
+                  placeholder="Password"
+                  sx={{
+                    fontSize: "20px",
+                    color: "white",
+                    width: "100%",
+                  }}
+                />
+                <IconButton onClick={() => setIsShowPassword(!isShowPassword)}>
+                  <Visbility />
+                </IconButton>
+              </Box>
             </Box>
-            <GameButton
-              disabled={isLoading}
-              sx={{ boxShadow: 4, fontSize: "14px", px: 4 }}
-              onClick={(e) => submitForm(e)}
-            >
-              Login
-            </GameButton>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <GameButton
+                disabled={isLoading}
+                sx={{
+                  boxShadow: 4,
+                  fontSize: "14px",
+                  px: 4,
+                  textTransform: "none",
+                }}
+                onClick={(e) => submitForm(e)}
+              >
+                Login
+              </GameButton>
+
+              <Button
+                variant="outlined"
+                sx={{
+                  color: "white",
+                  textTransform: "none",
+                  borderColor: "white",
+                  width: "109px",
+                  borderRadius: "8px",
+                  "&:hover": {
+                    borderColor: "white",
+                    backgroundColor: "transparent",
+                  },
+                }}
+                onClick={handleClose}
+              >
+                Close
+              </Button>
+            </Box>
           </Box>
         </Box>
       </Box>
