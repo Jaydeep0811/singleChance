@@ -1,5 +1,5 @@
 // import React from 'react'
-
+import anime from 'animejs/lib/anime.es.js';
 import gsap from "gsap";
 import Header from "../../components/Header";
 import Spinner from "../../components/Spinner/Spinner";
@@ -29,11 +29,13 @@ import {
 } from "../../api/gameData";
 import moment from "moment";
 import useLocalStorage from "../../utils/useLocalStorage";
-import Stars from "../../public/backgrounds/stars.png";
+import StarPattern from "../../public/svgs/StarPattern.svg";
 import CryptoJS from "crypto-js";
 import useSpinningGame from "../../hooks/useSpinningGame";
 import YouWin from "./components/YouWin";
 import Spinner3 from "../../components/Spinner/Spinner3";
+import Spinner4 from "../../components/Spinner/Spinner4";
+import { Back } from 'gsap';
 // const crypto = window.crypto || window.msCrypto;
 
 // Setup the new Howl.
@@ -89,17 +91,17 @@ function Home() {
     },
     {
       num: 5,
-      color: "#0D9E7D",
+      color: "#5550A7",
       token: "",
     },
     {
       num: 6,
-      color: "#0154C9",
+      color: "#0D9E7D",
       token: "",
     },
     {
       num: 7,
-      color: "#042655",
+      color: "#3D07A5",
       token: "",
     },
     {
@@ -109,7 +111,7 @@ function Home() {
     },
     {
       num: 9,
-      color: "#01A501",
+      color: "#00A500",
       token: "",
     },
     {
@@ -170,6 +172,10 @@ function Home() {
   const wheelRef1 = useRef(null);
   const wheelRef2 = useRef(null);
   const currentRef = useRef(null);
+  const innerWheelLight = useRef(null);
+
+
+
   const boxRef = useRef(null);
   const hasCountdownStarted = useRef(false); // Tracks if onCountdownStart has been called
   const hasCountdownEnded = useRef(false); // Tracks if onCountdownEnd has been called
@@ -228,6 +234,52 @@ function Home() {
     gsap.set(wheelRef1.current, { rotation: 18, transformOrigin: "50% 50%" });
     gsap.set(wheelRef2.current, { rotation: 18, transformOrigin: "50% 50%" });
   }, []);
+  useEffect(()=>{
+    var tl = anime.timeline({
+      easing: 'easeOutExpo',
+     
+    });
+    
+    // Add children
+   const spots= innerWheelLight.current.querySelectorAll(`g`);
+   for (let i =0 ; i <= spots.length; i++) {
+    if(i%2==0){
+      let tl=anime.timeline({easing:'linear',duration:300,loop:true})
+      tl.add({
+        targets: spots[i],
+        fillOpacity:1
+      }).add({
+        targets: spots[i],
+        fillOpacity:0
+      }).add({
+        targets: spots[i],
+        fillOpacity:1
+      })
+    }
+  
+    for (let i = 0; i < spots.length; i++) {
+      if( !(i%2==0)){
+        let tl=anime.timeline({easing:'linear',duration:300 ,loop:true,delay:300})
+        tl.add({
+          targets: spots[i],
+          fillOpacity:1
+        }).add({
+          targets: spots[i],
+          fillOpacity:0
+        }).add({
+          targets: spots[i],
+          fillOpacity:1
+        })
+      }
+    }
+   }
+
+   
+
+  },[])
+
+
+
 
   const fetchGameResult = async () => {
     const response = await get_game_result(idLocl.id, 1, 10);
@@ -648,13 +700,26 @@ function Home() {
     <>
       <Box
         sx={{
-          backgroundImage:
-            "linear-gradient(180deg, rgba(229,89,6,1) 50%, rgba(171,44,4,1) 84%, rgba(134,15,2,1) 100%)",
+          position:"relative",
+          overflow:"hidden",
+          width:"100vw",
+          minHeight:"900px",
+          background: "rgb(171,44,4)",
+          background:" linear-gradient(180deg, rgba(171,44,4,1) 14%, rgba(181,51,4,1) 33%, rgba(171,44,4,1) 48%, rgba(112,12,1,1) 84%)"
         }}
       >
         <Header balance={balance} openAlertBox={openAlertBox} />
         <Historyinfo betHistory={betHistory} setinfoModal={setinfoModal} />
-        <img
+          <img src={StarPattern} alt="StarPattern" 
+               style={{
+                position: "absolute",
+                top:"14%",
+                "mix-blend-mode": "screen",
+              }}
+          />
+
+
+        {/* <img
           src={Stars}
           alt="star"
           style={{
@@ -673,7 +738,9 @@ function Home() {
             left: "-494px",
             "mix-blend-mode": "screen",
           }}
-        />
+        /> */}
+
+
         <Box
           sx={{
             display: "flex",
@@ -701,10 +768,18 @@ function Home() {
               wheelRef2={wheelRef2}
               currentRef={currentRef}
             /> */}
-            <Spinner3
+            {/* <Spinner3
               wheelRef1={wheelRef1}
               wheelRef2={wheelRef2}
               currentRef={currentRef}
+            /> */}
+
+          <Spinner4
+             
+              wheelRef1={wheelRef1}
+              wheelRef2={wheelRef2}
+              currentRef={currentRef}
+              innerWheelLight={innerWheelLight}
             />
             <YouWin
               winAmount={winAmount}
