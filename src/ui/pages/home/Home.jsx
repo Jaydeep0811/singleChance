@@ -120,9 +120,9 @@ function Home() {
   ]);
 
   const [idLocl, setLocalid] = useLocalStorage("userDetails", {});
-  const [duration, setDuration] = useState(moment());
+  // const [duration, setDuration] = useState(moment());
   const [chipNum, setChipNum] = useState(null);
-  const [ismessModal, setIsmessageModal] = useState(false);
+  // const [ismessModal, setIsmessageModal] = useState(false);
   const [play, setPlay] = useState(0);
 
   const [isDisabled, setIsDisabled] = useState(false);
@@ -493,14 +493,14 @@ function Home() {
     setAlertMessage("");
   };
 
-  const [remainingTime, setRemainingTime] = useState(
-    moment.duration(0, "seconds")
-  );
+  // const [remainingTime, setRemainingTime] = useState(
+  //   moment.duration(0, "seconds")
+  // );
   const [isCounting, setIsCounting] = useState(false);
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const time = 2;
-  const intervalMs = time * 60 * 1000;
+  // const intervalMs = time * 60 * 1000;
 
   const fetchBalance = async function () {
     await get_balance().then((e) => {
