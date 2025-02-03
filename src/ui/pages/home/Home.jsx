@@ -37,6 +37,7 @@ import Spinner3 from "../../components/Spinner/Spinner3";
 import Spinner4 from "../../components/Spinner/Spinner4";
 
 import { Back } from 'gsap';
+
 // const crypto = window.crypto || window.msCrypto;
 
 // Setup the new Howl.
@@ -238,6 +239,15 @@ function Home() {
     gsap.set(wheelRef2.current, { rotation: 18, transformOrigin: "50% 50%" });
   }, []);
   // Inner Ring animation
+  // useEffect(() => {
+  //   var tl=gsap.timeline({})
+  //   tl.to(greenLight.current,{
+  //     fillOpacity:0,duration:10
+  //   }) }, [])
+
+// Outer Ring animation
+
+
   useEffect(() => {
     var tl = anime.timeline({
       easing: 'easeOutExpo',
@@ -277,52 +287,6 @@ function Home() {
         }
       }
     }
-
-
-
-  }, [])
-
-// Outer Ring animation
-  useEffect(() => {
-    var tl = anime.timeline({
-      easing: 'easeOutExpo',
-
-    });
-
-    // Add children
-    const spots = redLight.current.querySelectorAll(`g`);
-    for (let i = 0; i <= spots.length; i++) {
-      if (i % 2 == 0) {
-        let tl = anime.timeline({ easing: 'linear', duration: 300, loop: true })
-        tl.add({
-          targets: spots[i],
-          fillOpacity: 1
-        }).add({
-          targets: spots[i],
-          fillOpacity: 0
-        }).add({
-          targets: spots[i],
-          fillOpacity: 1
-        })
-      }
-
-      for (let i = 0; i < spots.length; i++) {
-        if (!(i % 2 == 0)) {
-          let tl = anime.timeline({ easing: 'linear', duration: 300, loop: true, delay: 300 })
-          tl.add({
-            targets: spots[i],
-            fillOpacity: 1
-          }).add({
-            targets: spots[i],
-            fillOpacity: 0
-          }).add({
-            targets: spots[i],
-            fillOpacity: 1
-          })
-        }
-      }
-    }
-
 
 
   }, [])
