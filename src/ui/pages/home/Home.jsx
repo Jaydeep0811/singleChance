@@ -142,6 +142,8 @@ function Home() {
     true
   );
 
+  const [bulbAnimation,setBulbAnimation]=useState(()=>{})
+
   const generateHistoryData = () => {
     const data = [];
     const baseTime = new Date();
@@ -238,15 +240,17 @@ function Home() {
     gsap.set(wheelRef1.current, { rotation: 18, transformOrigin: "50% 50%" });
     gsap.set(wheelRef2.current, { rotation: 18, transformOrigin: "50% 50%" });
   }, []);
-  // Inner Ring animation
-  // useEffect(() => {
-  //   var tl=gsap.timeline({})
-  //   tl.to(greenLight.current,{
-  //     fillOpacity:0,duration:10
-  //   }) }, [])
 
-// Outer Ring animation
+  // Outer Ring animation
+ 
+  useEffect(() => {
 
+
+  }, [])
+
+
+
+ // Inner Ring animation
 
   useEffect(() => {
     var tl = anime.timeline({
@@ -264,13 +268,14 @@ function Home() {
           fillOpacity: 1
           
         })
-        // .add({
-        //   targets: spots[i],
-        //   fillOpacity: 0
-        // }).add({
-        //   targets: spots[i],
-        //   fillOpacity: 1
-        // })
+        .add({
+          targets: spots[i],
+          fillOpacity: 0
+        })
+        .add({
+          targets: spots[i],
+          fillOpacity: 1
+        })
       }
           for (let i = 0; i < spots.length; i++) {
         if (!(i % 2 == 0)) {
@@ -280,13 +285,14 @@ function Home() {
             fillOpacity: 1
           })
           
-          // .add({
-          //   targets: spots[i],
-          //   fillOpacity: 0
-          // }).add({
-          //   targets: spots[i],
-          //   fillOpacity: 1
-          // })
+          .add({
+            targets: spots[i],
+            fillOpacity: 0
+          })
+          .add({
+            targets: spots[i],
+            fillOpacity: 1
+          })
         }
       }
     }
@@ -355,6 +361,23 @@ function Home() {
   };
 
   const handleYouWin = () => {
+
+    setBulbAnimation(()=>{
+      var tl=anime.timeline({easing:"linear",duration:300,loop:true})
+      tl.add({targets:[greenLight.current.querySelectorAll('g') , greenLight.current.querySelectorAll('circle')] ,
+   opacity:0
+      }).add({targets:[greenLight.current.querySelectorAll('g') , greenLight.current.querySelectorAll('circle')] ,
+       opacity:1,fillOpacity:1
+          }).add({targets:[orangeLight.current.querySelectorAll('g') , orangeLight.current.querySelectorAll('circle')] ,
+       opacity:0
+       }).add({targets:[orangeLight.current.querySelectorAll('g') , orangeLight.current.querySelectorAll('circle')] ,
+         opacity:1,fillOpacity:1
+            }).add({targets:[redLight.current.querySelectorAll('g') , redLight.current.querySelectorAll('circle')] ,
+         opacity:0
+         }).add({targets:[redLight.current.querySelectorAll('g') , redLight.current.querySelectorAll('circle')] ,
+           opacity:1,fillOpacity:1
+              })
+    })
     setIsOpen(true);
     youWinSound.play();
     setAlertMessage("message");
