@@ -11,12 +11,11 @@ import Chip25 from "../../../public/icons/Chips_g.svg";
 import Chip50 from "../../../public/icons/Chips_db.svg";
 import Chip100 from "../../../public/icons/Chips_p.svg";
 import Chip500 from "../../../public/icons/Chips_o.svg";
-import BG_Bottom  from "../../../public/icons/Bottom Panel1.svg";
+import BG_Bottom from "../../../public/icons/Bottom Panel1.svg";
 import ButtonIcon from "../../../public/icons/Button.png";
 import SmallButton from "../../../public/icons/SmallButton.png";
 import playButton from "../../../public/svgs/PlayBtn.svg";
 import winButton from "../../../public/svgs/WinBtn.svg";
-
 
 import { GameButton } from "../../../components/Utils/StyledComponents";
 // import { ipcRenderer } from "electron";
@@ -103,15 +102,15 @@ function BottomPortion({
     if (remainingTime > 0 && progressRef.current) {
       // Kill any existing animations on the progress bar
       gsap.killTweensOf(progressRef.current);
-      
+
       const percentageRemaining = (remainingTime / TOTAL_DURATION) * 100;
-      
+
       // Reset to initial width
       gsap.set(progressRef.current, { width: `${percentageRemaining}%` });
-      
+
       // Create new animation
       const animation = gsap.to(progressRef.current, {
-        width: '0%',
+        width: "0%",
         duration: remainingTime / 1000,
         ease: "linear",
       });
@@ -123,23 +122,29 @@ function BottomPortion({
     }
   }, [remainingTime]);
 
-
   return (
-    <Box sx={{ position: "relative", mt: "-235px" ,     fontFamily: "Poppins-Regular"}}>
+    <Box
+      sx={{
+        position: "relative",
+        // mt: "-235px",
+        height: "109px",
+        fontFamily: "Poppins-Regular",
+      }}
+    >
       {/* <img
         src={bottom}
         alt=""
         style={{ width: "100%", position: "absolute", bottom: 0, left: 0 }}
       /> */}
-      <BackgroundSVG />
+      <BackgroundSVG style={{ position: "absolute", bottom: 0, width: "100%"}} />
 
       <img
         src={treasury}
         alt=""
         style={{
           position: "absolute",
-          bottom:-50,
-          left: 50,
+          bottom: -50,
+          left: 17,
           width: "599px",
           height: "342px",
         }}
@@ -148,23 +153,29 @@ function BottomPortion({
       <Box
         sx={{
           position: "absolute",
-          top: -50,
-          right:30,
+          top: -260,
+          right: 30,
           // zIndex: 5,
-          display: "flex"
-          ,flexDirection:"row"
-          ,gap:"12px",
+          display: "flex",
+          flexDirection: "row",
+          gap: "12px",
           alignItems: "center",
           justifyContent: "center",
-        
         }}
       >
         {chipList.map((e, i) => (
           <IconButton
             disabled={isDisabled}
             key={i + 1}
-            sx={{ position: "relative", width: "104.22px",     fontFamily: "Poppins-Regular", height: "104.22px",display:"flex",alignItems: "center",
-              justifyContent: "center", }}
+            sx={{
+              position: "relative",
+              width: "104.22px",
+              fontFamily: "Poppins-Regular",
+              height: "104.22px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
             onClick={() => {
               setChipNum((prev) => prev !== e.num && e.num);
               chipSound.play();
@@ -174,10 +185,10 @@ function BottomPortion({
               src={e.img}
               alt=""
               style={{
-                position:'relative',
+                position: "relative",
                 width: "104.22px",
                 height: "104.22px",
-               
+
                 border: chipNum === e.num ? "3px solid #3BF435" : "none",
                 borderRadius: "999px",
               }}
@@ -189,9 +200,8 @@ function BottomPortion({
                 left: "50%",
                 transform: "translate(-50%, -50%)",
                 fontSize: "19px",
-               fontFamily:"Poppins-Black",
+                fontFamily: "Poppins-Black",
                 color: "#042655",
-             
               }}
             >
               {e.num}
@@ -200,16 +210,15 @@ function BottomPortion({
         ))}
       </Box>
 
-      <Box sx={{ position: "absolute", bottom: 16, left: 130, zIndex: 5 }}>
-        <Box sx={{ display: "flex", gap: 4 ,fontFamily:"Poppins-SemiBold"}}>
-
+      <Box sx={{ position: "absolute", bottom: 16, left: 100, zIndex: 5 }}>
+        <Box sx={{ display: "flex", gap: 4, fontFamily: "Poppins-SemiBold" }}>
           <Box>
             {/* <Button sx={{ p: 0, mb: 1 }} onClick={() => handlePlay()}> */}
             <img src={playButton} alt="Play" />
             {/* </Button> */}
             <Typography
               sx={{
-                width:"12.841rem",
+                width: "12.841rem",
                 color: "white",
                 py: 1,
                 // backgroundImage:
@@ -220,8 +229,7 @@ function BottomPortion({
                 fontWeight: "600",
                 textAlign: "center",
                 borderRadius: "8.61px",
-               fontFamily: "Poppins-Regular",
-
+                fontFamily: "Poppins-Regular",
               }}
             >
               {play + ".00"}
@@ -236,7 +244,7 @@ function BottomPortion({
             {/* </Button> */}
             <Typography
               sx={{
-                width:"12.841rem",
+                width: "12.841rem",
                 color: "white",
                 py: 1,
                 // backgroundImage:
@@ -247,7 +255,6 @@ function BottomPortion({
                 fontWeight: "600",
                 textAlign: "center",
                 borderRadius: "8.61px",
-              
               }}
             >
               {totalWin + ".00"}
@@ -281,8 +288,8 @@ function BottomPortion({
               variant="contained"
               sx={{
                 width: "13.313rem",
-                height:"3.25rem",
-                fontFamily:"Poppins-Bold"
+                height: "3.25rem",
+                fontFamily: "Poppins-Bold",
               }}
               onClick={() => betFunction("upperLine")}
             >
@@ -292,8 +299,8 @@ function BottomPortion({
               disabled={isDisabled}
               variant="contained"
               sx={{
-               width: "13.313rem",
-                height:"3.25rem",
+                width: "13.313rem",
+                height: "3.25rem",
               }}
               onClick={() => betFunction("lowerLine")}
             >
@@ -315,8 +322,9 @@ function BottomPortion({
               variant="contained"
               sx={{
                 width: "8.5rem",
-                height:"3.25rem", fontSize:"1.5rem",
-                  fontFamily:"Poppins-Bold"
+                height: "3.25rem",
+                fontSize: "1.5rem",
+                fontFamily: "Poppins-Bold",
               }}
               onClick={() => betFunction("odd")}
             >
@@ -327,8 +335,9 @@ function BottomPortion({
               variant="contained"
               sx={{
                 width: "8.5rem",
-                height:"3.25rem", fontSize:"1.5rem",
-                  fontFamily:"Poppins-Bold"
+                height: "3.25rem",
+                fontSize: "1.5rem",
+                fontFamily: "Poppins-Bold",
               }}
               onClick={() => betFunction("even")}
             >
@@ -339,8 +348,9 @@ function BottomPortion({
               variant="contained"
               sx={{
                 width: "8.5rem",
-                height:"3.25rem", fontSize:"1.5rem",
-                  fontFamily:"Poppins-Bold"
+                height: "3.25rem",
+                fontSize: "1.5rem",
+                fontFamily: "Poppins-Bold",
               }}
               onClick={() => betFunction("double")}
             >
@@ -361,8 +371,9 @@ function BottomPortion({
               variant="contained"
               sx={{
                 width: "8.5rem",
-                height:"3.25rem", fontSize:"1.5rem",
-                  fontFamily:"Poppins-Bold"
+                height: "3.25rem",
+                fontSize: "1.5rem",
+                fontFamily: "Poppins-Bold",
               }}
               onClick={() => betFunction("repeat")}
             >
@@ -373,8 +384,9 @@ function BottomPortion({
               variant="contained"
               sx={{
                 width: "8.5rem",
-                height:"3.25rem", fontSize:"1.5rem",
-                  fontFamily:"Poppins-Bold"
+                height: "3.25rem",
+                fontSize: "1.5rem",
+                fontFamily: "Poppins-Bold",
               }}
               onClick={() => betFunction("clear")}
             >
@@ -385,9 +397,9 @@ function BottomPortion({
               variant="contained"
               sx={{
                 width: "8.5rem",
-                height:"3.25rem",
-                fontSize:"1.5rem",
-                  fontFamily:"Poppins-Bold"
+                height: "3.25rem",
+                fontSize: "1.5rem",
+                fontFamily: "Poppins-Bold",
               }}
               onClick={handleShrink}
             >
@@ -399,9 +411,9 @@ function BottomPortion({
           <Typography
             sx={{
               fontSize: "1.5rem",
-             fontFamily:"Poppins-SemiBold",
+              fontFamily: "Poppins-SemiBold",
               color: "black",
-              
+
               textAlign: "center",
               mb: 1,
             }}
@@ -415,7 +427,7 @@ function BottomPortion({
               border: "4px solid black",
               // p: "16px",
               width: "15.438rem",
-              height:"10.063rem",
+              height: "10.063rem",
               borderRadius: "16px",
               backgroundColor: "transparent",
               // backgroundImage:
@@ -427,31 +439,26 @@ function BottomPortion({
                 textAlign: "center",
                 color: "white",
                 fontSize: "3.25rem",
-        
-               
+
                 // "-webkit-text-stroke": "2px #042655",
-               
+
                 bgcolor: "#C60042",
                 borderRadius: "12px 12px 0px 0px",
               }}
             >
               <Typography
-                  sx={{
-                    textAlign: "center",
-                    color: "white",
-                    fontSize: "3.25rem",
-                    fontFamily:"Poppins-ExtraBold",
-                    letterSpacing:"0.2rem",
-                      filter:"drop-shadow(3px 3px 3px #000)",
-                    // "-webkit-text-stroke": "2px #042655",
-                   
-                  
-                  }}
-             
-                >
-                   {formatCountdown(remainingTime)} 
+                sx={{
+                  textAlign: "center",
+                  color: "white",
+                  fontSize: "3.25rem",
+                  fontFamily: "Poppins-ExtraBold",
+                  letterSpacing: "0.2rem",
+                  filter: "drop-shadow(3px 3px 3px #000)",
+                  // "-webkit-text-stroke": "2px #042655",
+                }}
+              >
+                {formatCountdown(remainingTime)}
               </Typography>
-          
             </Typography>
             <Box sx={{ p: "14px" }}>
               <Box
@@ -476,7 +483,7 @@ function BottomPortion({
                     backgroundColor: "rgb(220,0,0)",
                     width: "100%",
                     height: "100%",
-                    border:"1px solid #000",
+                    border: "1px solid #000",
                     transition: "width 0.3s ease-in-out",
                   }}
                 />
@@ -491,9 +498,9 @@ function BottomPortion({
 
 export default BottomPortion;
 
-const BackgroundSVG = () => (
+const BackgroundSVG = (props) => (
   // <svg
-  
+
   //   viewBox="0 0 1440 327"
   //   fill="none"
   //   xmlns="http://www.w3.org/2000/svg"
@@ -532,19 +539,31 @@ const BackgroundSVG = () => (
   //   </defs>
   // </svg>
 
-
-<svg  viewBox="0 0 1440 341" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M751 1H750.971L750.941 1.00173C748.038 1.17248 738.824 1.93439 728.696 7.75108C718.544 13.5815 707.549 24.4486 701.048 44.6943C683.586 99.0749 638.713 201.764 516.077 259.094C433.644 297.63 315.622 307.131 211.77 285.193C107.878 263.246 18.5522 209.935 -7.0409 123.217L-9 123.5V364V365H-8H1440H1441V364V2V1H1440H751Z" fill="url(#paint0_linear_2362_976)" stroke="#6F2B02" stroke-width="2"/>
-<defs>
-<linearGradient id="paint0_linear_2362_976" x1="797.5" y1="-12" x2="797.5" y2="354" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F1830A"/>
-<stop offset="0.765476" stop-color="#E14902"/>
-<stop offset="1" stop-color="#FFAC09"/>
-</linearGradient>
-</defs>
+  <svg
+  viewBox="0 0 1440 341"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+  {...props}
+>
+  <path
+    d="M751 1h-.029l-.03.002c-2.903.17-12.117.932-22.245 6.75-10.152 5.83-21.147 16.697-27.648 36.942-17.462 54.38-62.335 157.07-184.971 214.4-82.433 38.536-200.455 48.037-304.307 26.099C107.878 263.246 18.552 209.935-7.04 123.217L-9 123.5V365h1450V1H751z"
+    fill="url(#paint0_linear_2362_976)"
+    stroke="#6F2B02"
+    strokeWidth={2}
+  />
+  <defs>
+    <linearGradient
+      id="paint0_linear_2362_976"
+      x1={797.5}
+      y1={-12}
+      x2={797.5}
+      y2={354}
+      gradientUnits="userSpaceOnUse"
+    >
+      <stop stopColor="#F1830A" />
+      <stop offset={0.765476} stopColor="#E14902" />
+      <stop offset={1} stopColor="#FFAC09" />
+    </linearGradient>
+  </defs>
 </svg>
-
-
-
-
-)
+);

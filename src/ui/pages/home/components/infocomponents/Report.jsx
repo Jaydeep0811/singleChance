@@ -44,7 +44,6 @@ function Report() {
 
   const [local, setLocal] = useLocalStorage("userDetails", {});
 
-
   const [reportData, setReportData] = useState({
     name: local.username,
     play: "100000.00",
@@ -79,8 +78,31 @@ function Report() {
     setDate({ ...date, to: moment(selectedDate) }); // Update the state with the new date
   };
 
+  const printReport = () => {
+    const billHTML = /*html*/ `
+    <div>
+    <p style="margin-bottom: 4px;">***Super Chance***</p>
+    <p style="margin-bottom: 4px;">From Amusement Only</p>
+    <p style="margin-bottom: 4px;">Agent: 634</p>
+    <p style="margin-bottom: 4px;">Game Name: Single Chance</p>
+    <p style="margin-bottom: 4px;">From Date: ${date.from.format("DD-MM-YYYY h:mm A")}</p>
+    <p style="margin-bottom: 4px;">To Date: ${date.to.format("DD-MM-YYYY h:mm A")}</p>
+    <p style="margin-bottom: 4px;">Sale Point: ${reportData.play}</p>
+    <p style="margin-bottom: 4px;">Win Point: ${reportData.win}</p>
+    <p style="margin-bottom: 4px;">Commission: ${reportData.commission}</p>
+    <p style="margin-bottom: 4px;">NTP Point: ${reportData.net_profit}</p>
+    </div>
+    `;
+
+    window.electronAPI.printBill(billHTML);
+  };
+
   const fetchDailyReport = async () => {
-    await daily_report();
+    await daily_report().then((res) => {
+      if (res) {
+        console.log(res);
+      }
+    });
   };
 
   useEffect(() => {
@@ -209,27 +231,27 @@ function Report() {
             </TableRow>
           </TableHead>
           <TableBody>
-              <TableRow
-                sx={{
-                  "td,th": {
-                    mb: 10,
-                    bgcolor: "#FFFFFF",
-                    borderBottom: "6px solid #FFE5C6",
-                    fontWeight: "bold",
-                  },
-                  "&:last-child td, &:last-child th": { border: 0 },
-                }}
-              >
-                <TableCell component="th" scope="row">
-                  {reportData.name}
-                </TableCell>
-                <TableCell>{reportData.play}</TableCell>
-                <TableCell>{reportData.win}</TableCell>
-                <TableCell>{reportData.claim}</TableCell>
-                <TableCell>{reportData.end}</TableCell>
-                <TableCell>{reportData.commission}</TableCell>
-                <TableCell>{reportData.net_profit}</TableCell>
-              </TableRow>
+            <TableRow
+              sx={{
+                "td,th": {
+                  mb: 10,
+                  bgcolor: "#FFFFFF",
+                  borderBottom: "6px solid #FFE5C6",
+                  fontWeight: "bold",
+                },
+                "&:last-child td, &:last-child th": { border: 0 },
+              }}
+            >
+              <TableCell component="th" scope="row">
+                {reportData.name}
+              </TableCell>
+              <TableCell>{reportData.play}</TableCell>
+              <TableCell>{reportData.win}</TableCell>
+              <TableCell>{reportData.claim}</TableCell>
+              <TableCell>{reportData.end}</TableCell>
+              <TableCell>{reportData.commission}</TableCell>
+              <TableCell>{reportData.net_profit}</TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </TableContainer>

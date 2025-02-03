@@ -131,7 +131,7 @@ function Historyinfo({ setinfoModal, betHistory }) {
         style={{
           width: "100%",
           position: "absolute",
-          top: "-6px",
+          top: "-10px",
       
         }}
       />
@@ -141,7 +141,7 @@ function Historyinfo({ setinfoModal, betHistory }) {
           justifyContent: "center",
           alignItems: "center",
           position: "absolute",
-          // top: 12,
+          top: -3,
           gap:"10px", 
           mr:3,
           right: 20,
@@ -166,10 +166,10 @@ function Historyinfo({ setinfoModal, betHistory }) {
             borderRadius: 2,
             display: "flex",
             alignItems: "center",
-            justifyContent: "CENTER",
+            justifyContent: "flex-end",
             gap: 1,
-            width: "660px",
-            height: "110px",
+            width: "605px",
+            height: "104px",
           }}
         >
           {betHistory.map((e, i) => (

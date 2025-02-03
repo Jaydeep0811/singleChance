@@ -82,9 +82,6 @@ function Header({ balance, openAlertBox }) {
     // window.location.reload();
   };
 
-  const handleUnclamedTicket = async () => {
-  }
-
 
   useEffect(() => {
     Howler.mute(!toggle);

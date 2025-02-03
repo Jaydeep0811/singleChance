@@ -56,7 +56,7 @@ export function printer_bill(
   const billHTML = /*html*/ `
   <div class="bill">
   <p style="margin-bottom: 4px;">***Super Chance***</p>
-  <p style="margin-bottom: 4px;">From Amusement Only</p>
+  <p style="margin-bottom: 4px;">From Amusement Only re-print</p>
   <p style="margin-bottom: 4px;">Agent: 634</p>
   <p style="margin-bottom: 4px;">Game ID: ${ticket_id}</p>
   <p style="margin-bottom: 4px;">Game Name: Single Chance</p>
@@ -88,5 +88,5 @@ export function printer_bill(
   </div>
   `;
 
-  // window.electronAPI.printBill(billHTML, payload.ticket_id);
+  window.electronAPI.printBill(billHTML, ticket_id);
 }
