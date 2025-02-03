@@ -299,9 +299,11 @@ function Home() {
   const betFunc = function () {
     betFunction("clear");
     setPlay(0);
+    
     let betData = betNumList
       .filter((e) => e.token !== "")
       .map((e) => ({ bet: e.num, played: e.token }));
+
     const chunkArray = (array, size) => {
       const chunks = [];
       for (let i = 0; i < array.length; i += size) {
@@ -368,7 +370,7 @@ function Home() {
         </div>
         `;
 
-      window.electronAPI.printBill(billHTML, payload.ticket_id);
+      // window.electronAPI.printBill(billHTML, payload.ticket_id);
     }
 
     openAlertBox(`YOUR BET HAS BEEN ACCEPTED WITH ID: ${payload.ticket_id}`);

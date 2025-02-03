@@ -1,12 +1,9 @@
-// import { app, BrowserWindow, ipcMain } from "electron";
-// import path from "path";
-// import { fileURLToPath } from "url";
+import { app, BrowserWindow, ipcMain } from "electron";
+import path from "path";
+import { fileURLToPath } from "url";
 
-const { app, BrowserWindow, ipcMain } = require("electron");
-const path = require("path")
-const { fileURLToPath } = require("url");
-
-// const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.on("ready", () => {
   const mainWindow = new BrowserWindow({
