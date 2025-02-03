@@ -18,6 +18,7 @@ import {
   CloseIcon,
   HomeIcon,
   MinimizeIcon,
+  MutedIcon,
   SoundOnIcon,
   Visbility,
 } from "../assets/Icones";
@@ -284,25 +285,25 @@ function Header({ balance, openAlertBox }) {
                 "& .MuiTypography-root": { color: "#EEDE01", fontSize: "20px" },
               }}
               control={ */}
-            <Checkbox
+            <Checkbox 
               checked={toggle}
               onChange={() => {
                 muteFun();
               }}
               size="large"
-              sx={{ }}
-              checkedIcon={<SoundOnIcon sx={{fontSize: "36px",border:"2px solid #000"}} />}
-              icon={<SoundOnIcon sx={{ fontSize: "36px" }} />}
+          
+              checkedIcon={<SoundOnIcon sx={{fontSize: "36px" ,bgcolor:"#0FD0BC" ,border:"2px solid #000" ,borderRadius:"10px"}}   />}
+              icon={<MutedIcon sx={{ fontSize: "36px",bgcolor:"#0FD0BC" ,border:"2px solid #000" ,borderRadius:"10px"}} />}
             />
             {/* //   }
               
             // /> */}
           {/* </FormGroup> */}
           <IconButton size="small" onClick={() => handleMinimize()}>
-            <MinimizeIcon sx={{ fontSize: "36px" }} />
+            <MinimizeIcon sx={{ fontSize: "36px",border:"2px solid #000" ,borderRadius:"10px" }} />
           </IconButton>
           <IconButton size="small" onClick={() => handleClose()}>
-            <CloseIcon sx={{ fontSize: "36px" }} />
+            <CloseIcon sx={{ fontSize: "36px" ,border:"2px solid #000" ,borderRadius:"10px"}} />
           </IconButton>
         </Stack>
       </Box>

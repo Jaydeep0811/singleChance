@@ -1925,6 +1925,8 @@ const Spinner3 = React.forwardRef(function (
         </linearGradient>
       </defs>
     </svg>
+
+    
   );
 });
 

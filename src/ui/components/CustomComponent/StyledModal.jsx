@@ -18,8 +18,8 @@ function StyledModal({ open, handleClose, children }) {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "calc(100vw - 80px)",
-          height: 615,
+          width: "1299.08px",
+          height: "794.79px",
           backgroundPosition: "center",
           boxShadow: 24,
           zIndex: 99999,
@@ -29,6 +29,7 @@ function StyledModal({ open, handleClose, children }) {
           //   backgroundImage: "url('../backgrounds/bgModal.png')",
           //   backgroundRepeat: "no-repeat", 
           //   backgroundSize: "cover",
+
         }}
       >
         <img

@@ -217,8 +217,8 @@ function Historyinfo({ setinfoModal, betHistory }) {
             </Box>
           ))}
         </Box>
-        <IconButton onClick={() => setinfoModal(true)}>
-          <InfoIcon sx={{ fontSize: "42px" }} />
+        <IconButton sx={{width:"52px"}} onClick={() => setinfoModal(true)}>
+          <InfoIcon sx={{ fontSize: "42px",width:"52px" }} />
         </IconButton>
       </Box>
     </Box>

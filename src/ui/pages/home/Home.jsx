@@ -35,6 +35,7 @@ import useSpinningGame from "../../hooks/useSpinningGame";
 import YouWin from "./components/YouWin";
 import Spinner3 from "../../components/Spinner/Spinner3";
 import Spinner4 from "../../components/Spinner/Spinner4";
+
 import { Back } from 'gsap';
 // const crypto = window.crypto || window.msCrypto;
 
@@ -173,7 +174,9 @@ function Home() {
   const wheelRef2 = useRef(null);
   const currentRef = useRef(null);
   const innerWheelLight = useRef(null);
-
+  const redLight = useRef(null);
+  const orangeLight = useRef(null);
+  const greenLight= useRef(null);
 
 
   const boxRef = useRef(null);
@@ -234,52 +237,95 @@ function Home() {
     gsap.set(wheelRef1.current, { rotation: 18, transformOrigin: "50% 50%" });
     gsap.set(wheelRef2.current, { rotation: 18, transformOrigin: "50% 50%" });
   }, []);
-  useEffect(()=>{
+  // Inner Ring animation
+  useEffect(() => {
     var tl = anime.timeline({
       easing: 'easeOutExpo',
-     
+
     });
-    
+
     // Add children
-   const spots= innerWheelLight.current.querySelectorAll(`g`);
-   for (let i =0 ; i <= spots.length; i++) {
-    if(i%2==0){
-      let tl=anime.timeline({easing:'linear',duration:300,loop:true})
-      tl.add({
-        targets: spots[i],
-        fillOpacity:1
-      }).add({
-        targets: spots[i],
-        fillOpacity:0
-      }).add({
-        targets: spots[i],
-        fillOpacity:1
-      })
-    }
-  
-    for (let i = 0; i < spots.length; i++) {
-      if( !(i%2==0)){
-        let tl=anime.timeline({easing:'linear',duration:300 ,loop:true,delay:300})
+    const spots = innerWheelLight.current.querySelectorAll(`g`);
+    for (let i = 0; i <= spots.length; i++) {
+      if (i % 2 == 0) {
+        let tl = anime.timeline({ easing: 'linear', duration: 300, loop: true })
         tl.add({
           targets: spots[i],
-          fillOpacity:1
+          fillOpacity: 1
         }).add({
           targets: spots[i],
-          fillOpacity:0
+          fillOpacity: 0
         }).add({
           targets: spots[i],
-          fillOpacity:1
+          fillOpacity: 1
         })
       }
+
+      for (let i = 0; i < spots.length; i++) {
+        if (!(i % 2 == 0)) {
+          let tl = anime.timeline({ easing: 'linear', duration: 300, loop: true, delay: 300 })
+          tl.add({
+            targets: spots[i],
+            fillOpacity: 1
+          }).add({
+            targets: spots[i],
+            fillOpacity: 0
+          }).add({
+            targets: spots[i],
+            fillOpacity: 1
+          })
+        }
+      }
     }
-   }
-
-   
-
-  },[])
 
 
 
+  }, [])
+
+// Outer Ring animation
+  useEffect(() => {
+    var tl = anime.timeline({
+      easing: 'easeOutExpo',
+
+    });
+
+    // Add children
+    const spots = redLight.current.querySelectorAll(`g`);
+    for (let i = 0; i <= spots.length; i++) {
+      if (i % 2 == 0) {
+        let tl = anime.timeline({ easing: 'linear', duration: 300, loop: true })
+        tl.add({
+          targets: spots[i],
+          fillOpacity: 1
+        }).add({
+          targets: spots[i],
+          fillOpacity: 0
+        }).add({
+          targets: spots[i],
+          fillOpacity: 1
+        })
+      }
+
+      for (let i = 0; i < spots.length; i++) {
+        if (!(i % 2 == 0)) {
+          let tl = anime.timeline({ easing: 'linear', duration: 300, loop: true, delay: 300 })
+          tl.add({
+            targets: spots[i],
+            fillOpacity: 1
+          }).add({
+            targets: spots[i],
+            fillOpacity: 0
+          }).add({
+            targets: spots[i],
+            fillOpacity: 1
+          })
+        }
+      }
+    }
+
+
+
+  }, [])
 
   const fetchGameResult = async () => {
     const response = await get_game_result(idLocl.id, 1, 10);
@@ -392,8 +438,8 @@ function Home() {
         <p style="margin-bottom: 4px;">Game Name: Single Chance</p>
         <p style="margin-bottom: 4px;">Draw Time: ${nextIntervalTime}</p>
         <p style="margin-bottom: 4px;">Ticket Time: ${moment().format(
-          "DD-MM-YYYY h:mm A"
-        )}</p>
+        "DD-MM-YYYY h:mm A"
+      )}</p>
         <p style="margin-bottom: 4px;">Total Point: ${play}</p>
         <div style="display: flex; align-items: flex-start; gap: 14px;">
             <table>
@@ -404,8 +450,8 @@ function Home() {
                 <th>Point</th>
               </tr>
               ${pairedItems
-                .map(
-                  (pair) => `
+          .map(
+            (pair) => `
                   <tr>
                     <td>${pair[0]?.num || ""}</td>
                     <td>${pair[0]?.token || ""}</td>
@@ -413,8 +459,8 @@ function Home() {
                     <td>${pair[1]?.token || ""}</td>
                   </tr>
                 `
-                )
-                .join("")}
+          )
+          .join("")}
             </table>
           </div>
         </div>
@@ -700,23 +746,23 @@ function Home() {
     <>
       <Box
         sx={{
-          position:"relative",
-          overflow:"hidden",
-          width:"100vw",
-          minHeight:"900px",
+          position: "relative",
+          overflow: "hidden",
+          width: "100vw",
+          minHeight: "900px",
           background: "rgb(171,44,4)",
-          background:" linear-gradient(180deg, rgba(171,44,4,1) 14%, rgba(181,51,4,1) 33%, rgba(171,44,4,1) 48%, rgba(112,12,1,1) 84%)"
+          background: " linear-gradient(180deg, rgba(171,44,4,1) 14%, rgba(181,51,4,1) 33%, rgba(171,44,4,1) 48%, rgba(112,12,1,1) 84%)"
         }}
       >
         <Header balance={balance} openAlertBox={openAlertBox} />
         <Historyinfo betHistory={betHistory} setinfoModal={setinfoModal} />
-          <img src={StarPattern} alt="StarPattern" 
-               style={{
-                position: "absolute",
-                top:"14%",
-                "mix-blend-mode": "screen",
-              }}
-          />
+        <img src={StarPattern} alt="StarPattern"
+          style={{
+            position: "absolute",
+            top: "14%",
+            "mix-blend-mode": "screen",
+          }}
+        />
 
 
         {/* <img
@@ -774,13 +820,23 @@ function Home() {
               currentRef={currentRef}
             /> */}
 
-          <Spinner4
+            <Spinner4
              
               wheelRef1={wheelRef1}
               wheelRef2={wheelRef2}
               currentRef={currentRef}
               innerWheelLight={innerWheelLight}
-            />
+              greenLight={greenLight}
+              redLight={redLight}
+              orangeLight={orangeLight}   />
+
+            {/* <Spinner5
+
+              wheelRef1={wheelRef1}
+              wheelRef2={wheelRef2}
+              currentRef={currentRef}
+              innerWheelLight={innerWheelLight}
+            /> */}
             <YouWin
               winAmount={winAmount}
               isOpen={isOpen}
@@ -796,6 +852,8 @@ function Home() {
             />
           </Box>
         </Box>
+
+
         <BottomPortion
           balance={balance}
           chipNum={chipNum}

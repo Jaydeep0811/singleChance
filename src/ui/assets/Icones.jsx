@@ -40,6 +40,20 @@ export const CheckIcon = createSvgIcon(
   </svg>
 );
 
+
+
+export const MutedIcon = createSvgIcon(
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="2" y="2" width="32" height="32" rx="8" fill="#0FD0BC"/>
+<rect x="1" y="1" width="34" height="34" rx="9" stroke="black" stroke-opacity="0.3" stroke-width="2"/>
+<path d="M18 10L15.91 12.09L18 14.18M10.27 9L9 10.27L13.73 15H9V21H13L18 26V19.27L22.25 23.53C21.58 24.04 20.83 24.46 20 24.7V26.77C21.38 26.45 22.63 25.82 23.68 24.96L25.73 27L27 25.73L18 16.73M25 18C25 18.94 24.8 19.82 24.46 20.64L25.97 22.15C26.6455 20.8709 26.999 19.4465 27 18C27 13.72 24 10.14 20 9.23V11.29C22.89 12.15 25 14.83 25 18ZM22.5 18C22.5 16.23 21.5 14.71 20 13.97V16.18L22.45 18.63C22.5 18.43 22.5 18.21 22.5 18Z" fill="black"/>
+</svg>
+
+);
+
+
+
+
 export const CheckedInIcon = createSvgIcon(
   <svg
     width={32}
@@ -73,7 +87,7 @@ export const SoundOnIcon = createSvgIcon(
     xmlns="http://www.w3.org/2000/svg"
     // {...props}
   >
-    <rect width={32} height={32} rx={8} fill="#457DCA" />
+    <rect width={32} height={32} rx={8} fill="#0FD0BC" />
     <g clipPath="url(#clip0_25_739)">
       <path
         d="M15.255 6.818c-.247 0-.52.111-.77.36l-4.399 4.976H6.77a.77.77 0 00-.769.77v6.153c0 .424.345.77.77.77h3.317l4.374 4.951c.77.77 1.539.376 1.539-.673V7.754c0-.609-.333-.94-.745-.938v.002zm5.576 1.538a.77.77 0 00-.167 1.466A6.892 6.892 0 0124.46 16a6.892 6.892 0 01-3.798 6.178.769.769 0 10.673 1.37C24.1 22.155 26 19.299 26 16s-1.9-6.154-4.664-7.548a.77.77 0 00-.432-.096.771.771 0 00-.073 0zm-1.826 2.98a.769.769 0 00-.313 1.442c1.187.738 1.923 1.907 1.923 3.222 0 1.325-.747 2.509-1.946 3.245a.769.769 0 10.816 1.298c1.593-.977 2.669-2.638 2.669-4.543 0-1.893-1.067-3.564-2.645-4.543a.77.77 0 00-.432-.12.726.726 0 00-.072 0z"
@@ -214,7 +228,7 @@ export const CloseIcon = createSvgIcon(
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect width={32} height={32} rx={8} fill="#457DCA" />
+    <rect width={32} height={32} rx={8} fill="#0FD0BC" />
     <path
       d="M21.25 10.758a.83.83 0 00-1.175 0L16 14.825l-4.075-4.075a.832.832 0 00-1.175 1.175L14.825 16l-4.075 4.075a.832.832 0 001.175 1.175L16 17.175l4.075 4.075a.83.83 0 101.175-1.175L17.175 16l4.075-4.075a.835.835 0 000-1.167z"
       fill="#fff"
@@ -230,7 +244,7 @@ export const MinimizeIcon = createSvgIcon(
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <rect width={32} height={32} rx={8} fill="#457DCA" />
+    <rect width={32} height={32} rx={8} fill="#0FD0BC" />
     <path
       fillRule="evenodd"
       clipRule="evenodd"

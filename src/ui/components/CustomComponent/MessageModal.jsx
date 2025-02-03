@@ -12,7 +12,7 @@ function MessageModal({ open, handleClose, anchorEl, alertMessage, id }) {
         horizontal: "center",
       }}
       transformOrigin={{
-        vertical: "top",
+        vertical: "center",
         horizontal: "center",
       }}
       sx={{
