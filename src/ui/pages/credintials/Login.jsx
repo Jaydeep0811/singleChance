@@ -67,7 +67,7 @@ function Login() {
         <Box sx={{ display: "flex", alignItems: "center", gap: 2, mb: 2 }}>
           <Typography sx={{ color: "white", fontSize: "20px" }}>Agent ID : 254545574 </Typography>
           <GameButton onClick={logcook} sx={{ fontSize: "14px", px: 2 }}>
-            Get Access
+            HOST NAME
           </GameButton>
         </Box>
 
