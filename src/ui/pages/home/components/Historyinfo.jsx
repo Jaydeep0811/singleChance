@@ -123,6 +123,7 @@ function Historyinfo({ setinfoModal, betHistory }) {
         // p: 1,
         zIndex: 1,
         position: "relative",
+
       }}
     >
       <img
@@ -131,7 +132,7 @@ function Historyinfo({ setinfoModal, betHistory }) {
         style={{
           width: "100%",
           position: "absolute",
-          top: "-6px",
+          top: "-9px",
       
         }}
       />
@@ -170,7 +171,8 @@ function Historyinfo({ setinfoModal, betHistory }) {
             gap: 1,
             width: "660px",
             height: "110px",
-         
+         position:"relative",
+         top:"-2px"
 
           }}
         >

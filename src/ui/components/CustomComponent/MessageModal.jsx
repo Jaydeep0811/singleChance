@@ -17,10 +17,10 @@ function MessageModal({ open, handleClose, anchorEl, alertMessage, id }) {
       }}
       sx={{
         zIndex: 1,
-        top: -50,
-        left: -10,
+        top: "3%",
+        left: "0%",
         ".MuiPopover-paper": {
-          width: 660,
+          width: "620px",
           backgroundImage:
             "linear-gradient(191deg, rgba(238,222,1,1) 0%, rgba(249,140,7,1) 100%)",
           p: "2px",
