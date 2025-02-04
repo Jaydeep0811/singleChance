@@ -19,7 +19,7 @@ function StyledModal({ open, handleClose, children }) {
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: "1299.08px",
-          height: "794.79px",
+          height: "615.79px",
           backgroundPosition: "center",
           boxShadow: 24,
           zIndex: 99999,

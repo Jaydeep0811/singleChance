@@ -57,7 +57,7 @@ import token from "../../../public/icons/token.png";
 //   },
 // ];
 
-function BetNumbers({ betNumList, betButtonClick, chipSound, isDisabled }) {
+function BetNumbers({ betNumList, betButtonClick, betremoveClick, chipSound, isDisabled }) {
   // const [betNumList, setBetNumList] = useState([
   //   {
   //     num: 1,
@@ -150,6 +150,12 @@ function BetNumbers({ betNumList, betButtonClick, chipSound, isDisabled }) {
                 betButtonClick(i);
                 chipSound.play();
               }}
+              onContextMenu={(event) => {
+                event.preventDefault(); // Prevents the default context menu
+                // Add your right-click function here, for example:
+                betremoveClick(i);
+                chipSound.play();
+              }}
             >
               <Typography
                 sx={{
@@ -184,7 +190,7 @@ function BetNumbers({ betNumList, betButtonClick, chipSound, isDisabled }) {
                     />
                     <Typography
                       sx={{
-                        fontSize: "17.56px",
+                        // fontSize: "17.56px",
                         fontWeight: "700",
                         color: "#042655",
                         fontSize:"1.032rem",

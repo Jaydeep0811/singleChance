@@ -12,7 +12,7 @@ export const get_balance = async function () {
 };
 
 export const set_autoclame = async function (bool) {
-  let user_id = JSON.parse(localStorage.getItem("userDetails")).id ;
+  let user_id = JSON.parse(localStorage.getItem("userDetails")).id;
   try {
     const { data } = await axios.patch("api/v1/user/balance/", {
       is_claimed: bool,
@@ -47,7 +47,6 @@ export const game_history = async function (id) {
   }
 };
 
-
 export const predict_winner = async function (game_id) {
   try {
     const { data } = await axios.post("api/v1/game/predict-winner/", {
@@ -62,7 +61,14 @@ export const predict_winner = async function (game_id) {
 
 export const get_game_result = async function (id, page, pageSize = 10) {
   try {
-    const { data } = await axios("api/v1/game/result/" + id + "/?pageIndex=" + page + "&perPage=" + pageSize);
+    const { data } = await axios(
+      "api/v1/game/result/" +
+        id +
+        "/?pageIndex=" +
+        page +
+        "&perPage=" +
+        pageSize
+    );
     return data;
   } catch (error) {
     console.log("error on  API", error);
@@ -91,3 +97,63 @@ export const claim_unclamed_tickets = async function (id) {
     return error;
   }
 };
+
+export const get_single_view = async function (ticket_id, game_id) {
+  try {
+    const { data } = await axios("api/v1/game/single-view/", {
+      params: {
+        ticket_id: ticket_id,
+        game_id: game_id
+      }
+    });
+    return data;
+  } catch (error) {
+    console.log("error on  API", error);
+    return error;
+  }
+};
+
+export const clame_multiple_ticket = async function (id) {
+  try {
+    const { data } = await axios.patch("api/v1/game/claim/multiple/ticket/", {
+      ticket_id: id,
+    });
+    return data;
+  } catch (error) {
+    console.log("error on  API", error);
+    return error;
+  }
+};
+
+export const cancel_game = async function (ticket_id, game_id) {
+  try {
+    const { data } = await axios.patch("api/v1/game/cancel/", {
+      game_id: game_id,
+      ticket_id: ticket_id,
+    });
+    return data;
+  } catch (error) {
+    console.log("error on  API", error);
+    return error;
+  }
+};
+
+export const clame_all_tickets = async function () {
+  try {
+    const { data } = await axios.patch("api/v1/game/claim/all/",);
+    return data;
+  } catch (error) {
+    console.log("error on  API", error);
+    return error;
+  }
+};
+
+export const daily_report = async function () {
+  try {
+    const { data } = await axios.patch("api/v1/game/daily-report/",);
+    return data;
+  } catch (error) {
+    console.log("error on  API", error);
+    return error;
+  }
+}

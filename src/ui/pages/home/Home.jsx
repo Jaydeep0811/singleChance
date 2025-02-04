@@ -124,9 +124,9 @@ function Home() {
   ]);
 
   const [idLocl, setLocalid] = useLocalStorage("userDetails", {});
-  const [duration, setDuration] = useState(moment());
+  // const [duration, setDuration] = useState(moment());
   const [chipNum, setChipNum] = useState(null);
-  const [ismessModal, setIsmessageModal] = useState(false);
+  // const [ismessModal, setIsmessageModal] = useState(false);
   const [play, setPlay] = useState(0);
 
   const [isDisabled, setIsDisabled] = useState(false);
@@ -357,7 +357,6 @@ function Home() {
     if (isOpen === true) {
       handleYouWin();
     }
-    fetchGameResult();
   };
 
   const handleYouWin = () => {
@@ -387,9 +386,11 @@ function Home() {
   const betFunc = function () {
     betFunction("clear");
     setPlay(0);
+    
     let betData = betNumList
       .filter((e) => e.token !== "")
       .map((e) => ({ bet: e.num, played: e.token }));
+
     const chunkArray = (array, size) => {
       const chunks = [];
       for (let i = 0; i < array.length; i += size) {
@@ -456,7 +457,7 @@ function Home() {
         </div>
         `;
 
-      window.electronAPI.printBill(billHTML, payload.ticket_id);
+      // window.electronAPI.printBill(billHTML, payload.ticket_id);
     }
 
     openAlertBox(`YOUR BET HAS BEEN ACCEPTED WITH ID: ${payload.ticket_id}`);
@@ -483,6 +484,33 @@ function Home() {
       return sum + tokenValue;
     }, 0);
     setBalance(balance - chipNum);
+    setPlay(totalTokens);
+    setBetNumList(newList);
+  };
+
+  const betremoveClick = function (index) {
+    let newList = betNumList.map((e, i) => {
+      if (index == i) {
+        // If there's a token on this number, add its value back to the balance
+        const currentToken = parseInt(e.token, 10) || 0;
+        if (currentToken > 0) {
+          setBalance(balance + currentToken);
+        }
+        // Remove the token by returning the object without the token property
+        return {
+          ...e,
+          token: '', // or null, depending on how you want to represent no token
+        };
+      }
+      return e;
+    });
+
+    // Recalculate total tokens after removal
+    const totalTokens = newList.reduce((sum, item) => {
+      const tokenValue = parseInt(item.token, 10) || 0;
+      return sum + tokenValue;
+    }, 0);
+
     setPlay(totalTokens);
     setBetNumList(newList);
   };
@@ -579,14 +607,14 @@ function Home() {
     setAlertMessage("");
   };
 
-  const [remainingTime, setRemainingTime] = useState(
-    moment.duration(0, "seconds")
-  );
+  // const [remainingTime, setRemainingTime] = useState(
+  //   moment.duration(0, "seconds")
+  // );
   const [isCounting, setIsCounting] = useState(false);
   const open = Boolean(anchorEl);
   const id = open ? "simple-popover" : undefined;
   const time = 2;
-  const intervalMs = time * 60 * 1000;
+  // const intervalMs = time * 60 * 1000;
 
   const fetchBalance = async function () {
     await get_balance().then((e) => {
@@ -646,6 +674,7 @@ function Home() {
     setWinAmount(0);
     openAlertBox(`PLACE YOUR BET`);
     placeYourBetsSound.play();
+    fetchGameResult();
     console.log("Triggered at 15sec!");
   }, []);
 
@@ -792,7 +821,7 @@ function Home() {
             aria-describedby={id}
             sx={{
               position: "absolute",
-              left: "8px",
+              left: -20,
               top: 45,
               width: "680px",
             }}
@@ -811,7 +840,6 @@ function Home() {
             /> */}
 
             <Spinner4
-             
               wheelRef1={wheelRef1}
               wheelRef2={wheelRef2}
               currentRef={currentRef}
@@ -838,6 +866,7 @@ function Home() {
               isDisabled={isDisabled}
               betNumList={betNumList}
               betButtonClick={betButtonClick}
+              betremoveClick={betremoveClick}
               chipSound={chipSound}
             />
           </Box>

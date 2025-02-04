@@ -132,8 +132,7 @@ function Historyinfo({ setinfoModal, betHistory }) {
         style={{
           width: "100%",
           position: "absolute",
-          top: "-9px",
-      
+          top: "-10px",
         }}
       />
       <Box
@@ -142,7 +141,7 @@ function Historyinfo({ setinfoModal, betHistory }) {
           justifyContent: "center",
           alignItems: "center",
           position: "absolute",
-          // top: 12,
+          top: -3,
           gap:"10px", 
           mr:3,
           right: 20,
@@ -173,7 +172,10 @@ function Historyinfo({ setinfoModal, betHistory }) {
             height: "110px",
          position:"relative",
          top:"-2px"
-
+            justifyContent: "flex-end",
+            gap: 1,
+            width: "605px",
+            height: "104px",
           }}
         >
           {betHistory.map((e, i) => (
@@ -215,7 +217,7 @@ function Historyinfo({ setinfoModal, betHistory }) {
                     fontFamily: "Poppins-Regular",
                   }}
                 >
-                  {e.result}
+                  {e.result || e.bet}
                 </Typography>
               </Paper>
             </Box>
