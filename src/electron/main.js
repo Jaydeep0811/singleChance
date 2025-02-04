@@ -2,7 +2,6 @@ const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const JsBarcode = require("jsbarcode");
 const { createCanvas } = require("canvas");
-const fs = require('fs');
 
 
 let mainWindow;
@@ -19,46 +18,63 @@ const createWindow = () => {
     },
   });
   mainWindow.loadFile("index.html");
+  // app.on('activate', () => {
+  //   if (BrowserWindow.getAllWindows().length === 0) {
+  //     createWindow();
+  //   }
+  // });
 };
 
 app.whenReady().then(() => {
   createWindow();
 });
 
+app.on('window-all-closed', () => {
+  if (process.platform !== 'darwin') {
+    app.quit();
+  }
+});
 
-ipcMain.on("print-bill", (event, billHTML) => {
+
+ipcMain.on("print-bill", (event, billHTML, barcode) => {
   // RETSOL RTP 82 settings (80mm thermal printer)
   const paperWidthPx = 512; // Slightly reduced width to ensure fit
   const barcodeHeight = 50;
   const fontSize = 12;
   const textMargin = 5;
 
-  const canvasHeight = barcodeHeight + fontSize + textMargin;
-  const canvas = createCanvas(paperWidthPx, canvasHeight);
-  const ctx = canvas.getContext("2d");
+  let barcodeDataURL = '';
 
-  // Simplified barcode settings
-  JsBarcode(canvas, "EXAMPLE123456789", {
-    format: "CODE128",
-    displayValue: false,
-    height: barcodeHeight,
-    width: 2,
-    margin: 10,
-    background: "#fff",
-    lineColor: "#000",
-  });
+  console.log(barcode, "somer is here");
+  
+  if (barcode) {
+    const canvasHeight = barcodeHeight + fontSize + textMargin;
+    const canvas = createCanvas(paperWidthPx, canvasHeight);
+    const ctx = canvas.getContext("2d");
+  
+    // Simplified barcode settings
+    JsBarcode(canvas, barcode, {
+      format: "CODE128",
+      displayValue: false,
+      height: barcodeHeight,
+      width: 2,
+      margin: 10,
+      background: "#fff",
+      lineColor: "#000",
+    });
+  
+    // Simple text placement
+    const text = barcode;
+    ctx.font = `${fontSize}px Arial`;
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#000";
+    ctx.fillText(text, 10, barcodeHeight + fontSize); // Adjusted text position to be below the barcode
 
-  // Simple text placement
-  const text = "EXAMPLE-123456789";
-  ctx.font = `${fontSize}px Arial`;
-  ctx.textAlign = "left";
-  ctx.fillStyle = "#000";
-  ctx.fillText(text, 10, barcodeHeight + fontSize); // Adjusted text position to be below the barcode
-
-  const barcodeDataURL = canvas.toDataURL();
+    barcodeDataURL = canvas.toDataURL();
+  }
 
   // Simplified HTML structure
-  const styledHTML = `
+  const styledHTML = /*html*/ `
     <!DOCTYPE html>
     <html>
       <head>
@@ -86,9 +102,10 @@ ipcMain.on("print-bill", (event, billHTML) => {
         <div class="bill-container">
           ${billHTML}
         </div>
-        <div class="barcode">
-          <img src="${barcodeDataURL}" alt="Barcode" >
-        </div>
+        ${ barcode ? `<div class="barcode">
+          <img src="${barcodeDataURL}" alt="Barcode" />
+          <p>${barcode}</p>
+        </div>` : ''}
       </body>
     </html>
   `;
@@ -132,6 +149,8 @@ ipcMain.on("print-bill", (event, billHTML) => {
 });
 
 ipcMain.on("window-minimize", () => {
+  console.log("call minimized");
+  
   mainWindow.minimize();
 });
 

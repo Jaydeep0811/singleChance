@@ -13,6 +13,7 @@ import {
   Checkbox,
   Button,
   Modal,
+  CircularProgress,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -25,69 +26,14 @@ import {
 } from "../../../../assets/Icones";
 import ViewButton from "../../../../public/icons/viewButton.png";
 import moment from "moment";
-import { game_history } from "../../../../api/gameData";
+import {
+  cancel_game,
+  clame_all_tickets,
+  game_history,
+  get_single_view,
+} from "../../../../api/gameData";
 import useLocalStorage from "../../../../utils/useLocalStorage";
-
-function createData(
-  ticketId,
-  gameID,
-  startingPoint,
-  played,
-  won,
-  end,
-  endPoint,
-  status,
-  result,
-  date,
-  drawtime,
-  TicketTime
-) {
-  return {
-    ticketId,
-    gameID,
-    startingPoint,
-    played,
-    won,
-    end,
-    endPoint,
-    status,
-    result,
-    date,
-    drawtime,
-    TicketTime,
-  };
-}
-
-const rows = [
-  createData(
-    "6396-1NG1497",
-    504584,
-    5360.0,
-    40.0,
-    100.0,
-    504484,
-    5360.0,
-    "DONE",
-    "3-N",
-    "28-11-2024",
-    "8:22PM",
-    "08:21:10 PM"
-  ),
-  createData(
-    "6396-1NG1497",
-    504584,
-    5360.0,
-    40.0,
-    100.0,
-    504484,
-    5360.0,
-    "NO WIN",
-    "3-N",
-    "28-11-2024",
-    "8:22PM",
-    "08:21:10 PM"
-  ),
-];
+import { printer_bill } from "../../../../utils/functions";
 
 function GameHistory() {
   const dateRefFrom = useRef(null);
@@ -99,8 +45,22 @@ function GameHistory() {
   const [pageNum, setPageNum] = useState(1);
   const [historyList, setHistoryList] = useState([]);
   const [idLocl, setLocalid] = useLocalStorage("userDetails", {});
-  const [ticketID, setTicketID] = useState(null);
+  const [ticketID, setTicketID] = useState("");
+  const [gameID, setGameID] = useState("");
+  const [ticketObj, setticketObj] = useState({});
   const [open, setOpen] = useState(false);
+  const [singleViewList, setSingleViewList] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleDateChangeFrom = (event) => {
+    const selectedDate = event.target.value; // Get the selected date as a string
+    setDate({ ...date, from: moment(selectedDate) }); // Update the state with the new date
+  };
+
+  const handleDateChangeTo = (event) => {
+    const selectedDate = event.target.value; // Get the selected date as a string
+    setDate({ ...date, to: moment(selectedDate) }); // Update the state with the new date
+  };
 
   const handleIconClickFrom = () => {
     if (dateRefFrom.current) {
@@ -119,27 +79,87 @@ function GameHistory() {
   const handleClose = () => {
     setOpen(false);
     setTicketID(null);
+    setGameID(null);
   };
 
-  const handleRowClick = (ticketId) => {
-    setTicketID(ticketId);
-    setOpen(true);
+  const handleRowClick = (obj) => {
+    setTicketID(obj.ticket_id === ticketID ? null : obj.ticket_id);
+    setGameID(obj.game_id === gameID ? null : obj.game_id);
+    setticketObj(obj);
+    console.log(ticketID, gameID);
   };
 
-  const handleDateChangeFrom = (event) => {
-    const selectedDate = event.target.value; // Get the selected date as a string
-    setDate({ ...date, from: moment(selectedDate) }); // Update the state with the new date
+  const handleViewClick = () => {
+    handleRefreshClick();
   };
 
-  const handleDateChangeTo = (event) => {
-    const selectedDate = event.target.value; // Get the selected date as a string
-    setDate({ ...date, to: moment(selectedDate) }); // Update the state with the new date
+  const handleRefreshClick = () => {
+    setIsLoading(true);
+    game_history(idLocl.id).then((data) => {
+      setHistoryList(data.response.data);
+      setIsLoading(false);
+    });
+  };
+
+  const handleAllClaimClick = async () => {
+    await clame_all_tickets(idLocl.id);
+    handleRefreshClick();
+    // setOpen(true);
+  };
+
+  const handleDetailsClick = () => {
+    if (ticketID && gameID) {
+      get_single_view(ticketID, gameID).then((data) => {
+        if (data.statusCode === 200) {
+          setSingleViewList(data.response);
+          setOpen(true);
+        }
+      });
+    }
+  };
+
+  const handleReprintClick = () => {
+    // setOpen(true);
+    if (ticketID && gameID) {
+      get_single_view(ticketID, gameID).then((data) => {
+        if (data.statusCode === 200) {
+          const fileterlist = data.response.map((e) => {
+            return {
+              num: e.bet,
+              token: e.played,
+            };
+          });
+          printer_bill(
+            ticketObj.ticket_id,
+            moment(ticketObj.draw_time, "HH:mm:ss.SSSSSS").format("hh:mm A"),
+            moment(ticketObj.ticket_time, "HH:mm:ss.SSSSSS").format("hh:mm A"),
+            ticketObj.played,
+            fileterlist
+          );
+        }
+      });
+    }
+  };
+
+  const handleClaimClick = () => {
+    // setOpen(true);
+  };
+
+  const handleCancelClick = () => {
+    // setOpen(true);
+    cancel_game(ticketID, gameID).then((data) => {
+      // console.log(data);
+      if (data.statusCode === 200) {
+        handleRefreshClick();
+      }
+    });
   };
 
   useEffect(() => {
+    setIsLoading(true);
     game_history(idLocl.id).then((data) => {
-      console.log(data.response.data);
       setHistoryList(data.response.data);
+      setIsLoading(false);
     });
   }, []);
 
@@ -230,6 +250,7 @@ function GameHistory() {
                     width: "100%",
                   },
                 }}
+                onClick={handleViewClick}
               >
                 <img
                   src={ViewButton}
@@ -290,46 +311,67 @@ function GameHistory() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {historyList.map((row) => (
-                  <TableRow
-                    onClick={() => handleRowClick(row.ticketId)}
-                    key={row.ticketId}
-                    sx={{
-                      "td,th": {
-                        // mb: 10,
-                        cursor: "pointer",
-                        bgcolor:
-                          ticketID === row.ticketId ? "#CACFDB" : "#FFFFFF",
-                        borderBottom: "6px solid #FFE5C6",
-                        fontWeight: "bold",
-                      },
-                      "&:last-child td, &:last-child th": { border: 0 },
-                    }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {row.ticket_id}
-                    </TableCell>
-                    <TableCell>{row.game_id}</TableCell>
-                    <TableCell>{row.start_point}</TableCell>
-                    <TableCell>{row.played}</TableCell>
-                    <TableCell>{row.won}</TableCell>
-                    <TableCell>{row.end}</TableCell>
-                    <TableCell>{row.end_point}</TableCell>
-                    <TableCell sx={{ color: row.status === "won" ? "green" : "red", textTransform: "uppercase" }}>{row.status}</TableCell>
-                    <TableCell>{row?.result ? row.result + "-N" : ""}</TableCell>
-                    <TableCell>{row.date}</TableCell>
-                    <TableCell>
-                      {moment(row.draw_time, "HH:mm:ss.SSSSSS").format(
-                        "hh:mm A"
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      {moment(row.ticket_time, "HH:mm:ss.SSSSSS").format(
-                        "hh:mm A"
-                      )}
+                {isLoading ? (
+                  <TableRow>
+                    <TableCell colSpan={12} sx={{ textAlign: "center" }}>
+                      <Typography
+                        sx={{ fontSize: "1.1rem", fontWeight: "bold" }}
+                      >
+                        Loading...
+                      </Typography>
                     </TableCell>
                   </TableRow>
-                ))}
+                ) : (
+                  historyList.map((row) => (
+                    <TableRow
+                      key={row.ticket_id}
+                      sx={{
+                        "td,th": {
+                          // mb: 10,
+                          cursor: "pointer",
+                          bgcolor:
+                            ticketID === row.ticket_id ? "#CACFDB" : "#FFFFFF",
+                          borderBottom: "6px solid #FFE5C6",
+                          fontWeight: "bold",
+                        },
+                        "&:last-child td, &:last-child th": { border: 0 },
+                      }}
+                      onClick={() => handleRowClick(row)}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.ticket_id}
+                      </TableCell>
+                      <TableCell>{row.game_id}</TableCell>
+                      <TableCell>{row.start_point}</TableCell>
+                      <TableCell>{row.played}</TableCell>
+                      <TableCell>{row.won}</TableCell>
+                      <TableCell>{row.end}</TableCell>
+                      <TableCell>{row.end_point}</TableCell>
+                      <TableCell
+                        sx={{
+                          color: row.status === "won" ? "green" : "red",
+                          textTransform: "uppercase",
+                        }}
+                      >
+                        {row.status}
+                      </TableCell>
+                      <TableCell>
+                        {row?.result ? row.result + "-N" : ""}
+                      </TableCell>
+                      <TableCell>{row.date}</TableCell>
+                      <TableCell>
+                        {moment(row.draw_time, "HH:mm:ss.SSSSSS").format(
+                          "hh:mm A"
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {moment(row.ticket_time, "HH:mm:ss.SSSSSS").format(
+                          "hh:mm A"
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
               </TableBody>
             </Table>
           </TableContainer>
@@ -339,11 +381,11 @@ function GameHistory() {
           sx={{
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "flex-end",
             px: 1,
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {/* <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <FormControlLabel
               value="all"
               control={
@@ -378,19 +420,23 @@ function GameHistory() {
                 },
               }}
             />
-          </Box>
+          </Box> */}
 
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <MiniButton name={"REFRESH"} />
-            <MiniButton name={"ALL CLAIM"} />
-            <MiniButton name={"DETAILS"} />
-            <MiniButton name={"REPRINT"} />
-            <MiniButton name={"CLAIM"} />
-            <MiniButton name={"CANCEL"} />
+            <MiniButton name={"REFRESH"} onClick={handleRefreshClick} />
+            <MiniButton name={"ALL CLAIM"} onClick={handleAllClaimClick} />
+            <MiniButton name={"DETAILS"} onClick={handleDetailsClick} />
+            <MiniButton name={"REPRINT"} onClick={handleReprintClick} />
+            <MiniButton name={"CLAIM"} onClick={handleClaimClick} />
+            <MiniButton name={"CANCEL"} onClick={handleCancelClick} />
           </Box>
         </Box>
       </Box>
-      <GameHistoryModal open={open} handleClose={handleClose} />
+      <GameHistoryModal
+        open={open}
+        handleClose={handleClose}
+        singleViewList={singleViewList}
+      />
     </>
   );
 }
@@ -425,7 +471,8 @@ const MiniButton = function ({ name, onClick }) {
   );
 };
 
-const GameHistoryModal = function ({ open, handleClose }) {
+const GameHistoryModal = function ({ open, handleClose, singleViewList }) {
+  console.log(singleViewList);
   return (
     <Modal
       open={open}
@@ -500,11 +547,13 @@ const GameHistoryModal = function ({ open, handleClose }) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <TableRow>
-                  <TableCell>Singles : 1</TableCell>
-                  <TableCell>100</TableCell>
-                  <TableCell>1000</TableCell>
-                </TableRow>
+                {singleViewList.map((row) => (
+                  <TableRow>
+                    <TableCell>Singles : {row.bet}</TableCell>
+                    <TableCell>{row.played}</TableCell>
+                    <TableCell>{row.won}</TableCell>
+                  </TableRow>
+                ))}
                 <TableRow></TableRow>
               </TableBody>
             </Table>

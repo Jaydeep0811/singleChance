@@ -40,6 +40,8 @@ function Header({ balance, openAlertBox }) {
     true
   );
   // const [isMute, setIsMute] = useLocalStorage("isMute", false);
+  const [local, setLocal] = useLocalStorage("userDetails", {});
+
 
   const muteFun = function () {
     setToggle(!toggle);
@@ -80,13 +82,17 @@ function Header({ balance, openAlertBox }) {
     // window.location.reload();
   };
 
-  const handleUnclamedTicket = async () => {
-  }
-
 
   useEffect(() => {
     Howler.mute(!toggle);
   }, [toggle]);
+
+
+  useEffect(() => {
+    console.log(local);
+    
+  }, [local])
+  
 
   return (
     <Box
@@ -216,7 +222,7 @@ function Header({ balance, openAlertBox }) {
         </Button>
 
         <Typography sx={{ color: "#EEDE01", fontSize: "20px",fontFamily:"Poppins-Medium", }}>
-          Welcome, Classic302
+          Welcome, {local.username || "username"}
         </Typography>
 
         <Paper
