@@ -128,6 +128,7 @@ ipcMain.on("print-bill", (event, billHTML) => {
       }
     );
   });
+  
 });
 
 ipcMain.on("window-minimize", () => {

@@ -256,7 +256,7 @@ const Spinner4 = React.forwardRef(function (
                 </g>
      <g>
 
-        {/* red  */}
+        {/* redLight */}
 
         <g className="redLight"  ref={redLight}>
             <circle cx="442" cy="60" r="9.25" fill="url(#paint25_radial_2362_1839)" stroke="#FF2200" stroke-width="2.5" />
@@ -501,8 +501,6 @@ const Spinner4 = React.forwardRef(function (
     <circle cx="247" cy="58" r="14" fill="#13FF0B"/>
     </g>
     </g>
-
-
     </g>
         <g filter="url(#filter99_d_2362_1839)">
             <path d="M339.035 72.5029L358.614 38.4836C364.318 28.5732 362.853 16.0812 355.013 7.76871L353.631 6.30375C345.704 -2.10125 332.366 -2.10125 324.438 6.30375L323.056 7.76871C315.216 16.0812 313.752 28.5732 319.455 38.4836L339.035 72.5029Z" fill="#C71F3F" />
