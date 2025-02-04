@@ -78,7 +78,7 @@ const Spinner4 = React.forwardRef(function (
         </g>
         </g>
 
-{/* inner Wheel  */}
+
       <g>
         <g filter="url(#filter19_i_2362_1839)">
             <circle cx="340.988" cy="335.906" r="75.7006" fill="url(#paint0_radial_2362_1839)" />
