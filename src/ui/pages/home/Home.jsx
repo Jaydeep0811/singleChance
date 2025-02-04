@@ -211,6 +211,21 @@ function Home() {
     const luckywheelTimeline = gsap.timeline({
       onComplete: () => {
         console.log(`Spinner landed on number: ${targetNumber}`);
+
+        var tl=anime.timeline({easing:"linear",duration:300,round:3})
+        tl.add({targets:[greenLight.current.querySelectorAll('g') , greenLight.current.querySelectorAll('circle')] ,
+     opacity:0
+        }).add({targets:[greenLight.current.querySelectorAll('g') , greenLight.current.querySelectorAll('circle')] ,
+         opacity:1,fillOpacity:1
+            }).add({targets:[orangeLight.current.querySelectorAll('g') , orangeLight.current.querySelectorAll('circle')] ,
+         opacity:0
+         }).add({targets:[orangeLight.current.querySelectorAll('g') , orangeLight.current.querySelectorAll('circle')] ,
+           opacity:1,fillOpacity:1
+              }).add({targets:[redLight.current.querySelectorAll('g') , redLight.current.querySelectorAll('circle')] ,
+           opacity:0
+           }).add({targets:[redLight.current.querySelectorAll('g') , redLight.current.querySelectorAll('circle')] ,
+             opacity:1,fillOpacity:1
+                })
       },
     });
 
@@ -359,24 +374,10 @@ function Home() {
     }
   };
 
+
+
   const handleYouWin = () => {
 
-    setBulbAnimation(()=>{
-      var tl=anime.timeline({easing:"linear",duration:300,loop:true})
-      tl.add({targets:[greenLight.current.querySelectorAll('g') , greenLight.current.querySelectorAll('circle')] ,
-   opacity:0
-      }).add({targets:[greenLight.current.querySelectorAll('g') , greenLight.current.querySelectorAll('circle')] ,
-       opacity:1,fillOpacity:1
-          }).add({targets:[orangeLight.current.querySelectorAll('g') , orangeLight.current.querySelectorAll('circle')] ,
-       opacity:0
-       }).add({targets:[orangeLight.current.querySelectorAll('g') , orangeLight.current.querySelectorAll('circle')] ,
-         opacity:1,fillOpacity:1
-            }).add({targets:[redLight.current.querySelectorAll('g') , redLight.current.querySelectorAll('circle')] ,
-         opacity:0
-         }).add({targets:[redLight.current.querySelectorAll('g') , redLight.current.querySelectorAll('circle')] ,
-           opacity:1,fillOpacity:1
-              })
-    })
     setIsOpen(true);
     youWinSound.play();
     setAlertMessage("message");

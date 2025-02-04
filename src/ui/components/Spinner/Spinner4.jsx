@@ -5,9 +5,9 @@ const Spinner4 = React.forwardRef(function (
     ref
 ) {
     return (
-        <svg style={{zIndex:1000,position:"relative",top:"20px"}} width="684.93" height="643" viewBox="0 -10 684.93 643" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg style={{zIndex:1000,position:"relative",top:"20px"}}  viewBox="0 0 684.93 643" fill="none" xmlns="http://www.w3.org/2000/svg">
 
-<g className="wheelSpinner" ref={wheelRef1}>
+                             <g className="wheelSpinner" ref={wheelRef1}>
 
         <path d="M341.434 31.7679C254.155 31.4117 186.025 71.2534 162.869 90.9949L341.434 335.463V31.7679Z" fill="#AC6507" />
         <path d="M341.434 639.601C254.155 639.958 186.025 600.116 162.869 580.374L341.434 335.906V639.601Z" fill="#36098D" />
